@@ -1,0 +1,215 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selesaikan Donasi - BeriKasih</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+    <!-- Simple Header -->
+    <nav class="navbar" style="position: relative;">
+        <div class="container flex items-center">
+            <a href="index.html" class="flex items-center text-gray gap-2">
+                <span>&larr;</span> Kembali ke Beranda
+            </a>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+
+        <div class="text-center mb-8">
+            <h2 class="font-bold" style="font-size: 1.5rem;">Selesaikan Donasi Anda</h2>
+            <p class="text-gray">Untuk kampanye: Bantu Operasi Jantung untuk Bayi Aisyah</p>
+        </div>
+
+        <!-- Steps Indicator -->
+        <div class="wizard-steps">
+            <div class="step-item active" id="step-indicator-1">
+                <div class="step-circle">1</div>
+            </div>
+            <div class="step-line" id="line-1"></div>
+            <div class="step-item" id="step-indicator-2">
+                <div class="step-circle">2</div>
+            </div>
+            <div class="step-line" id="line-2"></div>
+            <div class="step-item" id="step-indicator-3">
+                <div class="step-circle">3</div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+
+            <!-- Forms Container -->
+            <div id="wizard-forms">
+
+                <!-- STEP 1: NOMINAL -->
+                <div id="step-1" class="wizard-step">
+                    <div class="card">
+                        <h3 class="font-bold mb-4">Pilih Nominal Donasi</h3>
+                        <div class="amount-grid">
+                            <div class="amount-btn" onclick="selectAmount(50000)">Rp 50.000</div>
+                            <div class="amount-btn" onclick="selectAmount(100000)">Rp 100.000</div>
+                            <div class="amount-btn" onclick="selectAmount(250000)">Rp 250.000</div>
+                            <div class="amount-btn" onclick="selectAmount(500000)">Rp 500.000</div>
+                            <div class="amount-btn" onclick="selectAmount(1000000)">Rp 1.000.000</div>
+                        </div>
+
+                        <div class="input-group mt-4">
+                            <label class="input-label">Atau masukkan nominal lain</label>
+                            <input type="number" id="custom-amount" class="form-input" placeholder="Rp 0"
+                                oninput="handleCustomAmount(this)">
+                        </div>
+
+                        <button class="btn btn-primary w-full mt-4" onclick="nextStep(2)">Lanjutkan</button>
+                    </div>
+                </div>
+
+                <!-- STEP 2: DATA DONATUR -->
+                <div id="step-2" class="wizard-step hidden">
+                    <div class="card">
+                        <h3 class="font-bold mb-4">Data Donatur</h3>
+
+                        <div class="input-group">
+                            <label class="input-label">Nama Lengkap *</label>
+                            <input type="text" id="donor-name" class="form-input" placeholder="Nama Anda"
+                                oninput="updateSummary()">
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Email *</label>
+                            <input type="email" class="form-input" placeholder="email@contoh.com">
+                        </div>
+
+                        <div class="input-group">
+                            <label class="input-label">Nomor WhatsApp (Opsional)</label>
+                            <input type="tel" class="form-input" placeholder="08xxxxxxxx">
+                        </div>
+
+                        <div class="flex items-center gap-2 mb-6">
+                            <input type="checkbox" id="anon" style="width: 16px; height: 16px;">
+                            <label for="anon">Berdonasi sebagai anonim</label>
+                        </div>
+
+                        <div class="flex gap-4">
+                            <button class="btn btn-outline w-full" onclick="prevStep(1)">Kembali</button>
+                            <button class="btn btn-primary w-full" onclick="nextStep(3)">Lanjutkan</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 3: PEMBAYARAN -->
+                <div id="step-3" class="wizard-step hidden">
+                    <div class="card">
+                        <h3 class="font-bold mb-4">Metode Pembayaran</h3>
+
+                        <div class="payment-method selected" id="pm-va" onclick="selectPayment('va', this)">
+                            <div class="payment-icon">&#127974;</div>
+                            <div>
+                                <div class="font-bold">Transfer Bank (Virtual Account)</div>
+                                <small class="text-gray">BCA, Mandiri, BNI, BRI</small>
+                            </div>
+                        </div>
+
+                        <div class="payment-method" id="pm-ewallet" onclick="selectPayment('ewallet', this)"
+                            style="display: block;">
+                            <div class="flex items-center">
+                                <div class="payment-icon">&#128241;</div>
+                                <div>
+                                    <div class="font-bold">E-Wallet</div>
+                                    <small class="text-gray" id="ewallet-desc">GoPay, OVO, Dana, ShopeePay</small>
+                                </div>
+                            </div>
+
+                            <div id="ewallet-options" class="ewallet-grid hidden">
+                                <div class="ewallet-btn" onclick="selectEWallet('gopay', event)">GoPay</div>
+                                <div class="ewallet-btn" onclick="selectEWallet('ovo', event)">OVO</div>
+                                <div class="ewallet-btn" onclick="selectEWallet('shopeepay', event)">ShopeePay</div>
+                                <div class="ewallet-btn" onclick="selectEWallet('dana', event)">DANA</div>
+                                <div class="ewallet-btn" onclick="selectEWallet('linkaja', event)">LinkAja</div>
+                            </div>
+                        </div>
+
+                        <div class="payment-method" id="pm-cc" onclick="selectPayment('cc', this)">
+                            <div class="payment-icon">&#128179;</div>
+                            <div>
+                                <div class="font-bold">Kartu Kredit/Debit</div>
+                                <small class="text-gray">Visa, Mastercard, JCB</small>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4 mt-6">
+                            <button class="btn btn-outline w-full" onclick="prevStep(2)">Kembali</button>
+                            <button class="btn btn-primary w-full" onclick="finishDonation()">Bayar Sekarang</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Sticky Summary Sidebar -->
+            <div style="position: sticky; top: 20px; height: fit-content;">
+                <div class="card">
+                    <h4 class="font-bold mb-4" style="border-bottom: 1px solid #eee; padding-bottom: 0.5rem;">Ringkasan
+                        Donasi</h4>
+
+                    <div class="flex gap-4 mb-4">
+                        <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2664&auto=format&fit=crop"
+                            style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px;">
+                        <div>
+                            <small class="text-gray" style="font-size: 0.75rem;">Kampanye</small>
+                            <div class="font-semibold" style="font-size: 0.9rem; line-height: 1.2;">Bantu Operasi
+                                Jantung untuk Bayi Aisyah</div>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between mb-2">
+                        <span class="text-gray">Nominal Donasi</span>
+                        <span class="font-bold" id="summary-amount">Rp 0</span>
+                    </div>
+                    <div class="flex justify-between mb-4">
+                        <span class="text-gray">Donatur</span>
+                        <span class="font-medium" id="summary-donor">-</span>
+                    </div>
+
+                    <div class="border-t pt-2 mb-4">
+                        <div class="flex justify-between">
+                            <span class="font-bold">Total Pembayaran</span>
+                            <span class="font-bold text-primary" id="summary-total">Rp 0</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-primary-light p-3 rounded" style="background-color: #FCE4EC; border-radius: 8px;">
+                        <p class="text-primary" style="font-size: 0.8rem;">
+                            Donasi Anda akan membantu mencapai 57% dari target Rp 150.000.000
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script src="app/auth.js"></script>
+    <script src="app/script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await auth.init();
+
+            const user = auth.getUser();
+            if (user) {
+                document.getElementById('donor-name').value = user.name;
+                document.querySelector('input[type="email"]').value = user.email;
+                updateSummary(); // Trigger summary update
+            }
+        });
+    </script>
+</body>
+
+</html>
+

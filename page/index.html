@@ -1,0 +1,339 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BeriKasih - Memberi Dengan Kasih</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container flex justify-between items-center">
+            <div class="logo flex items-center gap-4">
+                <img src="images/logo_hand_heart.svg" alt="BeriKasih Logo" style="width: 32px; height: 32px;">
+                <span class="font-bold text-dark" style="font-size: 1.5rem;">BeriKasih</span>
+            </div>
+            <div class="hidden md:flex items-center">
+                <a href="#" class="nav-link">Kampanye</a>
+                <a href="#" class="nav-link">Kategori</a>
+                <a href="#" class="nav-link">Tentang Kami</a>
+            </div>
+            <!-- Auth Buttons (Initial) -->
+            <div id="nav-auth" class="flex gap-4">
+                <a href="login.html" class="btn btn-outline" style="border:none;">Masuk</a>
+                <a href="register.html" class="btn btn-primary">Daftar</a>
+            </div>
+
+            <!-- User Profile (Logged In) -->
+            <div id="nav-user" class="flex gap-4 items-center hidden">
+                <a href="dashboard.html" class="flex items-center gap-2 hover:bg-gray-100 p-2 rounded transition-colors"
+                    style="text-decoration: none;">
+                    <div id="nav-user-initial"
+                        style="width: 32px; height: 32px; background: #FF4081; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem;">
+                        U</div>
+                    <span id="nav-user-name" class="font-semibold text-dark">User</span>
+                </a>
+                <button onclick="auth.logout()" class="text-gray hover:text-primary"
+                    style="background:none; border:none; cursor:pointer;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Script -->
+    <script src="app/auth.js"></script>
+
+    <!-- Main Content -->
+    <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+
+        <!-- Header Section -->
+        <div class="mb-4">
+            <span class="badge mb-4">&#128680; Mendesak</span>
+            <h1 class="font-bold text-dark" style="font-size: 2rem; margin-bottom: 1rem;">Bantu Operasi Jantung untuk
+                Bayi Aisyah</h1>
+            <p class="text-gray" style="max-width: 800px; margin-bottom: 2rem;">
+                Bayi Aisyah yang baru berusia 6 bulan didiagnosis memiliki kelainan jantung bawaan yang memerlukan
+                operasi segera. Keluarga Aisyah adalah keluarga sederhana yang tidak mampu menanggung biaya operasi yang
+                besar.
+            </p>
+        </div>
+
+        <div class="main-grid">
+            <!-- Left Column -->
+            <div>
+                <!-- Hero Image -->
+                <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 2rem;">
+                    <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2664&auto=format&fit=crop"
+                        alt="Medical Monitor" style="width: 100%; height: 400px; object-fit: cover;">
+                </div>
+
+                <!-- Tabs -->
+                <div class="tabs">
+                    <div class="tab-btn active" onclick="switchTab('cerita')">Cerita</div>
+                    <div class="tab-btn" onclick="switchTab('kabar')">Kabar Terbaru (2)</div>
+                    <div class="tab-btn" onclick="switchTab('donatur')">Daftar Donatur (5)</div>
+                </div>
+
+                <!-- Tab Content -->
+                <div id="cerita" class="tab-content">
+                    <p class="text-gray mb-4">
+                        Halo #OrangBaik, perkenalkan nama saya Budi, ayah dari Aisyah. Aisyah lahir dengan kondisi
+                        jantung yang tidak sempurna...
+                    </p>
+                    <p class="text-gray mb-4">
+                        Setiap detaknya adalah perjuangan. Dokter menyarankan operasi secepat mungkin untuk menutup
+                        kebocoran di jantungnya. Biaya yang dibutuhkan mencapai Rp 150.000.000, jumlah yang sangat besar
+                        bagi kami.
+                    </p>
+                    <img src="https://images.unsplash.com/photo-1530497610245-94d3c16cda28?q=80&w=2564&auto=format&fit=crop"
+                        alt="Baby hand" style="width: 100%; border-radius: 8px; margin: 1rem 0;">
+                </div>
+
+                <div id="kabar" class="tab-content hidden">
+                    <div class="card mb-4">
+                        <small class="text-gray">2 Hari yang lalu</small>
+                        <h4 class="font-bold mt-2">Kondisi Aisyah Stabil</h4>
+                        <p class="text-gray">Terima kasih atas doa dan dukungannya. Saat ini Aisyah sedang dalam
+                            pengawasan intensif.</p>
+                    </div>
+                </div>
+
+                <div id="donatur" class="tab-content hidden">
+                    <div class="flex items-center justify-between mb-4 border-b pb-2">
+                        <div class="flex items-center gap-2">
+                            <div style="width: 40px; height: 40px; background: #eee; border-radius: 50%;"></div>
+                            <span class="font-bold">Seraphine</span>
+                        </div>
+                        <span class="font-semibold text-primary">Rp 500.000</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-4 border-b pb-2">
+                        <div class="flex items-center gap-2">
+                            <div style="width: 40px; height: 40px; background: #eee; border-radius: 50%;"></div>
+                            <span class="font-bold">Budi Santoso</span>
+                        </div>
+                        <span class="font-semibold text-primary">Rp 100.000</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-4 border-b pb-2">
+                        <div class="flex items-center gap-2">
+                            <div style="width: 40px; height: 40px; background: #eee; border-radius: 50%;"></div>
+                            <span class="font-bold">Nicholas</span>
+                        </div>
+                        <span class="font-semibold text-primary">Rp 1.000</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column Sticky -->
+            <div style="position: sticky; top: 100px; height: fit-content;">
+
+                <!-- Progress Card -->
+                <div class="card mb-4">
+                    <div class="flex justify-between mb-2">
+                        <span class="font-bold text-primary">Terkumpul</span>
+                        <span class="font-bold text-gray">57%</span>
+                    </div>
+
+                    <div class="progress-container mb-4">
+                        <div class="progress-bar" style="width: 57%;"></div>
+                    </div>
+
+                    <div class="flex justify-between mb-6 text-center">
+                        <div>
+                            <div class="font-bold" style="font-size: 1.1rem;">Rp 85.0jt</div>
+                            <small class="text-gray">Terkumpul</small>
+                        </div>
+                        <div>
+                            <div class="font-bold" style="font-size: 1.1rem;">1.247</div>
+                            <small class="text-gray">Donatur</small>
+                        </div>
+                        <div>
+                            <div class="font-bold" style="font-size: 1.1rem;">12 Hari</div>
+                            <small class="text-gray">Tersisa</small>
+                        </div>
+                    </div>
+
+                    <a href="donation.html" class="btn btn-primary w-full mb-4">Donasi Sekarang</a>
+                    <button class="btn btn-outline w-full">Bagikan Kampanye</button>
+                </div>
+
+                <!-- Organizer Card -->
+                <div class="card">
+                    <h4 class="font-bold mb-4">Penggalang Dana</h4>
+                    <div class="flex items-center gap-4 mb-2">
+                        <div
+                            style="width: 48px; height: 48px; background: #FF4081; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                            Y</div>
+                        <div>
+                            <div class="flex items-center gap-1">
+                                <span class="font-bold">Yayasan Bina Nusantara</span>
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="#3B82F6"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                                </svg>
+                            </div>
+                            <small class="text-primary">Terverifikasi</small>
+                        </div>
+                    </div>
+                    <p class="text-gray" style="font-size: 0.875rem; margin-top: 0.5rem;">Organisasi terpercaya yang
+                        telah diverifikasi oleh
+                        platform kami.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Volunteer Carousel Section -->
+    <section class="carousel-section">
+        <div class="container">
+            <h2 class="carousel-title">Para Pendekar Anak</h2>
+
+            <div class="carousel-container">
+                <!-- Navigation -->
+                <button class="nav-btn nav-prev" onclick="moveSlide(-1)">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+                <button class="nav-btn nav-next" onclick="moveSlide(1)">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+
+                <div class="carousel-track" id="track">
+                    <!-- Slide 1 -->
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=200&auto=format&fit=crop"
+                            alt="Efi Yusliana" class="carousel-avatar">
+                        <p class="carousel-quote">
+                            "Kami bersyukur untuk kesempatan yang Tuhan berikan. Melalui platform ini, kami bisa
+                            mengambil bagian untuk mendukung anak-anak Indonesia yang membutuhkan pertolongan meraih
+                            masa depannya. Tetap semangat untuk memberikan pelayanan bagi anak-anak kita yang
+                            membutuhkan bantuan di pelosok negeri kita tercinta."
+                        </p>
+                        <div>
+                            <div class="carousel-author">Efi Yusliana</div>
+                            <div class="carousel-role">Pendekar Anak sejak tahun 2020</div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2 -->
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=200&auto=format&fit=crop"
+                            alt="Neny Kardiana" class="carousel-avatar">
+                        <p class="carousel-quote">
+                            "Anak-anak Indonesia adalah generasi penerus kita di masa yang akan datang, maka dari itu,
+                            menurut saya sangatlah penting untuk kita mendukung kesejahteraan mereka. Donasi rutin
+                            sebagai Pendekar Anak menjadi salah satu upaya saya untuk membantu anak-anak Indonesia."
+                        </p>
+                        <div>
+                            <div class="carousel-author">Neny Kardiana</div>
+                            <div class="carousel-role">Pendekar Anak sejak tahun 2019</div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3 (Added for variety) -->
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&auto=format&fit=crop"
+                            alt="Budi Santoso" class="carousel-avatar">
+                        <p class="carousel-quote">
+                            "Berbagi bukan tentang seberapa besar yang kita berikan, tapi seberapa tulus niat kita.
+                            Platform ini memudahkan saya untuk menyalurkan bantuan kepada yang membutuhkan secara
+                            transparan dan amanah."
+                        </p>
+                        <div>
+                            <div class="carousel-author">Budi Santoso</div>
+                            <div class="carousel-role">Pendekar Anak sejak tahun 2021</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="msg-dots" id="dots-container">
+                    <!-- Dots will be generated by JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Script -->
+    <script>
+        function switchTab(tabId) {
+            // Hide all tab content
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            // Remove active class from buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            // Show target
+            document.getElementById(tabId).classList.remove('hidden');
+            // Activate button (finding by text content is brittle, ideally use event target)
+            if (event) event.currentTarget.classList.add('active');
+        }
+
+        // Carousel Logic
+        let currentSlide = 0;
+        const track = document.getElementById('track');
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dotsContainer = document.getElementById('dots-container');
+        let autoSlideInterval;
+
+        // Init Dots
+        slides.forEach((_, index) => {
+            const dot = document.createElement('div');
+            dot.className = `msg-dot ${index === 0 ? 'active' : ''}`;
+            dot.onclick = () => goToSlide(index);
+            dotsContainer.appendChild(dot);
+        });
+
+        const dots = document.querySelectorAll('.msg-dot');
+
+        function updateCarousel() {
+            track.style.transform = `translateX(-${currentSlide * 100}%)`;
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function moveSlide(direction) {
+            currentSlide = (currentSlide + direction + slides.length) % slides.length;
+            updateCarousel();
+            resetAutoSlide();
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateCarousel();
+            resetAutoSlide();
+        }
+
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(() => {
+                moveSlide(1);
+            }, 5000); // 5 seconds
+        }
+
+        function resetAutoSlide() {
+            clearInterval(autoSlideInterval);
+            startAutoSlide();
+        }
+
+        // Start
+        startAutoSlide();
+    </script>
+</body>
+
+</html>
+

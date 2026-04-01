@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pembayaran Berhasil - BeriKasih</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .success-banner {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: var(--radius) var(--radius) 0 0;
+            position: relative;
+        }
+
+        .success-overlay {
+            background: linear-gradient(to bottom, transparent, rgb(255, 255, 255));
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0);
+            border-radius: 0 0 var(--radius) var(--radius);
+            /* actually this is inside the container wrapper usually, but let's fit it */
+        }
+
+        .invoice-card {
+            max-width: 700px;
+            margin: 2rem auto;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+
+        .trx-box {
+            background-color: #FCE4EC;
+            border: 1px solid #F8BBD0;
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .check-circle {
+            width: 48px;
+            height: 48px;
+            background: rgba(63, 228, 13, 0.689);
+            border: 2px solid rgba(18, 137, 61, 0.814);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+        }
+
+        .text-outline {
+            color: rgb(209, 197, 197);
+            -webkit-text-stroke: 1px rgb(209, 197, 197);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="invoice-card">
+            <!-- Banner Section -->
+            <div style="position: relative;">
+                <img src="images/animasi.gif.gif" class="success-banner" alt="Success Banner">
+
+                <div
+                    style="position: absolute; bottom: 0; left: 0; right: 0; padding: 2rem; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); display: flex; align-items: center;">
+                    <div class="check-circle">&#10003;</div>
+                    <div>
+                        <h2 class="font-bold text-outline text-2xl">Pembayaran Berhasil!</h2>
+                        <p class="text-outline opacity-90">Terima kasih atas kebaikan Anda</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content Section -->
+            <div style="padding: 2rem; text-align: center;">
+
+                <p class="text-gray mb-6">
+                    Donasi Anda akan memberikan dampak nyata bagi mereka yang membutuhkan. Bukti donasi akan dikirimkan
+                    ke email Anda dalam beberapa menit.
+                </p>
+
+                <div class="trx-box text-left">
+                    <div class="flex items-start gap-3">
+                        <div style="color: #D81B60; margin-top: 2px;">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h4 class="font-bold" style="color: #880E4F; margin-bottom: 0.5rem;">Transaksi Berhasil
+                                Diproses</h4>
+                            <p style="color: #AD1457; font-size: 0.9rem; margin-bottom: 0.25rem;">
+                                Nomor transaksi: <span class="font-bold" id="trx-id">TRX8605218336</span>
+                            </p>
+                            <p style="color: #AD1457; font-size: 0.9rem;">
+                                Donasi Anda sebesar <span class="font-bold" id="total-amount">Rp 0</span> akan langsung
+                                membantu kampanye yang sedang berjalan.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary w-full mb-4" onclick="window.location.href='dashboard.html'">Lihat
+                    Dashboard
+                    Saya</button>
+
+                <div class="grid grid-cols-2 gap-4 mb-6" style="grid-template-columns: 1fr 1fr; display: grid;">
+                    <button class="btn btn-outline" onclick="alert('Bukti donasi diunduh!')">&#11015; Unduh Bukti</button>
+                    <button class="btn btn-outline" onclick="alert('Link dibagikan!')">&#128279; Bagikan</button>
+                </div>
+
+                <a href="index.html" class="text-gray" style="font-size: 0.9rem;">Kembali ke Beranda</a>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Populate data from URL params
+        const urlParams = new URLSearchParams(window.location.search);
+        const amount = urlParams.get('amount') || '0';
+        const trxId = urlParams.get('trx') || 'TRX' + Math.floor(Math.random() * 10000000000);
+
+        document.getElementById('total-amount').textContent = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(amount);
+        document.getElementById('trx-id').textContent = trxId;
+    </script>
+</body>
+
+</html>
+
