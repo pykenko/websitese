@@ -32,6 +32,10 @@ const auth = {
     },
 
     async register(name, email, password) {
+        const gmailRegex = /^[a-zA-Z0-9._%+\-]+@gmail\.com$/;
+        if (!gmailRegex.test(email)) {
+            return { success: false, message: "Email harus menggunakan @gmail.com" };
+        }
         const response = await fetch("/api/register", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
