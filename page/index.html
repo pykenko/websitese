@@ -1,11 +1,11 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BeriKasih - Memberi Dengan Kasih</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <title>Bina Kasih - Memberi Dengan Kasih</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
@@ -14,8 +14,8 @@
     <nav class="navbar">
         <div class="container flex justify-between items-center">
             <div class="logo flex items-center gap-4">
-                <img src="images/logo_hand_heart.svg" alt="BeriKasih Logo" style="width: 32px; height: 32px;">
-                <span class="font-bold text-dark" style="font-size: 1.5rem;">BeriKasih</span>
+                <img src="logo_hand_heart.svg" alt="Bina Kasih Logo" style="width: 32px; height: 32px;">
+                <span class="font-bold text-dark" style="font-size: 1.5rem;">Bina Kasih</span>
             </div>
             <div class="hidden md:flex items-center">
                 <a href="#" class="nav-link">Kampanye</a>
@@ -25,7 +25,7 @@
             <!-- Auth Buttons (Initial) -->
             <div id="nav-auth" class="flex gap-4">
                 <a href="login.html" class="btn btn-outline" style="border:none;">Masuk</a>
-                <a href="register.html" class="btn btn-primary">Daftar</a>
+                <a href="login.html?action=register" class="btn btn-primary">Daftar</a>
             </div>
 
             <!-- User Profile (Logged In) -->
@@ -51,145 +51,212 @@
     </nav>
 
     <!-- Script -->
-    <script src="app/auth.js"></script>
+    <script src="auth.js"></script>
 
     <!-- Main Content -->
     <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
 
-        <!-- Header Section -->
-        <div class="mb-4">
-            <span class="badge mb-4">&#128680; Mendesak</span>
-            <h1 class="font-bold text-dark" style="font-size: 2rem; margin-bottom: 1rem;">Bantu Operasi Jantung untuk
-                Bayi Aisyah</h1>
-            <p class="text-gray" style="max-width: 800px; margin-bottom: 2rem;">
-                Bayi Aisyah yang baru berusia 6 bulan didiagnosis memiliki kelainan jantung bawaan yang memerlukan
-                operasi segera. Keluarga Aisyah adalah keluarga sederhana yang tidak mampu menanggung biaya operasi yang
-                besar.
-            </p>
+        <!-- Untuk Mereka Static Campaigns Section -->
+        <div id="untuk-mereka-section" style="margin-bottom: 4rem;">
+            <h2 class="font-bold text-dark mb-6" style="font-size: 1.5rem;">Untuk Mereka</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+
+                <!-- Campaign 1: Yuda -->
+                <div class="card card-expandable" data-campaign-id="yuda" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
+                    <div class="card-img-container" style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600&auto=format&fit=crop"
+                            alt="Donasi Pendidikan Yuda" style="width: 100%; height: 200px; object-fit: cover;">
+                        <div style="position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; z-index: 10;">
+                            <div style="background: rgba(255, 255, 255, 0.95); padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="#3B82F6" xmlns="http://www.w3.org/2000/svg" style="margin-top: 1px;">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                                </svg>
+                                <span class="text-dark font-semibold" style="font-size: 0.7rem;">Terverifikasi</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-content" style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column;">
+                        <span class="text-primary font-semibold mb-2 block" style="font-size: 0.875rem;">Donasi
+                            Pendidikan</span>
+                        <h3 class="font-bold mb-2 text-dark" style="font-size: 1.25rem;">Bantu Yuda Meraih Cita-Cita
+                        </h3>
+                        <div class="card-compact-content">
+                            <p class="text-gray mb-4 flex-1" style="font-size: 0.95rem; line-height: 1.5;">Dukungan biaya
+                                pendidikan untuk Yuda, seorang siswa teladan yang sangat membutuhkan biaya sekolah sebesar
+                                Rp 10.000.000.</p>
+                        </div>
+                        <div class="card-expanded-details">
+                            <p class="text-gray mb-4" style="font-size: 1rem; line-height: 1.6;">Yuda adalah seorang siswa teladan yang selalu mendapatkan peringkat pertama di kelasnya. Namun, kondisi ekonomi keluarganya yang sulit membuat Yuda terancam putus sekolah. Ayahnya bekerja sebagai buruh tani lepas, sedangkan ibunya adalah ibu rumah tangga. Mari bersama-sama kita bantu Yuda agar ia dapat terus melanjutkan pendidikannya dan meraih cita-citanya menjadi seorang dokter.</p>
+                            <p class="text-gray mb-4" style="font-size: 1rem; line-height: 1.6;">Donasi yang terkumpul akan digunakan untuk membayar biaya SPP, seragam sekolah, buku pelajaran, dan perlengkapan sekolah lainnya.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray" style="font-size: 0.875rem;">Terkumpul <strong
+                                        class="collected-amount text-dark">Rp 0</strong></span>
+                                <span class="font-bold text-primary">0%</span>
+                            </div>
+                            <div class="premium-progress-container">
+                                <div class="premium-progress-fill" style="width: 0%;">
+                                    <div class="premium-progress-indicator">
+                                        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center mt-2 pt-4 border-t"
+                            style="border-color: #E5E7EB;">
+                            <span class="font-semibold text-dark" style="font-size: 1rem;">Misi: Rp 10.000.000</span>
+                            <span class="text-gray font-semibold" style="font-size: 0.875rem;">Waktu Tak Terbatas</span>
+                        </div>
+                        <a href="donation.html?campId=yuda" class="btn btn-primary w-full mt-4"
+                            style="text-align: center; text-decoration: none; display: block;">Donasi Sekarang</a>
+                    </div>
+                </div>
+
+                <!-- Campaign 2: Rafi -->
+                <div class="card card-expandable" data-campaign-id="rafi" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
+                    <div class="card-img-container" style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=600&auto=format&fit=crop"
+                            alt="Donasi Pendidikan Rafi" style="width: 100%; height: 200px; object-fit: cover;">
+                        <div style="position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; z-index: 10;">
+                            <div style="background: rgba(255, 255, 255, 0.95); padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="#3B82F6" xmlns="http://www.w3.org/2000/svg" style="margin-top: 1px;">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                                </svg>
+                                <span class="text-dark font-semibold" style="font-size: 0.7rem;">Terverifikasi</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-content" style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column;">
+                        <span class="text-primary font-semibold mb-2 block" style="font-size: 0.875rem;">Donasi
+                            Pendidikan</span>
+                        <h3 class="font-bold mb-2 text-dark" style="font-size: 1.25rem;">Beasiswa untuk Rafi</h3>
+                        <div class="card-compact-content">
+                            <p class="text-gray mb-4 flex-1" style="font-size: 0.95rem; line-height: 1.5;">Bantu Rafi
+                                melanjutkan pendidikannya dengan memenuhi kebutuhan biaya sebesar Rp 5.000.000 agar dirinya
+                                tetap bisa belajar.</p>
+                        </div>
+                        <div class="card-expanded-details">
+                            <p class="text-gray mb-4" style="font-size: 1rem; line-height: 1.6;">Rafi adalah seorang yatim piatu yang saat ini tinggal bersama neneknya. Nenek Rafi hanya bekerja sebagai penjual kue keliling yang penghasilannya tidak menentu. Meskipun hidup dalam keterbatasan, Rafi memiliki semangat belajar yang sangat tinggi dan bercita-cita menjadi seorang guru.</p>
+                            <p class="text-gray mb-4" style="font-size: 1rem; line-height: 1.6;">Beasiswa ini akan sangat membantu Rafi untuk membayar biaya sekolahnya selama satu tahun ke depan. Mari kita dukung Rafi untuk menggapai cita-citanya.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray" style="font-size: 0.875rem;">Terkumpul <strong
+                                        class="collected-amount text-dark">Rp 0</strong></span>
+                                <span class="font-bold text-primary">0%</span>
+                            </div>
+                            <div class="premium-progress-container">
+                                <div class="premium-progress-fill" style="width: 0%;">
+                                    <div class="premium-progress-indicator">
+                                        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center mt-2 pt-4 border-t"
+                            style="border-color: #E5E7EB;">
+                            <span class="font-semibold text-dark" style="font-size: 1rem;">Misi: Rp 5.000.000</span>
+                            <span class="text-gray font-semibold" style="font-size: 0.875rem;">Waktu Tak Terbatas</span>
+                        </div>
+                        <a href="donation.html?campId=rafi" class="btn btn-primary w-full mt-4"
+                            style="text-align: center; text-decoration: none; display: block;">Donasi Sekarang</a>
+                    </div>
+                </div>
+
+                <!-- Campaign 3: Karina -->
+                <div class="card card-expandable" data-campaign-id="karina" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
+                    <div class="card-img-container" style="position: relative;">
+                        <img src="https://images.unsplash.com/photo-1453749024858-4bca89bd9edc?q=80&w=600&auto=format&fit=crop"
+                            alt="Donasi Pendidikan Karina" style="width: 100%; height: 200px; object-fit: cover;">
+                        <div style="position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; z-index: 10;">
+                            <div style="background: rgba(255, 255, 255, 0.95); padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="#3B82F6" xmlns="http://www.w3.org/2000/svg" style="margin-top: 1px;">
+                                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                                </svg>
+                                <span class="text-dark font-semibold" style="font-size: 0.7rem;">Terverifikasi</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-content" style="padding: 1.5rem; flex: 1; display: flex; flex-direction: column;">
+                        <span class="text-primary font-semibold mb-2 block" style="font-size: 0.875rem;">Donasi
+                            Pendidikan</span>
+                        <h3 class="font-bold mb-2 text-dark" style="font-size: 1.25rem;">Masa Depan Cerah Karina</h3>
+                        <div class="card-compact-content">
+                            <p class="text-gray mb-4 flex-1" style="font-size: 0.95rem; line-height: 1.5;">Dukung Karina,
+                                siswi berprestasi, untuk meraih pendidikannya di jenjang selanjutnya dengan mendonasikan Rp
+                                15.000.000.</p>
+                        </div>
+                        <div class="card-expanded-details">
+                            <p class="text-gray mb-4" style="font-size: 1rem; line-height: 1.6;">Karina adalah seorang siswi yang sangat berbakat dalam bidang sains. Ia telah memenangkan berbagai kompetisi tingkat nasional. Namun, biaya pendidikan yang semakin tinggi menjadi kendala bagi Karina untuk melanjutkan pendidikannya ke perguruan tinggi.</p>
+                            <p class="text-gray mb-4" style="font-size: 1rem; line-height: 1.6;">Bantuan Anda akan membuka jalan bagi Karina untuk meraih gelar sarjana dan memberikan kontribusi yang lebih besar bagi masyarakat di masa depan.</p>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray" style="font-size: 0.875rem;">Terkumpul <strong
+                                        class="collected-amount text-dark">Rp 0</strong></span>
+                                <span class="font-bold text-primary">0%</span>
+                            </div>
+                            <div class="premium-progress-container">
+                                <div class="premium-progress-fill" style="width: 0%;">
+                                    <div class="premium-progress-indicator">
+                                        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center mt-2 pt-4 border-t"
+                            style="border-color: #E5E7EB;">
+                            <span class="font-semibold text-dark" style="font-size: 1rem;">Misi: Rp 15.000.000</span>
+                            <span class="text-gray font-semibold" style="font-size: 0.875rem;">Waktu Tak Terbatas</span>
+                        </div>
+                        <a href="donation.html?campId=karina" class="btn btn-primary w-full mt-4"
+                            style="text-align: center; text-decoration: none; display: block;">Donasi Sekarang</a>
+                    </div>
+                </div>
+
+            </div>
         </div>
 
-        <div class="main-grid">
-            <!-- Left Column -->
-            <div>
-                <!-- Hero Image -->
-                <div class="card" style="padding: 0; overflow: hidden; margin-bottom: 2rem;">
-                    <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2664&auto=format&fit=crop"
-                        alt="Medical Monitor" style="width: 100%; height: 400px; object-fit: cover;">
-                </div>
-
-                <!-- Tabs -->
-                <div class="tabs">
-                    <div class="tab-btn active" onclick="switchTab('cerita')">Cerita</div>
-                    <div class="tab-btn" onclick="switchTab('kabar')">Kabar Terbaru (2)</div>
-                    <div class="tab-btn" onclick="switchTab('donatur')">Daftar Donatur (5)</div>
-                </div>
-
-                <!-- Tab Content -->
-                <div id="cerita" class="tab-content">
-                    <p class="text-gray mb-4">
-                        Halo #OrangBaik, perkenalkan nama saya Budi, ayah dari Aisyah. Aisyah lahir dengan kondisi
-                        jantung yang tidak sempurna...
-                    </p>
-                    <p class="text-gray mb-4">
-                        Setiap detaknya adalah perjuangan. Dokter menyarankan operasi secepat mungkin untuk menutup
-                        kebocoran di jantungnya. Biaya yang dibutuhkan mencapai Rp 150.000.000, jumlah yang sangat besar
-                        bagi kami.
-                    </p>
-                    <img src="https://images.unsplash.com/photo-1530497610245-94d3c16cda28?q=80&w=2564&auto=format&fit=crop"
-                        alt="Baby hand" style="width: 100%; border-radius: 8px; margin: 1rem 0;">
-                </div>
-
-                <div id="kabar" class="tab-content hidden">
-                    <div class="card mb-4">
-                        <small class="text-gray">2 Hari yang lalu</small>
-                        <h4 class="font-bold mt-2">Kondisi Aisyah Stabil</h4>
-                        <p class="text-gray">Terima kasih atas doa dan dukungannya. Saat ini Aisyah sedang dalam
-                            pengawasan intensif.</p>
-                    </div>
-                </div>
-
-                <div id="donatur" class="tab-content hidden">
-                    <div class="flex items-center justify-between mb-4 border-b pb-2">
-                        <div class="flex items-center gap-2">
-                            <div style="width: 40px; height: 40px; background: #eee; border-radius: 50%;"></div>
-                            <span class="font-bold">Seraphine</span>
-                        </div>
-                        <span class="font-semibold text-primary">Rp 500.000</span>
-                    </div>
-                    <div class="flex items-center justify-between mb-4 border-b pb-2">
-                        <div class="flex items-center gap-2">
-                            <div style="width: 40px; height: 40px; background: #eee; border-radius: 50%;"></div>
-                            <span class="font-bold">Budi Santoso</span>
-                        </div>
-                        <span class="font-semibold text-primary">Rp 100.000</span>
-                    </div>
-                    <div class="flex items-center justify-between mb-4 border-b pb-2">
-                        <div class="flex items-center gap-2">
-                            <div style="width: 40px; height: 40px; background: #eee; border-radius: 50%;"></div>
-                            <span class="font-bold">Nicholas</span>
-                        </div>
-                        <span class="font-semibold text-primary">Rp 1.000</span>
-                    </div>
-                </div>
+        <!-- Dynamic Recent Campaigns Grid -->
+        <div id="recent-campaigns-section" class="hidden" style="margin-bottom: 4rem;">
+            <h2 class="font-bold text-dark mb-6" style="font-size: 1.5rem;">Kampanye Terbaru</h2>
+            <div id="dynamic-campaigns-grid"
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+                <!-- Campaigns will be injected here via JS -->
             </div>
+        </div>
 
-            <!-- Right Column Sticky -->
-            <div style="position: sticky; top: 100px; height: fit-content;">
-
-                <!-- Progress Card -->
-                <div class="card mb-4">
-                    <div class="flex justify-between mb-2">
-                        <span class="font-bold text-primary">Terkumpul</span>
-                        <span class="font-bold text-gray">57%</span>
-                    </div>
-
-                    <div class="progress-container mb-4">
-                        <div class="progress-bar" style="width: 57%;"></div>
-                    </div>
-
-                    <div class="flex justify-between mb-6 text-center">
-                        <div>
-                            <div class="font-bold" style="font-size: 1.1rem;">Rp 85.0jt</div>
-                            <small class="text-gray">Terkumpul</small>
+        <!-- Organizer Section -->
+        <div style="display: flex; justify-content: center; margin-bottom: 4rem;">
+            <!-- Organizer Card -->
+            <div class="card" style="width: 100%; max-width: 400px;">
+                <h4 class="font-bold mb-4">Pihak yang Verifikasi</h4>
+                <div class="flex items-center gap-4 mb-2">
+                    <div
+                        style="width: 48px; height: 48px; background: #FF4081; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                        Y</div>
+                    <div>
+                        <div class="flex items-center gap-1">
+                            <span class="font-bold">Yayasan Bina Kasih</span>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#3B82F6"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                            </svg>
                         </div>
-                        <div>
-                            <div class="font-bold" style="font-size: 1.1rem;">1.247</div>
-                            <small class="text-gray">Donatur</small>
-                        </div>
-                        <div>
-                            <div class="font-bold" style="font-size: 1.1rem;">12 Hari</div>
-                            <small class="text-gray">Tersisa</small>
-                        </div>
+                        <small class="text-primary">Terverifikasi</small>
                     </div>
-
-                    <a href="donation.html" class="btn btn-primary w-full mb-4">Donasi Sekarang</a>
-                    <button class="btn btn-outline w-full">Bagikan Kampanye</button>
                 </div>
-
-                <!-- Organizer Card -->
-                <div class="card">
-                    <h4 class="font-bold mb-4">Penggalang Dana</h4>
-                    <div class="flex items-center gap-4 mb-2">
-                        <div
-                            style="width: 48px; height: 48px; background: #FF4081; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">
-                            Y</div>
-                        <div>
-                            <div class="flex items-center gap-1">
-                                <span class="font-bold">Yayasan Bina Nusantara</span>
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="#3B82F6"
-                                    xmlns="http://www.w3.org/2000/svg">
-                                    <path
-                                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                                </svg>
-                            </div>
-                            <small class="text-primary">Terverifikasi</small>
-                        </div>
-                    </div>
-                    <p class="text-gray" style="font-size: 0.875rem; margin-top: 0.5rem;">Organisasi terpercaya yang
-                        telah diverifikasi oleh
-                        platform kami.</p>
-                </div>
-
+                <p class="text-gray" style="font-size: 0.875rem; margin-top: 0.5rem;">Organisasi terpercaya yang
+                    telah diverifikasi oleh
+                    platform kami.</p>
             </div>
         </div>
     </div>
@@ -197,7 +264,7 @@
     <!-- Volunteer Carousel Section -->
     <section class="carousel-section">
         <div class="container">
-            <h2 class="carousel-title">Para Pendekar Anak</h2>
+            <h2 class="carousel-title">Para Relawan Bina Kasih</h2>
 
             <div class="carousel-container">
                 <!-- Navigation -->
@@ -226,8 +293,8 @@
                             membutuhkan bantuan di pelosok negeri kita tercinta."
                         </p>
                         <div>
-                            <div class="carousel-author">Efi Yusliana</div>
-                            <div class="carousel-role">Pendekar Anak sejak tahun 2020</div>
+                            <div class="carousel-author">Serahine Kartolo</div>
+                            <div class="carousel-role">Binusian B28 - Cyber Security</div>
                         </div>
                     </div>
 
@@ -241,8 +308,8 @@
                             sebagai Pendekar Anak menjadi salah satu upaya saya untuk membantu anak-anak Indonesia."
                         </p>
                         <div>
-                            <div class="carousel-author">Neny Kardiana</div>
-                            <div class="carousel-role">Pendekar Anak sejak tahun 2019</div>
+                            <div class="carousel-author">Nicholas Adriel</div>
+                            <div class="carousel-role">Binusian B28 - Cyber Security</div>
                         </div>
                     </div>
 
@@ -256,8 +323,50 @@
                             transparan dan amanah."
                         </p>
                         <div>
-                            <div class="carousel-author">Budi Santoso</div>
-                            <div class="carousel-role">Pendekar Anak sejak tahun 2021</div>
+                            <div class="carousel-author">Timotius Rievaldo </div>
+                            <div class="carousel-role">Binusian B28 - Cyber Security</div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 4 -->
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=200&auto=format&fit=crop"
+                            alt="Sarah Wijaya" class="carousel-avatar">
+                        <p class="carousel-quote">
+                            "Membantu sesama adalah panggilan hati. Platform ini sangat memudahkan saya untuk
+                            berkontribusi."
+                        </p>
+                        <div>
+                            <div class="carousel-author">Luis Armando</div>
+                            <div class="carousel-role">Binusian B28 - Cyber Security</div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 5 -->
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=200&auto=format&fit=crop"
+                            alt="Andi Pratama" class="carousel-avatar">
+                        <p class="carousel-quote">
+                            "Transparansi adalah kunci kepercayaan. Bina Kasih memberikan laporan yang jelas sehingga
+                            saya yakin donasi saya sampai."
+                        </p>
+                        <div>
+                            <div class="carousel-author">Brandon Maxmillian Sutanto</div>
+                            <div class="carousel-role">Binusian B28 - Cyber Security</div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 6 -->
+                    <div class="carousel-slide">
+                        <img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=200&auto=format&fit=crop"
+                            alt="Maya Putri" class="carousel-avatar">
+                        <p class="carousel-quote">
+                            "Desain yang menarik dan kemudahan akses membuat saya nyaman berdonasi di sini. Teruslah
+                            berkarya untuk kemanusiaan."
+                        </p>
+                        <div>
+                            <div class="carousel-author">Renko Varel Angelo</div>
+                            <div class="carousel-role">Binusian B28 - Cyber Security</div>
                         </div>
                     </div>
                 </div>
@@ -268,6 +377,137 @@
             </div>
         </div>
     </section>
+
+    <!-- Footer Section -->
+    <footer style="background-color: #FF4081; color: #FFFFFF; padding: 4rem 0 2rem 0; margin-top: 4rem;">
+        <div class="container">
+            <div class="grid"
+                style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 3rem;">
+
+                <!-- Brand Info -->
+                <div>
+                    <div class="flex items-center gap-2 mb-4">
+                        <img src="logo_hand_heart.svg" alt="Bina Kasih Logo"
+                            style="width: 32px; height: 32px; filter: brightness(0) invert(1);">
+                        <span class="font-bold text-white" style="font-size: 1.5rem;">Bina Kasih</span>
+                    </div>
+                    <p style="color: rgba(255,255,255,0.9); margin-bottom: 1rem; font-size: 0.95rem; line-height: 1.6;">
+                        Platform donasi terpercaya, menghubungkan niat baik dengan mereka yang membutuhkan. Bersama kita
+                        ciptakan perubahan.
+                    </p>
+                    <!-- Social Icons Wrapper -->
+                    <div class="flex gap-4" style="margin-top: 1.5rem;">
+                        <a href="#" style="color: rgba(255,255,255,0.8); transition: color 0.2s;"
+                            onmouseover="this.style.color='#FFFFFF'"
+                            onmouseout="this.style.color='rgba(255,255,255,0.8)'">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M12 2.04C6.5 2.04 2 6.53 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.85C10.44 7.34 11.93 5.96 14.22 5.96C15.31 5.96 16.45 6.15 16.45 6.15V8.62H15.19C13.95 8.62 13.56 9.39 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96A10 10 0 0 0 22 12.06C22 6.53 17.5 2.04 12 2.04Z" />
+                            </svg>
+                        </a>
+                        <a href="#" style="color: rgba(255,255,255,0.8); transition: color 0.2s;"
+                            onmouseover="this.style.color='#FFFFFF'"
+                            onmouseout="this.style.color='rgba(255,255,255,0.8)'">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M22.46 6.00001C21.69 6.35001 20.86 6.58001 20 6.69001C20.88 6.16001 21.56 5.32001 21.88 4.31001C21.05 4.81001 20.13 5.16001 19.16 5.36001C18.37 4.50001 17.26 4.00001 16 4.00001C13.65 4.00001 11.73 5.92001 11.73 8.27001C11.73 8.60001 11.77 8.93001 11.84 9.24001C8.28001 9.06001 5.11001 7.34001 3.00001 4.79001C2.63001 5.42001 2.42001 6.16001 2.42001 6.94001C2.42001 8.43001 3.17001 9.75001 4.33001 10.5C3.62001 10.5 2.96001 10.3 2.38001 10C2.38001 10 2.38001 10 2.38001 10.03C2.38001 12.11 3.86001 13.85 5.82001 14.24C5.46001 14.34 5.08001 14.39 4.69001 14.39C4.42001 14.39 4.15001 14.36 3.89001 14.31C4.43001 16.02 6.00001 17.27 7.89001 17.31C6.43001 18.45 4.58001 19.12 2.57001 19.12C2.22001 19.12 1.88001 19.1 1.54001 19.06C3.44001 20.29 5.70001 21.00001 8.12001 21.00001C16.01 21.00001 20.33 14.46001 20.33 8.79001C20.33 8.60001 20.33 8.42001 20.32 8.23001C21.16 7.63001 21.88 6.87001 22.46 6.00001Z" />
+                            </svg>
+                        </a>
+                        <a href="#" style="color: rgba(255,255,255,0.8); transition: color 0.2s;"
+                            onmouseover="this.style.color='#FFFFFF'"
+                            onmouseout="this.style.color='rgba(255,255,255,0.8)'">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                <path fill-rule="evenodd" clip-rule="evenodd"
+                                    d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM11 19.93C7.05 19.43 4 16.05 4 12C4 7.95 7.05 4.57 11 4.07V19.93ZM13 4.07C16.95 4.57 20 7.95 20 12C20 16.05 16.95 19.43 13 19.93V4.07Z" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Tentang Kami -->
+                <div>
+                    <h4 class="font-bold mb-4 text-white">Tentang Bina Kasih</h4>
+                    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li><a href="#" style="color: rgba(255,255,255,0.8); transition: color 0.2s;"
+                                onmouseover="this.style.color='#FFFFFF'"
+                                onmouseout="this.style.color='rgba(255,255,255,0.8)'">Penjelasan Misi</a></li>
+                        <li><a href="syarat-ketentuan.html" style="color: rgba(255,255,255,0.8); transition: color 0.2s;"
+                                onmouseover="this.style.color='#FFFFFF'"
+                                onmouseout="this.style.color='rgba(255,255,255,0.8)'">Syarat & Ketentuan</a></li>
+                        <li><a href="kebijakan-privasi.html" style="color: rgba(255,255,255,0.8); transition: color 0.2s;"
+                                onmouseover="this.style.color='#FFFFFF'"
+                                onmouseout="this.style.color='rgba(255,255,255,0.8)'">Kebijakan Privasi</a></li>
+                        <li><a href="#" style="color: rgba(255,255,255,0.8); transition: color 0.2s;"
+                                onmouseover="this.style.color='#FFFFFF'"
+                                onmouseout="this.style.color='rgba(255,255,255,0.8)'">Karir</a></li>
+                    </ul>
+                </div>
+
+                <!-- Kategori Donasi -->
+                <div>
+                    <h4 class="font-bold mb-4 text-white">Kategori Donasi</h4>
+                    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li><a href="#" style="color: rgba(255,255,255,0.8); transition: color 0.2s;"
+                                onmouseover="this.style.color='#FFFFFF'"
+                                onmouseout="this.style.color='rgba(255,255,255,0.8)'">Donasi Pendidikan</a></li>
+                        <li><a href="#" style="color: rgba(255,255,255,0.8); transition: color 0.2s;"
+                                onmouseover="this.style.color='#FFFFFF'"
+                                onmouseout="this.style.color='rgba(255,255,255,0.8)'">Bantuan Medis</a></li>
+                        <li><a href="#" style="color: rgba(255,255,255,0.8); transition: color 0.2s;"
+                                onmouseover="this.style.color='#FFFFFF'"
+                                onmouseout="this.style.color='rgba(255,255,255,0.8)'">Bencana Alam</a></li>
+                        <li><a href="#" style="color: rgba(255,255,255,0.8); transition: color 0.2s;"
+                                onmouseover="this.style.color='#FFFFFF'"
+                                onmouseout="this.style.color='rgba(255,255,255,0.8)'">Zakat & Sedekah</a></li>
+                    </ul>
+                </div>
+
+                <!-- Bantuan -->
+                <div>
+                    <h4 class="font-bold mb-4 text-white">Bantuan</h4>
+                    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+                        <li><a href="#" style="color: rgba(255,255,255,0.8); transition: color 0.2s;"
+                                onmouseover="this.style.color='#FFFFFF'"
+                                onmouseout="this.style.color='rgba(255,255,255,0.8)'">Pusat Bantuan</a></li>
+                        <li><a href="#" style="color: rgba(255,255,255,0.8); transition: color 0.2s;"
+                                onmouseover="this.style.color='#FFFFFF'"
+                                onmouseout="this.style.color='rgba(255,255,255,0.8)'">Hubungi Kami</a></li>
+                        <li><a href="#" style="color: rgba(255,255,255,0.8); transition: color 0.2s;"
+                                onmouseover="this.style.color='#FFFFFF'"
+                                onmouseout="this.style.color='rgba(255,255,255,0.8)'">FAQ</a></li>
+                        <li><a href="#" style="color: rgba(255,255,255,0.8); transition: color 0.2s;"
+                                onmouseover="this.style.color='#FFFFFF'"
+                                onmouseout="this.style.color='rgba(255,255,255,0.8)'">Pertanyaan Umum</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div
+                style="border-top: 1px solid rgba(255,255,255,0.2); padding-top: 2rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;">
+                <p style="color: rgba(255,255,255,0.9); font-size: 0.75rem; margin: 0;">&copy; <span
+                        id="current-year"></span> Bina Kasih. Hak Cipta Dilindungi Undang-Undang.</p>
+                <!-- Verification Info -->
+                <div class="flex items-center gap-1" style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 20px;">
+                    <span style="color: rgba(255,255,255,0.9); font-size: 0.7rem;">Terverifikasi Aman & Diawasi Oleh</span>
+                    <strong style="color: white; letter-spacing: 0.5px; font-size: 0.75rem;">BINA NUSANTARA</strong>
+                    <img src="https://upload.wikimedia.org/wikipedia/id/thumb/e/e0/Logo_BINUS_University.jpg/800px-Logo_BINUS_University.jpg"
+                        alt="Binus Logo"
+                        style="width: 16px; height: 16px; object-fit: contain; background: white; border-radius: 4px; padding: 2px;">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Set dynamic year in footer
+        document.addEventListener('DOMContentLoaded', function () {
+            var yearSpan = document.getElementById('current-year');
+            if (yearSpan) {
+                yearSpan.textContent = new Date().getFullYear();
+            }
+        });
+    </script>
 
     <!-- Script -->
     <script>
@@ -330,8 +570,200 @@
             startAutoSlide();
         }
 
-        // Start
+        // Start Carousel
         startAutoSlide();
+
+        // Load Campaigns
+        async function loadCampaigns() {
+            const formatIDR = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+            const localDonations = JSON.parse(localStorage.getItem('binakasih_donations') || '[]');
+            const localCampaigns = JSON.parse(localStorage.getItem('binakasih_campaigns') || '[]');
+            
+            // Helper to get total collected for a campaign
+            const getCollected = (campId, baseAmount = 0) => {
+                const total = localDonations
+                    .filter(d => d.campaign_id === campId)
+                    .reduce((sum, d) => sum + parseFloat(d.amount), 0);
+                return baseAmount + total;
+            };
+
+            let campaigns = [];
+            let isUsingLocalOnly = false;
+
+            try {
+                const res = await fetch('/api/campaigns', { credentials: 'include' });
+                const data = await res.json();
+                if (data.success && data.campaigns) { 
+                    campaigns = data.campaigns; 
+                } else {
+                    isUsingLocalOnly = true;
+                }
+            } catch (e) {
+                console.warn('Backend API not available, using local data.', e);
+                isUsingLocalOnly = true;
+            }
+
+            if (isUsingLocalOnly) {
+                // If backend fails, we simulate with what we have
+                // Start with local campaigns created by user
+                campaigns = localCampaigns.map(c => ({
+                    id: c.id,
+                    title: c.title,
+                    target_amount: c.target,
+                    collected_amount: 0, // will be added below
+                    created_by: c.createdBy,
+                    image_url: c.image_url || 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=800&auto=format&fit=crop',
+                    description: c.description || ''
+                }));
+
+                // Add static campaigns as placeholders if they aren't in campaigns list
+                const staticIds = ['yuda', 'rafi', 'karina'];
+                const staticData = {
+                    'yuda': { title: 'Bantu Yuda Meraih Cita-Cita', target: 10000000, by: 'Bina Nusantara' },
+                    'rafi': { title: 'Beasiswa untuk Rafi', target: 5000000, by: 'Bina Nusantara' },
+                    'karina': { title: 'Masa Depan Cerah Karina', target: 15000000, by: 'Bina Nusantara' }
+                };
+
+                staticIds.forEach(id => {
+                    if (!campaigns.find(c => c.id === id)) {
+                        campaigns.push({
+                            id: id,
+                            title: staticData[id].title,
+                            target_amount: staticData[id].target,
+                            collected_amount: 0,
+                            created_by: staticData[id].by,
+                            image_url: '', // will be handled by static card logic
+                            description: ''
+                        });
+                    }
+                });
+            }
+
+            const section = document.getElementById('recent-campaigns-section');
+            const grid = document.getElementById('dynamic-campaigns-grid');
+            let dynamicCount = 0;
+
+            campaigns.forEach(camp => {
+                const target = parseFloat(camp.target_amount);
+                const collected = getCollected(camp.id, parseFloat(camp.collected_amount));
+                const progress = target > 0 ? Math.min((collected / target) * 100, 100) : 0;
+                const targetFormatted = formatIDR(target);
+                const collectedFormatted = formatIDR(collected);
+
+                const staticCard = document.querySelector(`.card[data-campaign-id="${camp.id}"]`);
+                
+                if (staticCard) {
+                    const progressBar = staticCard.querySelector('.premium-progress-fill');
+                    const collectedText = staticCard.querySelector('.collected-amount');
+                    const percentText = staticCard.querySelector('.text-primary.font-bold');
+                    
+                    if (progressBar) progressBar.style.width = `${progress}%`;
+                    if (collectedText) collectedText.textContent = collectedFormatted;
+                    if (percentText) percentText.textContent = `${Math.floor(progress)}%`;
+                } else {
+                    dynamicCount++;
+                    section.classList.remove('hidden');
+
+                    const card = document.createElement('div');
+                    card.className = 'card';
+                    card.setAttribute('data-campaign-id', camp.id);
+                    card.style.padding = '0';
+                    card.style.overflow = 'hidden';
+                    card.style.display = 'flex';
+                    card.style.flexDirection = 'column';
+                    card.style.height = '100%';
+                    card.style.position = 'relative';
+                    card.style.cursor = 'pointer';
+
+                    const PLACEHOLDER = 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=800&auto=format&fit=crop';
+                    const displayImgUrl = camp.image_url || PLACEHOLDER;
+
+                    card.innerHTML = `
+                        <div class="card-img-container" style="position: relative;">
+                            <div style="position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; z-index: 10;">
+                                <div style="background: rgba(255, 255, 255, 0.95); padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#3B82F6" xmlns="http://www.w3.org/2000/svg" style="margin-top: 1px;">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                                    </svg>
+                                    <span class="text-dark font-semibold" style="font-size: 0.7rem;">Terverifikasi</span>
+                                </div>
+                                <div style="background-color: #D2F0D4; color: #1B5E20; padding: 4px 10px; border-radius: 20px; display: flex; align-items: center; gap: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); font-weight: 600; font-size: 0.7rem;">
+                                    <span>📢</span> New
+                                </div>
+                            </div>
+                            <img src="${displayImgUrl}" alt="Campaign Photo" style="width: 100%; height: 200px; object-fit: cover;">
+                        </div>
+                        <div class="card-content" style="padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column;">
+                            <span class="text-primary font-semibold mb-2 block" style="font-size: 0.875rem;">Galang Dana</span>
+                            <h3 class="font-bold mb-2 text-dark" style="font-size: 1.25rem; line-height: 1.4;">${camp.title}</h3>
+                            <p class="text-gray mb-4" style="font-size: 0.95rem; line-height: 1.5;">Oleh: ${camp.created_by || camp.createdBy || '-'}</p>
+                            <div style="margin-top: auto;">
+                                <div class="flex justify-between mb-2">
+                                    <span class="text-gray" style="font-size: 0.875rem;">Terkumpul <strong class="collected-amount text-dark">${collectedFormatted}</strong></span>
+                                    <span class="font-bold text-primary">${Math.floor(progress)}%</span>
+                                </div>
+                                <div class="premium-progress-container">
+                                    <div class="premium-progress-fill" style="width: ${progress}%;">
+                                        <div class="premium-progress-indicator">
+                                            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center mt-2 pt-4 border-t" style="border-color: #E5E7EB;">
+                                    <span class="font-semibold text-dark" style="font-size: 1rem;">Misi: ${targetFormatted}</span>
+                                    <span class="text-gray font-semibold" style="font-size: 0.875rem;">${camp.duration > 0 ? camp.duration + ' hari lagi' : 'Waktu Tak Terbatas'}</span>
+                                </div>
+                                <a href="donation.html?campId=${camp.id}" class="btn btn-primary w-full mt-4" style="text-align: center; text-decoration: none; display: block;">Donasi Sekarang</a>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                }
+            });
+        }
+
+        // Migrasi: hanya bersihkan base64 SANGAT besar (foto mentah belum dikompres, >3MB)
+        // Gambar yang sudah dikompres via dashboard (<3MB) tetap ditampilkan
+        function migrateOldCampaigns() {
+            try {
+                const PLACEHOLDER = 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=800&auto=format&fit=crop';
+                const raw = localStorage.getItem('binakasih_campaigns');
+                if (!raw) return;
+                const campaigns = JSON.parse(raw);
+                let changed = false;
+                campaigns.forEach(c => {
+                    // Hanya ganti jika > 3MB (4MB base64 ≈ 3MB file asli)
+                    if (c.image_url && c.image_url.startsWith('data:') && c.image_url.length > 4000000) {
+                        c.image_url = PLACEHOLDER;
+                        changed = true;
+                    }
+                });
+                if (changed) {
+                    localStorage.setItem('binakasih_campaigns', JSON.stringify(campaigns));
+                    console.log('Migrasi: gambar sangat besar (>3MB) diganti placeholder.');
+                }
+            } catch(e) { /* ignore */ }
+        }
+        migrateOldCampaigns();
+
+        document.addEventListener('DOMContentLoaded', loadCampaigns);
+    </script>
+    <script>
+        // Navigasi langsung ke halaman donasi saat card diklik
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.addEventListener('click', (e) => {
+                // Klik link/button di dalam card → biarkan default
+                if (e.target.closest('a') || e.target.closest('button')) return;
+
+                const card = e.target.closest('.card[data-campaign-id]');
+                if (!card) return;
+
+                const campId = card.getAttribute('data-campaign-id');
+                if (campId) {
+                    window.location.href = `donation.html?campId=${campId}`;
+                }
+            });
+        });
     </script>
 </body>
 

@@ -81,8 +81,43 @@ class Database:
             )
             conn.execute(
                 """
+                CREATE TABLE IF NOT EXISTS campaigns (
+                    id TEXT PRIMARY KEY,
+                    title TEXT NOT NULL,
+                    description TEXT,
+                    target INTEGER NOT NULL,
+                    image_url TEXT,
+                    user_id BIGINT REFERENCES users(id),
+                    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+                """
+            )
+
+            conn.execute(
+                """
                 CREATE INDEX IF NOT EXISTS donations_email_created_at_idx
                 ON donations ((lower(email)), created_at DESC)
+                """
+            )
+
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS tickets (
+                    id BIGSERIAL PRIMARY KEY,
+                    user_id BIGINT REFERENCES users(id) ON DELETE SET NULL,
+                    category TEXT NOT NULL,
+                    description TEXT NOT NULL,
+                    photo_url TEXT,
+                    status TEXT NOT NULL DEFAULT 'open',
+                    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+                """
+            )
+            
+            conn.execute(
+                """
+                CREATE INDEX IF NOT EXISTS tickets_user_id_created_at_idx
+                ON tickets (user_id, created_at DESC)
                 """
             )
 

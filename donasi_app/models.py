@@ -184,3 +184,89 @@ class DonationModel:
             "donor": row["donor"],
             "email": row["email"],
         }
+
+
+class TicketModel:
+    def __init__(self, database: Database, user_model: UserModel):
+        self.database = database
+        self.user_model = user_model
+
+    def create(self, payload: dict[str, Any], photo_url: str | None = None) -> dict[str, Any]:
+        category = (payload.get("category") or "").strip()
+        description = (payload.get("description") or "").strip()
+        user = self.user_model.require_user()
+
+        if not category or not description:
+            raise AppError("Kategori dan deskripsi tiket wajib diisi", 400)
+
+        with self.database.connect() as conn:
+            row = conn.execute(
+                """
+                INSERT INTO tickets (
+                    user_id,
+                    category,
+                    description,
+                    photo_url
+                )
+                VALUES (%s, %s, %s, %s)
+                RETURNING id, user_id, category, description, photo_url, status, created_at
+                """,
+                (
+                    user["id"],
+                    category,
+                    description,
+                    photo_url,
+                ),
+            ).fetchone()
+
+        return self._serialize(row)
+
+    def list_for_current_user(self) -> list[dict[str, Any]]:
+        user = self.user_model.require_user()
+
+        with self.database.connect() as conn:
+            rows = conn.execute(
+                """
+                SELECT id, user_id, category, description, photo_url, status, created_at
+                FROM tickets
+                WHERE user_id = %s
+                ORDER BY created_at DESC
+                """,
+                (user["id"],),
+            ).fetchall()
+
+        return [self._serialize(row) for row in rows]
+        
+    def list_all(self) -> list[dict[str, Any]]:
+        user = self.user_model.require_user()
+        if user["name"].lower() != "admin":
+            raise AppError("Unauthorized", 401)
+            
+        with self.database.connect() as conn:
+            rows = conn.execute(
+                """
+                SELECT t.id, t.user_id, t.category, t.description, t.photo_url, t.status, t.created_at, u.name as user_name
+                FROM tickets t
+                LEFT JOIN users u ON t.user_id = u.id
+                ORDER BY t.created_at DESC
+                """
+            ).fetchall()
+            
+        res = []
+        for row in rows:
+            data = self._serialize(row)
+            data["user_name"] = row.get("user_name")
+            res.append(data)
+        return res
+
+    @staticmethod
+    def _serialize(row: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "id": row["id"],
+            "user_id": row["user_id"],
+            "category": row["category"],
+            "description": row["description"],
+            "photo_url": row["photo_url"],
+            "status": row["status"],
+            "created_at": row["created_at"].isoformat() if row.get("created_at") else None,
+        }
