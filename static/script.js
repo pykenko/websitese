@@ -163,7 +163,7 @@ async function finishDonation() {
 }
 
 /**
- * loadDonations() — dipakai oleh dashboard.html
+ * loadDonations() — dipakai oleh dasboard
  * Ambil riwayat donasi dari Flask API, fallback ke localStorage
  * @returns {Promise<Array>} list donasi
  */

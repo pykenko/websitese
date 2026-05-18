@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bina Kasih - Memberi Dengan Kasih</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
@@ -14,7 +14,7 @@
     <nav class="navbar">
         <div class="container flex justify-between items-center">
             <div class="logo flex items-center gap-4">
-                <img src="logo_hand_heart.svg" alt="Bina Kasih Logo" style="width: 32px; height: 32px;">
+                <img src="{{ url_for('static', filename='logo_hand_heart.svg') }}">
                 <span class="font-bold text-dark" style="font-size: 1.5rem;">Bina Kasih</span>
             </div>
             <div class="hidden md:flex items-center">
@@ -24,13 +24,13 @@
             </div>
             <!-- Auth Buttons (Initial) -->
             <div id="nav-auth" class="flex gap-4">
-                <a href="login.html" class="btn btn-outline" style="border:none;">Masuk</a>
-                <a href="login.html?action=register" class="btn btn-primary">Daftar</a>
+                <a href="login" class="btn btn-outline" style="border:none;">Masuk</a>
+                <a href="register" class="btn btn-primary">Daftar</a>
             </div>
 
             <!-- User Profile (Logged In) -->
             <div id="nav-user" class="flex gap-4 items-center hidden">
-                <a href="dashboard.html" class="flex items-center gap-2 hover:bg-gray-100 p-2 rounded transition-colors"
+                <a href="dasboard" class="flex items-center gap-2 hover:bg-gray-100 p-2 rounded transition-colors"
                     style="text-decoration: none;">
                     <div id="nav-user-initial"
                         style="width: 32px; height: 32px; background: #FF4081; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem;">
@@ -51,7 +51,7 @@
     </nav>
 
     <!-- Script -->
-    <script src="auth.js"></script>
+    
 
     <!-- Main Content -->
     <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
@@ -387,7 +387,7 @@
                 <!-- Brand Info -->
                 <div>
                     <div class="flex items-center gap-2 mb-4">
-                        <img src="logo_hand_heart.svg" alt="Bina Kasih Logo"
+                        <img src="/static/logo_hand_heart.svg" alt="Bina Kasih Logo"
                             style="width: 32px; height: 32px; filter: brightness(0) invert(1);">
                         <span class="font-bold text-white" style="font-size: 1.5rem;">Bina Kasih</span>
                     </div>

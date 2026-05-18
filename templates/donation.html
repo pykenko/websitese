@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kampanye Donasi - Bina Kasih</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
@@ -236,7 +236,8 @@
 
     <!-- Script -->
 
-    <script src="auth.js"></script>
+    
+    <script src="{{ url_for('static', filename='auth.js') }}"></script>
     <script src="script.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {

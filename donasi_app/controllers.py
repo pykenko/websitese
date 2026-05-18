@@ -1,5 +1,5 @@
 import psycopg
-from flask import Flask, jsonify, request, send_from_directory
+from flask import Flask, jsonify, request, send_from_directory, render_template
 
 from .config import AppConfig
 from .database import Database
@@ -144,38 +144,24 @@ class PageController:
         self.config = config
 
     def register_routes(self, app: Flask) -> None:
-        app.add_url_rule("/", endpoint="index", view_func=self.index, methods=["GET"])
-        app.add_url_rule("/uploads/<path:filename>", endpoint="uploads_dir", view_func=self.uploads, methods=["GET"])
+        app.add_url_rule("/", endpoint="index", view_func=self.index)
+        app.add_url_rule("/login", endpoint="login_page", view_func=self.login)
+        app.add_url_rule("/dashboard", endpoint="dashboard", view_func=self.dashboard)
+
         app.add_url_rule(
-            "/<path:path>",
-            endpoint="static_files",
-            view_func=self.static_files,
-            methods=["GET"],
+            "/uploads/<path:filename>",
+            endpoint="uploads_dir",
+            view_func=self.uploads,
         )
 
     def uploads(self, filename: str):
         return send_from_directory(self.config.uploads_dir, filename)
 
     def index(self):
-        return send_from_directory(self.config.static_dir, "index.html")
+        return render_template("index.html")
 
-    def static_files(self, path: str):
-        page_path = self.config.static_dir / path
-        root_path = self.config.base_dir / path
-
-        if page_path.is_file():
-            return send_from_directory(self.config.static_dir, path)
-
-        if root_path.is_file():
-            return send_from_directory(self.config.base_dir, path)
-
-        page_path = self.config.static_dir / path
-        root_path = self.config.base_dir / path
-
-        if page_path.is_file():
-            return send_from_directory(self.config.static_dir, path)
-
-        if root_path.is_file():
-            return send_from_directory(self.config.base_dir, path)
-                
-        return send_from_directory(self.config.static_dir, "index.html")
+    def login(self):
+        return render_template("login.html")
+    
+    def dashboard(self):
+        return render_template("dashboard.html")

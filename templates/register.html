@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar - Bina Kasih</title>
-    <link rel="stylesheet" href="styles.css?v=2">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body style="display: flex; align-items: center; justify-content: center; min-height: 100vh;">
@@ -23,7 +23,7 @@
     <div class="card" style="width: 100%; max-width: 400px; padding: 2.5rem;">
         <div class="text-center mb-8">
             <div class="flex items-center justify-center gap-1 mb-2">
-                <img src="logo_hand_heart.svg" alt="Bina Kasih Logo" style="width: 32px; height: 32px;">
+                <img src="{{ url_for('static', filename='logo_hand_heart.svg') }}">
                 <span class="font-bold text-primary" style="font-size: 1.5rem;">Bina Kasih</span>
             </div>
             <h3 class="font-bold text-dark">Buat Akun Baru</h3>
@@ -58,12 +58,12 @@
             <button type="submit" class="btn btn-primary w-full mb-4 mt-2">Daftar</button>
 
             <div class="text-center text-gray" style="font-size: 0.9rem;">
-                Sudah punya akun? <a href="login.html" class="text-primary font-bold">Masuk</a>
+                Sudah punya akun? <a href="login" class="text-primary font-bold">Masuk</a>
             </div>
         </form>
     </div>
 
-    <script src="auth.js"></script>
+    
     <script>
         document.addEventListener('keydown', function(event) {
             if (event.key === 'Escape') {
@@ -109,7 +109,7 @@
                 return;
             }
             alert('Pendaftaran berhasil! Silakan masuk.');
-            window.location.href = 'login.html';
+            window.location.href = 'login';
         }
     </script>
 

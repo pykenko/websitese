@@ -10,7 +10,11 @@ def create_app() -> Flask:
     database = Database(config)
     database.initialize()
 
-    app = Flask(__name__)
+    app = Flask(
+        __name__,
+        template_folder=str(config.templates_dir),
+        static_folder=str(config.static_dir),
+    )
     app.config["SECRET_KEY"] = config.secret_key
     app.config["SESSION_COOKIE_HTTPONLY"] = True
     app.config["SESSION_COOKIE_SAMESITE"] = "Lax"

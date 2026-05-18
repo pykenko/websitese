@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Masuk - Bina Kasih</title>
-    <link rel="stylesheet" href="styles.css?v=2">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body style="display: flex; align-items: center; justify-content: center; min-height: 100vh;">
@@ -25,7 +25,7 @@
         <div class="form-container sign-up-container">
             <form onsubmit="handleRegister(event)">
                 <div class="flex items-center justify-center gap-1 mb-2">
-                    <img src="logo_hand_heart.svg" alt="Bina Kasih Logo" style="width: 32px; height: 32px;">
+                    <img src="{{ url_for('static', filename='logo_hand_heart.svg') }}">
                     <span class="font-bold text-primary" style="font-size: 1.5rem;">Bina Kasih</span>
                 </div>
                 <h3 class="font-bold text-dark mb-4">Buat Akun</h3>
@@ -50,7 +50,7 @@
         <div class="form-container sign-in-container">
             <form onsubmit="handleLogin(event)">
                 <div class="flex items-center justify-center gap-1 mb-2">
-                    <img src="logo_hand_heart.svg" alt="Bina Kasih Logo" style="width: 32px; height: 32px;">
+                    <img src="{{ url_for('static', filename='logo_hand_heart.svg') }}">
                     <span class="font-bold text-primary" style="font-size: 1.5rem;">Bina Kasih</span>
                 </div>
                 <h3 class="font-bold text-dark mb-4">Masuk</h3>
@@ -95,7 +95,7 @@
         </div>
     </div>
 
-    <script src="auth.js"></script>
+    
     <script>
         const signUpButton = document.getElementById('signUpBtn');
         const signInButton = document.getElementById('signInBtn');

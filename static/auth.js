@@ -126,11 +126,11 @@ const auth = {
             const user = this.getUser();
             this._updateNavUi(user);
 
-            const onDashboard = window.location.pathname.endsWith("/dashboard.html")
-                || window.location.pathname === "/dashboard.html";
+            const onDashboard = window.location.pathname.endsWith("/dasboard")
+                || window.location.pathname === "/dasboard";
 
             if (onDashboard && !user) {
-                window.location.href = "login.html";
+                window.location.href = "login";
             }
 
             return user;
