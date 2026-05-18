@@ -25,7 +25,6 @@
             <!-- Auth Buttons (Initial) -->
             <div id="nav-auth" class="flex gap-4">
                 <a href="login" class="btn btn-outline" style="border:none;">Masuk</a>
-                <a href="register" class="btn btn-primary">Daftar</a>
             </div>
 
             <!-- User Profile (Logged In) -->
@@ -748,6 +747,7 @@
 
         document.addEventListener('DOMContentLoaded', loadCampaigns);
     </script>
+    <script src="{{ url_for('static', filename='auth.js') }}"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script>
         // Navigasi langsung ke halaman donasi saat card diklik

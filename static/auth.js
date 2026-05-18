@@ -93,7 +93,7 @@ const auth = {
         }
 
         this._setUser(null);
-        window.location.href = "index.html";
+        window.location.href = "/";
     },
 
     _updateNavUi(user) {

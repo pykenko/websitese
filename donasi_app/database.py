@@ -123,6 +123,7 @@ class Database:
 
             self._seed_default_admin(conn)
             self._sync_user_id_sequence(conn)
+            conn.commit()
 
     def _seed_default_admin(self, conn: psycopg.Connection) -> None:
         existing = conn.execute(
