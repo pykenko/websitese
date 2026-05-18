@@ -33,6 +33,12 @@ class ApiController:
             methods=["GET"],
         )
         app.add_url_rule(
+            "/api/donations/summary",
+            endpoint="donation_summary",
+            view_func=self.donation_summary,
+            methods=["GET"],
+        )
+        app.add_url_rule(
             "/api/tickets",
             endpoint="ticket_create",
             view_func=self.create_ticket,
@@ -97,6 +103,13 @@ class ApiController:
         except AppError as error:
             return self._error_response(error)
         return jsonify({"success": True, "donations": donations})
+
+    def donation_summary(self):
+        try:
+            summary = self.donation_model.summary_for_current_user()
+        except AppError as error:
+            return self._error_response(error)
+        return jsonify({"success": True, "summary": summary})
 
     def create_ticket(self):
         try:

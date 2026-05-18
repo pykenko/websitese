@@ -173,6 +173,41 @@ class DonationModel:
 
         return [self._serialize(row) for row in rows]
 
+    def summary_for_current_user(self) -> dict[str, int]:
+        user = self.user_model.require_user()
+
+        with self.database.connect() as conn:
+            user_summary = conn.execute(
+                """
+                SELECT
+                    COALESCE(SUM(amount), 0) AS total_amount,
+                    COUNT(*) AS donation_count,
+                    COUNT(DISTINCT campaign) AS campaign_count
+                FROM donations
+                WHERE status = %s
+                  AND (user_id = %s OR lower(email) = lower(%s))
+                """,
+                ("Berhasil", user["id"], user["email"]),
+            ).fetchone()
+            platform_summary = conn.execute(
+                """
+                SELECT
+                    COALESCE(SUM(amount), 0) AS total_amount,
+                    COUNT(*) AS donation_count
+                FROM donations
+                WHERE status = %s
+                """,
+                ("Berhasil",),
+            ).fetchone()
+
+        return {
+            "user_total_amount": user_summary["total_amount"],
+            "user_donation_count": user_summary["donation_count"],
+            "user_campaign_count": user_summary["campaign_count"],
+            "platform_total_amount": platform_summary["total_amount"],
+            "platform_donation_count": platform_summary["donation_count"],
+        }
+
     @staticmethod
     def _serialize(row: dict[str, Any]) -> dict[str, Any]:
         return {

@@ -91,6 +91,21 @@
                 </div>
             </div>
 
+            <div class="card">
+                <div class="mb-4 text-primary"
+                    style="background: #E8F5E9; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 1v22"></path>
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14.5a3.5 3.5 0 0 1 0 7H6"></path>
+                    </svg>
+                </div>
+                <div>
+                    <div id="stat-platform-total" class="font-bold text-dark" style="font-size: 1.25rem;">Rp 0</div>
+                    <div class="text-gray" style="font-size: 0.9rem;">Total Donasi Platform</div>
+                </div>
+            </div>
+
             <!-- Stat 3: Delete Campaign -->
             <div class="card" style="cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#fafafa'" onmouseout="this.style.backgroundColor='white'" onclick="openManageCampaigns()">
                 <div class="mb-4 text-primary"
@@ -330,10 +345,14 @@
 
                 // Load Donations dari Flask API (fallback ke localStorage)
                 const donationList = document.getElementById('donation-list');
-                const allDonations = await loadDonations();
-
-                // Flask return field "email", bukan "user_email"
-                const userDonations = allDonations.filter(d => d.email === user.email && !d.campaign.toLowerCase().includes('jantung'));
+                const [allDonations, donationSummary] = await Promise.all([
+                    loadDonations(),
+                    loadDonationSummary(),
+                ]);
+                const userEmail = (user.email || '').toLowerCase();
+                const userDonations = allDonations.filter(d =>
+                    (d.email || '').toLowerCase() === userEmail
+                );
 
                 // Setup Notifications based on donations
                 const notifList = document.getElementById('notification-list');
@@ -379,11 +398,8 @@
 
                 if (userDonations.length > 0) {
                     donationList.innerHTML = ''; // Clear empty state
-                    let totalAmount = 0;
 
                     userDonations.forEach(d => {
-                        totalAmount += parseInt(d.amount);
-
                         const item = document.createElement('div');
                         item.className = 'donation-item';
                         item.innerHTML = `
@@ -399,24 +415,18 @@
                         donationList.appendChild(item);
                     });
 
-                    // Update Total Stats
-                    // Format: 1.1jt or normal if small
+                    const totalAmount = donationSummary.user_total_amount || 0;
                     let formattedTotal = 'Rp ' + totalAmount.toLocaleString('id-ID');
                     if (totalAmount >= 1000000) {
                         formattedTotal = 'Rp ' + (totalAmount / 1000000).toFixed(1).replace('.', ',') + 'jt';
                     }
 
                     document.getElementById('stat-total').textContent = formattedTotal;
-
-                    // Update Count (Unique Campaigns)
-                    const uniqueCampaigns = new Set(userDonations.map(d => d.campaign));
-                    document.getElementById('stat-supported').textContent = uniqueCampaigns.size;
-
-                    // Update campaigns count
-                    updateCampaignsCount(user);
-                } else {
-                    updateCampaignsCount(user);
                 }
+
+                document.getElementById('stat-supported').textContent = donationSummary.user_campaign_count || 0;
+                document.getElementById('stat-platform-total').textContent = 'Rp ' + ((donationSummary.platform_total_amount || 0).toLocaleString('id-ID'));
+                updateCampaignsCount(user);
             }
 
             // Handle Create Campaign Form

@@ -11,16 +11,15 @@ const formatIDR = (num) => {
 };
 
 // Step 1: Amount Selection
-function selectAmount(value) {
+function selectAmount(value, element) {
     donationState.amount = value;
     document.getElementById('custom-amount').value = ''; // Reset custom input
 
     // UI Updates
     document.querySelectorAll('.amount-btn').forEach(btn => btn.classList.remove('selected'));
-    // Find button with this value (simple text match for demo)
-    const formatted = 'Rp ' + value.toLocaleString('id-ID'); // rough match
-    // More robust: add data-value attributes to buttons usually
-    event.target.classList.add('selected');
+    if (element) {
+        element.classList.add('selected');
+    }
 
     updateSummary();
 }
@@ -188,6 +187,45 @@ async function loadDonations() {
     }
 }
 
+async function loadDonationSummary() {
+    const user = auth.getUser();
+    if (!user) {
+        return {
+            user_total_amount: 0,
+            user_donation_count: 0,
+            user_campaign_count: 0,
+            platform_total_amount: 0,
+            platform_donation_count: 0,
+        };
+    }
+
+    try {
+        const res = await fetch('/api/donations/summary', {
+            method: 'GET',
+            credentials: 'include',
+        });
+        if (!res.ok) throw new Error('Failed to fetch donation summary');
+        const data = await res.json();
+        return data.summary || {};
+    } catch (e) {
+        console.warn("Could not load donation summary:", e);
+        const donations = await loadDonations();
+        const userEmail = (user.email || '').toLowerCase();
+        const successfulDonations = donations.filter(d =>
+            (d.status || '').toLowerCase() === 'berhasil'
+            && (d.email || '').toLowerCase() === userEmail
+        );
+
+        return {
+            user_total_amount: successfulDonations.reduce((sum, d) => sum + (parseInt(d.amount, 10) || 0), 0),
+            user_donation_count: successfulDonations.length,
+            user_campaign_count: new Set(successfulDonations.map(d => d.campaign)).size,
+            platform_total_amount: 0,
+            platform_donation_count: 0,
+        };
+    }
+}
+
 // Init
 document.addEventListener('DOMContentLoaded', () => {
     updateSummary();
@@ -229,5 +267,4 @@ async function updateCampaignProgress(campaignName, targetAmount) {
         el.textContent = percentage + '%';
     });
 }
-
 
