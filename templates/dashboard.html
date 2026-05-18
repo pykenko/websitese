@@ -14,7 +14,7 @@
     <nav class="navbar">
         <div class="container flex justify-between items-center">
             <div class="logo flex items-center gap-4">
-                <a href="index.html" class="flex items-center gap-2" style="text-decoration: none;">
+                <a href="{{ url_for('index') }}" class="flex items-center gap-2" style="text-decoration: none;">
                     <img src="{{ url_for('static', filename='logo_hand_heart.svg') }}">
                     <span class="font-bold text-dark" style="font-size: 1.5rem;">Bina Kasih</span>
                 </a>
@@ -41,7 +41,7 @@
 
     <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
 
-        <a href="index.html" class="btn btn-outline mb-6 flex items-center gap-2"
+        <a href="{{ url_for('index') }}" class="btn btn-outline mb-6 flex items-center gap-2"
             style="text-decoration: none; font-size: 0.9rem; padding: 0.5rem 1rem; box-shadow: var(--shadow-sm); width: max-content; background: var(--white);">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                 stroke-linecap="round" stroke-linejoin="round">
@@ -295,7 +295,7 @@
 
     
     <script src="{{ url_for('static', filename='auth.js') }}"></script>
-    <script src="script.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
             // Check auth (already done in auth.init but we need data here)

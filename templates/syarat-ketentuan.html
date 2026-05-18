@@ -61,19 +61,19 @@
     <!-- Navbar -->
     <nav class="navbar" style="background: white; border-bottom: 1px solid #E5E7EB; position: sticky; top: 0; z-index: 50;">
         <div class="container flex justify-between items-center">
-            <a href="index.html" class="logo flex items-center gap-4" style="text-decoration: none;">
+            <a href="{{ url_for('index') }}" class="logo flex items-center gap-4" style="text-decoration: none;">
                 <img src="{{ url_for('static', filename='logo_hand_heart.svg') }}">
                 <span class="font-bold text-dark" style="font-size: 1.5rem;">Bina Kasih</span>
             </a>
             <div class="hidden md:flex items-center">
-                <a href="index.html" class="nav-link">Beranda</a>
+                <a href="{{ url_for('index') }}" class="nav-link">Beranda</a>
             </div>
             <div id="nav-auth" class="flex gap-4">
-                <a href="login" class="btn btn-outline" style="border:none;">Masuk</a>
-                <a href="register" class="btn btn-primary">Daftar</a>
+                <a href="{{ url_for('login_page') }}" class="btn btn-outline" style="border:none;">Masuk</a>
+                <a href="{{ url_for('register_page') }}" class="btn btn-primary">Daftar</a>
             </div>
             <div id="nav-user" class="flex gap-4 items-center hidden">
-                <a href="dasboard" class="flex items-center gap-2 hover:bg-gray-100 p-2 rounded transition-colors"
+                <a href="{{ url_for('dashboard') }}" class="flex items-center gap-2 hover:bg-gray-100 p-2 rounded transition-colors"
                     style="text-decoration: none;">
                     <div id="nav-user-initial"
                         style="width: 32px; height: 32px; background: #FF4081; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem;">
@@ -97,7 +97,7 @@
     <!-- Content -->
     <div class="container">
         <div class="policy-container">
-            <a href="index.html" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; padding: 0.5rem 1rem; border: 1px solid #E5E7EB; border-radius: 8px; text-decoration: none; color: #4B5563;">
+            <a href="{{ url_for('index') }}" class="btn btn-outline" style="display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; padding: 0.5rem 1rem; border: 1px solid #E5E7EB; border-radius: 8px; text-decoration: none; color: #4B5563;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
                     <polyline points="12 19 5 12 12 5"></polyline>
@@ -161,8 +161,8 @@
                     <h4 class="font-bold mb-4 text-white">Tentang Bina Kasih</h4>
                     <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.75rem;">
                         <li><a href="#" style="color: rgba(255,255,255,0.8); transition: color 0.2s; text-decoration: none;" onmouseover="this.style.color='#FFFFFF'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">Penjelasan Misi</a></li>
-                        <li><a href="syarat-ketentuan.html" style="color: rgba(255,255,255,0.8); transition: color 0.2s; text-decoration: none;" onmouseover="this.style.color='#FFFFFF'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">Syarat & Ketentuan</a></li>
-                        <li><a href="kebijakan-privasi.html" style="color: rgba(255,255,255,0.8); transition: color 0.2s; text-decoration: none;" onmouseover="this.style.color='#FFFFFF'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">Kebijakan Privasi</a></li>
+                        <li><a href="{{ url_for('terms') }}" style="color: rgba(255,255,255,0.8); transition: color 0.2s; text-decoration: none;" onmouseover="this.style.color='#FFFFFF'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">Syarat & Ketentuan</a></li>
+                        <li><a href="{{ url_for('privacy_policy') }}" style="color: rgba(255,255,255,0.8); transition: color 0.2s; text-decoration: none;" onmouseover="this.style.color='#FFFFFF'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">Kebijakan Privasi</a></li>
                         <li><a href="#" style="color: rgba(255,255,255,0.8); transition: color 0.2s; text-decoration: none;" onmouseover="this.style.color='#FFFFFF'" onmouseout="this.style.color='rgba(255,255,255,0.8)'">Karir</a></li>
                     </ul>
                 </div>

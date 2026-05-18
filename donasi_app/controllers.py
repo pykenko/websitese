@@ -44,6 +44,12 @@ class ApiController:
             view_func=self.list_tickets,
             methods=["GET"],
         )
+        app.add_url_rule(
+            "/api/campaigns/<campaign_name>/total",
+            endpoint="campaign_total",
+            view_func=self.get_campaign_total,
+            methods=["GET"],
+        )
 
     def health(self):
         try:
@@ -138,6 +144,18 @@ class ApiController:
     def _error_response(error: AppError):
         return jsonify({"success": False, "message": error.message}), error.status_code
 
+    def get_campaign_total(self, campaign_name: str):
+        try:
+            with self.database.connect() as conn:
+                result = conn.execute(
+                    "SELECT COALESCE(SUM(amount), 0) as total FROM donations WHERE campaign = %s AND status = %s",
+                    (campaign_name, "Berhasil"),
+                ).fetchone()
+            total = result["total"] if result else 0
+            return jsonify({"success": True, "total": total, "campaign": campaign_name})
+        except Exception as error:
+            return jsonify({"success": False, "message": str(error)}), 500
+
 
 class PageController:
     def __init__(self, config: AppConfig):
@@ -146,8 +164,12 @@ class PageController:
     def register_routes(self, app: Flask) -> None:
         app.add_url_rule("/", endpoint="index", view_func=self.index)
         app.add_url_rule("/login", endpoint="login_page", view_func=self.login)
+        app.add_url_rule("/register", endpoint="register_page", view_func=self.register)
+        app.add_url_rule("/donation", endpoint="donation_page", view_func=self.donation)
         app.add_url_rule("/dashboard", endpoint="dashboard", view_func=self.dashboard)
-
+        app.add_url_rule("/invoice", endpoint="invoice_page", view_func=self.invoice)
+        app.add_url_rule("/kebijakan-privasi", endpoint="privacy_policy", view_func=self.privacy_policy)
+        app.add_url_rule("/syarat-ketentuan", endpoint="terms", view_func=self.terms)
         app.add_url_rule(
             "/uploads/<path:filename>",
             endpoint="uploads_dir",
@@ -162,6 +184,21 @@ class PageController:
 
     def login(self):
         return render_template("login.html")
+    
+    def register(self):
+        return render_template("register.html")
+
+    def donation(self):
+        return render_template("donation.html")
+
+    def invoice(self):
+        return render_template("invoice.html")
+
+    def privacy_policy(self):
+        return render_template("kebijakan-privasi.html")
+
+    def terms(self):
+        return render_template("syarat-ketentuan.html")
     
     def dashboard(self):
         return render_template("dashboard.html")

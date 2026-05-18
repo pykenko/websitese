@@ -147,7 +147,8 @@ async function finishDonation() {
         const data = await res.json();
 
         if (res.ok && data.success) {
-            window.location.href = `invoice.html?amount=${donationState.amount}&trx=${trxId}`;
+            const invoiceUrl = (window.APP_ROUTES?.invoice || '/invoice') + `?amount=${donationState.amount}&trx=${trxId}`;
+            window.location.href = invoiceUrl;
         } else {
             alert(data.message || 'Gagal memproses donasi.');
         }
@@ -158,7 +159,8 @@ async function finishDonation() {
         let donations = JSON.parse(localStorage.getItem('binakasih_donations') || '[]');
         donations.unshift(localData);
         localStorage.setItem('binakasih_donations', JSON.stringify(donations));
-        window.location.href = `invoice.html?amount=${donationState.amount}&trx=${trxId}`;
+        const invoiceUrl = (window.APP_ROUTES?.invoice || '/invoice') + `?amount=${donationState.amount}&trx=${trxId}`;
+        window.location.href = invoiceUrl;
     }
 }
 
@@ -190,4 +192,42 @@ async function loadDonations() {
 document.addEventListener('DOMContentLoaded', () => {
     updateSummary();
 });
+
+// Load campaign total donations
+async function loadCampaignTotal(campaignName) {
+    try {
+        const res = await fetch(`/api/campaigns/${encodeURIComponent(campaignName)}/total`, {
+            method: 'GET',
+            credentials: 'include',
+        });
+        if (!res.ok) throw new Error('Failed to fetch campaign total');
+        const data = await res.json();
+        return data.total || 0;
+    } catch (e) {
+        console.warn("Could not load campaign total:", e);
+        return 0;
+    }
+}
+
+// Update campaign progress display
+async function updateCampaignProgress(campaignName, targetAmount) {
+    const total = await loadCampaignTotal(campaignName);
+    const percentage = targetAmount > 0 ? Math.min(100, Math.round((total / targetAmount) * 100)) : 0;
+    
+    // Update all elements with collected amount for this campaign
+    document.querySelectorAll(`[data-campaign="${campaignName}"] .collected-amount`).forEach(el => {
+        el.textContent = formatIDR(total);
+    });
+    
+    // Update progress bar
+    document.querySelectorAll(`[data-campaign="${campaignName}"] .premium-progress-fill`).forEach(el => {
+        el.style.width = percentage + '%';
+    });
+    
+    // Update percentage
+    document.querySelectorAll(`[data-campaign="${campaignName}"] .campaign-percentage`).forEach(el => {
+        el.textContent = percentage + '%';
+    });
+}
+
 
