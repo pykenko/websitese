@@ -3,15 +3,16 @@ from flask import Flask, jsonify, request, send_from_directory, render_template
 
 from .config import AppConfig
 from .database import Database
-from .models import AppError, DonationModel, UserModel, TicketModel
+from .models import AppError, CampaignModel, DonationModel, UserModel, TicketModel
 import os
 import uuid
 from werkzeug.utils import secure_filename
 class ApiController:
-    def __init__(self, database: Database, user_model: UserModel, donation_model: DonationModel, ticket_model: TicketModel):
+    def __init__(self, database: Database, user_model: UserModel, donation_model: DonationModel, campaign_model: CampaignModel, ticket_model: TicketModel):
         self.database = database
         self.user_model = user_model
         self.donation_model = donation_model
+        self.campaign_model = campaign_model
         self.ticket_model = ticket_model
 
     def register_routes(self, app: Flask) -> None:
@@ -58,9 +59,39 @@ class ApiController:
             methods=["GET"],
         )
         app.add_url_rule(
+            "/api/campaigns",
+            endpoint="campaign_create",
+            view_func=self.create_campaign,
+            methods=["POST"],
+        )
+        app.add_url_rule(
+            "/api/campaigns",
+            endpoint="campaign_list",
+            view_func=self.list_campaigns,
+            methods=["GET"],
+        )
+        app.add_url_rule(
+            "/api/campaigns/mine",
+            endpoint="campaign_list_mine",
+            view_func=self.list_my_campaigns,
+            methods=["GET"],
+        )
+        app.add_url_rule(
+            "/api/campaigns/<campaign_id>",
+            endpoint="campaign_delete",
+            view_func=self.delete_campaign,
+            methods=["DELETE"],
+        )
+        app.add_url_rule(
             "/api/campaigns/<campaign_name>/total",
             endpoint="campaign_total",
             view_func=self.get_campaign_total,
+            methods=["GET"],
+        )
+        app.add_url_rule(
+            "/api/campaigns/id/<campaign_id>/total",
+            endpoint="campaign_total_by_id",
+            view_func=self.get_campaign_total_by_id,
             methods=["GET"],
         )
 
@@ -129,6 +160,31 @@ class ApiController:
         donation = self.donation_model.latest_successful_donation()
         return jsonify({"success": True, "donation": donation})
 
+    def create_campaign(self):
+        try:
+            campaign = self.campaign_model.create(request.get_json(silent=True) or {})
+        except AppError as error:
+            return self._error_response(error)
+        return jsonify({"success": True, "campaign": campaign}), 201
+
+    def list_campaigns(self):
+        campaigns = self.campaign_model.list_all()
+        return jsonify({"success": True, "campaigns": campaigns})
+
+    def list_my_campaigns(self):
+        try:
+            campaigns = self.campaign_model.list_for_current_user()
+        except AppError as error:
+            return self._error_response(error)
+        return jsonify({"success": True, "campaigns": campaigns})
+
+    def delete_campaign(self, campaign_id: str):
+        try:
+            self.campaign_model.delete(campaign_id)
+        except AppError as error:
+            return self._error_response(error)
+        return jsonify({"success": True})
+
     def create_ticket(self):
         try:
             payload = dict(request.form)
@@ -184,6 +240,18 @@ class ApiController:
                 ).fetchone()
             total = result["total"] if result else 0
             return jsonify({"success": True, "total": total, "campaign": campaign_name})
+        except Exception as error:
+            return jsonify({"success": False, "message": str(error)}), 500
+
+    def get_campaign_total_by_id(self, campaign_id: str):
+        try:
+            with self.database.connect() as conn:
+                result = conn.execute(
+                    "SELECT COALESCE(SUM(amount), 0) as total FROM donations WHERE campaign_id = %s AND status = %s",
+                    (campaign_id, "Berhasil"),
+                ).fetchone()
+            total = result["total"] if result else 0
+            return jsonify({"success": True, "total": total, "campaign_id": campaign_id})
         except Exception as error:
             return jsonify({"success": False, "message": str(error)}), 500
 

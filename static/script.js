@@ -130,10 +130,12 @@ async function finishDonation() {
 
     // Campaign Name (Dynamic based on selected campaign)
     const campaignName = window.activeCampaignTitle || "Donasi Program Pendidikan Anak";
+    const campaignId = new URLSearchParams(window.location.search).get('campId') || '';
 
     // ✅ Field names disesuaikan dengan Flask models.py
     const donationPayload = {
         id:       trxId,           // Flask: payload.get("id")
+        campaign_id: campaignId,
         campaign: campaignName,    // Flask: payload.get("campaign")
         amount:   donationState.amount, // Flask: payload.get("amount")
         date:     date,            // Flask: payload.get("date")
@@ -159,20 +161,14 @@ async function finishDonation() {
             alert(data.message || 'Gagal memproses donasi.');
         }
     } catch (e) {
-        // Fallback: simpan ke localStorage jika server tidak tersedia
-        console.warn("Flask API tidak tersedia, simpan ke localStorage", e);
-        const localData = { ...donationPayload, campaign_id: new URLSearchParams(window.location.search).get('campId') };
-        let donations = JSON.parse(localStorage.getItem('binakasih_donations') || '[]');
-        donations.unshift(localData);
-        localStorage.setItem('binakasih_donations', JSON.stringify(donations));
-        const invoiceUrl = (window.APP_ROUTES?.invoice || '/invoice') + `?amount=${donationState.amount}&trx=${trxId}`;
-        window.location.href = invoiceUrl;
+        console.error("Flask API tidak tersedia", e);
+        alert('Gagal memproses donasi. Silakan coba lagi saat koneksi ke server tersedia.');
     }
 }
 
 /**
- * loadDonations() — dipakai oleh dasboard
- * Ambil riwayat donasi dari Flask API, fallback ke localStorage
+ * loadDonations() — dipakai oleh dashboard
+ * Ambil riwayat donasi langsung dari Flask API / database
  * @returns {Promise<Array>} list donasi
  */
 async function loadDonations() {
@@ -183,14 +179,10 @@ async function loadDonations() {
         });
         if (!res.ok) throw new Error('API error');
         const data = await res.json();
-        // Sinkronkan ke localStorage sebagai cache
-        if (data.donations) {
-            localStorage.setItem('binakasih_donations', JSON.stringify(data.donations));
-        }
         return data.donations || [];
     } catch (e) {
-        console.warn("Flask API tidak tersedia, pakai localStorage", e);
-        return JSON.parse(localStorage.getItem('binakasih_donations') || '[]');
+        console.warn("Flask API tidak tersedia", e);
+        return [];
     }
 }
 
@@ -216,17 +208,10 @@ async function loadDonationSummary() {
         return data.summary || {};
     } catch (e) {
         console.warn("Could not load donation summary:", e);
-        const donations = await loadDonations();
-        const userEmail = (user.email || '').toLowerCase();
-        const successfulDonations = donations.filter(d =>
-            (d.status || '').toLowerCase() === 'berhasil'
-            && (d.email || '').toLowerCase() === userEmail
-        );
-
         return {
-            user_total_amount: successfulDonations.reduce((sum, d) => sum + (parseInt(d.amount, 10) || 0), 0),
-            user_donation_count: successfulDonations.length,
-            user_campaign_count: new Set(successfulDonations.map(d => d.campaign)).size,
+            user_total_amount: 0,
+            user_donation_count: 0,
+            user_campaign_count: 0,
             platform_total_amount: 0,
             platform_donation_count: 0,
         };

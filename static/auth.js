@@ -1,38 +1,17 @@
-const SESSION_KEY = "berikasih_session";
-
 const auth = {
     _user: null,
     _initPromise: null,
 
     _setUser(user) {
-        const existingUser = this.getUser();
+        const existingUser = this._user;
         this._user = user;
         if (user && !user.photo && existingUser && existingUser.id === user.id && existingUser.photo) {
             this._user = { ...user, photo: existingUser.photo };
         }
-        if (user) {
-            localStorage.setItem(SESSION_KEY, JSON.stringify(this._user));
-        } else {
-            localStorage.removeItem(SESSION_KEY);
-        }
     },
 
     getUser() {
-        if (this._user) {
-            return this._user;
-        }
-        const sessionData = localStorage.getItem(SESSION_KEY);
-        if (!sessionData) {
-            return null;
-        }
-        try {
-            const parsed = JSON.parse(sessionData);
-            this._user = parsed;
-            return parsed;
-        } catch (_err) {
-            localStorage.removeItem(SESSION_KEY);
-            return null;
-        }
+        return this._user;
     },
 
     async register(name, email, password) {

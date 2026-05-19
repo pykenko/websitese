@@ -63,6 +63,7 @@ class Database:
                 CREATE TABLE IF NOT EXISTS donations (
                     id TEXT PRIMARY KEY,
                     user_id BIGINT REFERENCES users(id) ON DELETE SET NULL,
+                    campaign_id TEXT,
                     campaign TEXT NOT NULL,
                     amount INTEGER NOT NULL CHECK (amount >= 0),
                     donation_date DATE NOT NULL,
@@ -71,6 +72,12 @@ class Database:
                     email TEXT NOT NULL DEFAULT '',
                     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
                 )
+                """
+            )
+            conn.execute(
+                """
+                ALTER TABLE donations
+                ADD COLUMN IF NOT EXISTS campaign_id TEXT
                 """
             )
             conn.execute(
@@ -86,10 +93,17 @@ class Database:
                     title TEXT NOT NULL,
                     description TEXT,
                     target INTEGER NOT NULL,
+                    duration INTEGER,
                     image_url TEXT,
                     user_id BIGINT REFERENCES users(id),
                     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
                 )
+                """
+            )
+            conn.execute(
+                """
+                ALTER TABLE campaigns
+                ADD COLUMN IF NOT EXISTS duration INTEGER
                 """
             )
 
@@ -97,6 +111,12 @@ class Database:
                 """
                 CREATE INDEX IF NOT EXISTS donations_email_created_at_idx
                 ON donations ((lower(email)), created_at DESC)
+                """
+            )
+            conn.execute(
+                """
+                CREATE INDEX IF NOT EXISTS donations_campaign_id_created_at_idx
+                ON donations (campaign_id, created_at DESC)
                 """
             )
 

@@ -588,76 +588,54 @@
         // Load Campaigns
         async function loadCampaigns() {
             const formatIDR = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
-            const localDonations = JSON.parse(localStorage.getItem('binakasih_donations') || '[]');
-            const localCampaigns = JSON.parse(localStorage.getItem('binakasih_campaigns') || '[]');
-            
-            // Helper to get total collected for a campaign
-            const getCollected = (campId, baseAmount = 0) => {
-                const total = localDonations
-                    .filter(d => d.campaign_id === campId)
-                    .reduce((sum, d) => sum + parseFloat(d.amount), 0);
-                return baseAmount + total;
+
+            const getCollected = async (campId, campTitle, baseAmount = 0) => {
+                try {
+                    const totalUrl = campId && !['yuda', 'rafi', 'karina'].includes(campId)
+                        ? `/api/campaigns/id/${encodeURIComponent(campId)}/total`
+                        : `/api/campaigns/${encodeURIComponent(campTitle)}/total`;
+                    const res = await fetch(totalUrl, {
+                        credentials: 'include',
+                    });
+                    if (!res.ok) {
+                        throw new Error('Failed to fetch campaign total');
+                    }
+
+                    const data = await res.json();
+                    return baseAmount + (parseFloat(data.total) || 0);
+                } catch (_error) {
+                    return baseAmount;
+                }
             };
 
             let campaigns = [];
-            let isUsingLocalOnly = false;
 
             try {
                 const res = await fetch('/api/campaigns', { credentials: 'include' });
                 const data = await res.json();
                 if (data.success && data.campaigns) { 
                     campaigns = data.campaigns; 
-                } else {
-                    isUsingLocalOnly = true;
                 }
             } catch (e) {
-                console.warn('Backend API not available, using local data.', e);
-                isUsingLocalOnly = true;
-            }
-
-            if (isUsingLocalOnly) {
-                // If backend fails, we simulate with what we have
-                // Start with local campaigns created by user
-                campaigns = localCampaigns.map(c => ({
-                    id: c.id,
-                    title: c.title,
-                    target_amount: c.target,
-                    collected_amount: 0, // will be added below
-                    created_by: c.createdBy,
-                    image_url: c.image_url || 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=800&auto=format&fit=crop',
-                    description: c.description || ''
-                }));
-
-                // Add static campaigns as placeholders if they aren't in campaigns list
-                const staticIds = ['yuda', 'rafi', 'karina'];
-                const staticData = {
-                    'yuda': { title: 'Bantu Yuda Meraih Cita-Cita', target: 10000000, by: 'Bina Nusantara' },
-                    'rafi': { title: 'Beasiswa untuk Rafi', target: 5000000, by: 'Bina Nusantara' },
-                    'karina': { title: 'Masa Depan Cerah Karina', target: 15000000, by: 'Bina Nusantara' }
-                };
-
-                staticIds.forEach(id => {
-                    if (!campaigns.find(c => c.id === id)) {
-                        campaigns.push({
-                            id: id,
-                            title: staticData[id].title,
-                            target_amount: staticData[id].target,
-                            collected_amount: 0,
-                            created_by: staticData[id].by,
-                            image_url: '', // will be handled by static card logic
-                            description: ''
-                        });
-                    }
-                });
+                console.warn('Backend API not available.', e);
             }
 
             const section = document.getElementById('recent-campaigns-section');
             const grid = document.getElementById('dynamic-campaigns-grid');
             let dynamicCount = 0;
 
-            campaigns.forEach(camp => {
+            const campaignsWithTotals = await Promise.all(campaigns.map(async (camp) => ({
+                ...camp,
+                resolved_collected_amount: await getCollected(
+                    camp.id,
+                    camp.title,
+                    parseFloat(camp.collected_amount) || 0
+                ),
+            })));
+
+            campaignsWithTotals.forEach(camp => {
                 const target = parseFloat(camp.target_amount);
-                const collected = getCollected(camp.id, parseFloat(camp.collected_amount));
+                const collected = camp.resolved_collected_amount;
                 const progress = target > 0 ? Math.min((collected / target) * 100, 100) : 0;
                 const targetFormatted = formatIDR(target);
                 const collectedFormatted = formatIDR(collected);
@@ -679,6 +657,7 @@
                     const card = document.createElement('div');
                     card.className = 'card';
                     card.setAttribute('data-campaign-id', camp.id);
+                    card.setAttribute('data-campaign', camp.title);
                     card.style.padding = '0';
                     card.style.overflow = 'hidden';
                     card.style.display = 'flex';
@@ -733,30 +712,6 @@
                 }
             });
         }
-
-        // Migrasi: hanya bersihkan base64 SANGAT besar (foto mentah belum dikompres, >3MB)
-        // Gambar yang sudah dikompres via dashboard (<3MB) tetap ditampilkan
-        function migrateOldCampaigns() {
-            try {
-                const PLACEHOLDER = 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=800&auto=format&fit=crop';
-                const raw = localStorage.getItem('binakasih_campaigns');
-                if (!raw) return;
-                const campaigns = JSON.parse(raw);
-                let changed = false;
-                campaigns.forEach(c => {
-                    // Hanya ganti jika > 3MB (4MB base64 ≈ 3MB file asli)
-                    if (c.image_url && c.image_url.startsWith('data:') && c.image_url.length > 4000000) {
-                        c.image_url = PLACEHOLDER;
-                        changed = true;
-                    }
-                });
-                if (changed) {
-                    localStorage.setItem('binakasih_campaigns', JSON.stringify(campaigns));
-                    console.log('Migrasi: gambar sangat besar (>3MB) diganti placeholder.');
-                }
-            } catch(e) { /* ignore */ }
-        }
-        migrateOldCampaigns();
 
         document.addEventListener('DOMContentLoaded', loadCampaigns);
     </script>

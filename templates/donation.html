@@ -245,9 +245,9 @@
     <script src="{{ url_for('static', filename='auth.js') }}"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             // Load user data
-            const user = auth.getUser();
+            const user = await auth.init();
             if (user) {
                 document.getElementById('donor-name').value = user.name;
                 document.querySelector('input[type="email"]').value = user.email;
@@ -305,22 +305,26 @@
                     progressText: `Donasi Anda akan membantu memenuhi target ${targetFormatted}`
                 };
             }
-            // Cek kampanye buatan user di localStorage
             else if (campId) {
-                const storedCampaigns = JSON.parse(localStorage.getItem('binakasih_campaigns') || '[]');
-                const foundCamp = storedCampaigns.find(c => c.id === campId);
+                try {
+                    const response = await fetch('/api/campaigns', { credentials: 'include' });
+                    const data = await response.json();
+                    const foundCamp = (data.campaigns || []).find(c => c.id === campId);
 
-                if (foundCamp) {
-                    const targetFormatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(foundCamp.target);
-                    campaignData = {
-                        title: foundCamp.title,
-                        target: foundCamp.target,
-                        targetFormatted: targetFormatted,
-                        image: foundCamp.image_url || 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=800&auto=format&fit=crop',
-                        description: foundCamp.description || '',
-                        by: foundCamp.createdBy || foundCamp.created_by || 'Penggalang Dana',
-                        progressText: `Donasi Anda akan membantu memenuhi target ${targetFormatted}`
-                    };
+                    if (foundCamp) {
+                        const targetFormatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(foundCamp.target_amount);
+                        campaignData = {
+                            title: foundCamp.title,
+                            target: foundCamp.target_amount,
+                            targetFormatted: targetFormatted,
+                            image: foundCamp.image_url || 'https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=800&auto=format&fit=crop',
+                            description: foundCamp.description || '',
+                            by: foundCamp.created_by || 'Penggalang Dana',
+                            progressText: `Donasi Anda akan membantu memenuhi target ${targetFormatted}`
+                        };
+                    }
+                } catch (_error) {
+                    // Keep default campaignData when custom campaign details are unavailable.
                 }
             }
 

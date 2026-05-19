@@ -334,7 +334,7 @@
 
         document.addEventListener('DOMContentLoaded', async () => {
             // Check auth (already done in auth.init but we need data here)
-            const user = auth.getUser();
+            const user = await auth.init();
             if (user) {
                 // Update Navbar Name
                 const navName = document.getElementById('nav-user-name');
@@ -363,7 +363,7 @@
                     });
                 }
 
-                // Load Donations dari Flask API (fallback ke localStorage)
+                // Load Donations dari Flask API
                 const donationList = document.getElementById('donation-list');
                 const [allDonations, donationSummary] = await Promise.all([
                     loadDonations(),
@@ -453,7 +453,7 @@
             // Handle Create Campaign Form
             const createCampaignForm = document.getElementById('create-campaign-form');
             if (createCampaignForm) {
-                createCampaignForm.addEventListener('submit', function(e) {
+                createCampaignForm.addEventListener('submit', async function(e) {
                     e.preventDefault();
                     
                     const title = document.getElementById('campaign-title').value;
@@ -467,51 +467,53 @@
                         return;
                     }
 
-                    // For demo, we use a placeholder if no photo is uploaded
                     const placeholderImg = "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?q=80&w=800&auto=format&fit=crop";
-                    
-                    const handleSave = (imgUrl) => {
-                        let campaigns = JSON.parse(localStorage.getItem('binakasih_campaigns') || '[]');
-                        campaigns.push({
-                            id: 'CMP-' + Math.floor(Math.random() * 100000),
-                            title: title,
-                            description: description,
-                            target: target,
-                            duration: duration,
-                            image_url: imgUrl,
-                            createdAt: new Date().toISOString(),
-                            createdBy: user ? user.email : 'Unknown'
+
+                    const toDataUrl = (file) => new Promise((resolve, reject) => {
+                        const reader = new FileReader();
+                        reader.onload = (readerEvent) => resolve(readerEvent.target.result);
+                        reader.onerror = () => reject(new Error('Gagal membaca file gambar'));
+                        reader.readAsDataURL(file);
+                    });
+
+                    let imageUrl = placeholderImg;
+                    if (photo) {
+                        try {
+                            imageUrl = await toDataUrl(photo);
+                        } catch (_error) {
+                            alert('Gagal memproses gambar kampanye.');
+                            return;
+                        }
+                    }
+
+                    const payload = {
+                        id: 'CMP-' + Math.floor(Math.random() * 100000000),
+                        title,
+                        description,
+                        target,
+                        duration,
+                        image_url: imageUrl,
+                    };
+
+                    try {
+                        const response = await fetch('/api/campaigns', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            credentials: 'include',
+                            body: JSON.stringify(payload),
                         });
-                        localStorage.setItem('binakasih_campaigns', JSON.stringify(campaigns));
+                        const result = await response.json();
+
+                        if (!response.ok || !result.success) {
+                            alert(result.message || 'Gagal membuat kampanye.');
+                            return;
+                        }
 
                         alert('Kampanye "' + title + '" berhasil dibuat!');
                         createCampaignForm.reset();
                         updateCampaignsCount(user);
-                    };
-
-                    if (photo) {
-                        const reader = new FileReader();
-                        reader.onload = (e) => {
-                            // Kompres gambar sebelum simpan ke localStorage agar tidak freeze
-                            const img = new Image();
-                            img.onload = () => {
-                                const canvas = document.createElement('canvas');
-                                const MAX_SIZE = 500; // Lebih kecil agar gambar tetap ringan
-                                let w = img.width, h = img.height;
-                                if (w > MAX_SIZE || h > MAX_SIZE) {
-                                    if (w > h) { h = Math.round(h * MAX_SIZE / w); w = MAX_SIZE; }
-                                    else { w = Math.round(w * MAX_SIZE / h); h = MAX_SIZE; }
-                                }
-                                canvas.width = w; canvas.height = h;
-                                canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-                                const compressedUrl = canvas.toDataURL('image/jpeg', 0.5); // quality 0.5
-                                handleSave(compressedUrl);
-                            };
-                            img.src = e.target.result;
-                        };
-                        reader.readAsDataURL(photo);
-                    } else {
-                        handleSave(placeholderImg);
+                    } catch (_error) {
+                        alert('Gagal membuat kampanye. Silakan coba lagi.');
                     }
                 });
             }
@@ -526,62 +528,74 @@
             document.getElementById(modalId).classList.add('hidden');
         }
 
-        function updateCampaignsCount(user) {
+        async function updateCampaignsCount(user) {
             if (!user) return;
-            const campaignsData = localStorage.getItem('binakasih_campaigns');
-            const campaigns = campaignsData ? JSON.parse(campaignsData) : [];
-            const userCampaigns = campaigns.filter(c => c.createdBy === user.email);
-            
+
             const countEl = document.getElementById('stat-campaigns-count');
-            if (countEl) countEl.textContent = userCampaigns.length;
+            if (!countEl) return;
+
+            try {
+                const response = await fetch('/api/campaigns/mine', { credentials: 'include' });
+                const result = await response.json();
+                if (!response.ok || !result.success) {
+                    countEl.textContent = '0';
+                    return;
+                }
+                countEl.textContent = (result.campaigns || []).length;
+            } catch (_error) {
+                countEl.textContent = '0';
+            }
         }
 
-        function openManageCampaigns() {
+        async function openManageCampaigns() {
             const user = auth.getUser();
             if (!user) {
                 alert('Silakan login terlebih dahulu');
                 return;
             }
 
-            const modal = document.getElementById('manage-campaigns-modal');
             const listContainer = document.getElementById('manage-campaign-list');
-            
-            // Fetch campaigns
-            const campaignsData = localStorage.getItem('binakasih_campaigns');
-            const campaigns = campaignsData ? JSON.parse(campaignsData) : [];
-            const userCampaigns = campaigns.filter(c => c.createdBy === user.email);
-
             listContainer.innerHTML = ''; // Clear
 
-            if (userCampaigns.length === 0) {
-                listContainer.innerHTML = '<div class="text-center text-gray py-4">Anda belum membuat kampanye apapun.</div>';
-            } else {
-                userCampaigns.forEach(camp => {
-                    const item = document.createElement('div');
-                    item.className = 'flex justify-between items-center bg-gray-50 p-3 rounded';
-                    item.style.border = '1px solid #eee';
-                    
-                    const titleDiv = document.createElement('div');
-                    titleDiv.className = 'font-bold text-dark';
-                    titleDiv.textContent = camp.title;
-                    
-                    const deleteBtn = document.createElement('button');
-                    deleteBtn.className = 'text-primary hover:text-dark';
-                    deleteBtn.style.background = 'none';
-                    deleteBtn.style.border = 'none';
-                    deleteBtn.style.cursor = 'pointer';
-                    deleteBtn.innerHTML = `
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F44336" stroke-width="2">
-                            <polyline points="3 6 5 6 21 6"></polyline>
-                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                        </svg>
-                    `;
-                    deleteBtn.onclick = () => deleteCampaign(camp.id);
+            try {
+                const response = await fetch('/api/campaigns/mine', { credentials: 'include' });
+                const result = await response.json();
+                const userCampaigns = result.campaigns || [];
 
-                    item.appendChild(titleDiv);
-                    item.appendChild(deleteBtn);
-                    listContainer.appendChild(item);
-                });
+                if (!response.ok || !result.success) {
+                    listContainer.innerHTML = '<div class="text-center text-gray py-4">Gagal memuat kampanye.</div>';
+                } else if (userCampaigns.length === 0) {
+                    listContainer.innerHTML = '<div class="text-center text-gray py-4">Anda belum membuat kampanye apapun.</div>';
+                } else {
+                    userCampaigns.forEach(camp => {
+                        const item = document.createElement('div');
+                        item.className = 'flex justify-between items-center bg-gray-50 p-3 rounded';
+                        item.style.border = '1px solid #eee';
+                        
+                        const titleDiv = document.createElement('div');
+                        titleDiv.className = 'font-bold text-dark';
+                        titleDiv.textContent = camp.title;
+                        
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.className = 'text-primary hover:text-dark';
+                        deleteBtn.style.background = 'none';
+                        deleteBtn.style.border = 'none';
+                        deleteBtn.style.cursor = 'pointer';
+                        deleteBtn.innerHTML = `
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F44336" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                        `;
+                        deleteBtn.onclick = () => deleteCampaign(camp.id);
+
+                        item.appendChild(titleDiv);
+                        item.appendChild(deleteBtn);
+                        listContainer.appendChild(item);
+                    });
+                }
+            } catch (_error) {
+                listContainer.innerHTML = '<div class="text-center text-gray py-4">Gagal memuat kampanye.</div>';
             }
 
             showModal('manage-campaigns-modal');
@@ -673,19 +687,25 @@
             hideModal('notification-modal');
         }
 
-        function deleteCampaign(id) {
+        async function deleteCampaign(id) {
             if (confirm('Apakah Anda yakin ingin menghapus kampanye ini?')) {
                 const user = auth.getUser();
-                let campaignsData = localStorage.getItem('binakasih_campaigns');
-                if (campaignsData) {
-                    let campaigns = JSON.parse(campaignsData);
-                    campaigns = campaigns.filter(c => c.id !== id);
-                    localStorage.setItem('binakasih_campaigns', JSON.stringify(campaigns));
-                    
-                    // Refresh view
+                try {
+                    const response = await fetch(`/api/campaigns/${encodeURIComponent(id)}`, {
+                        method: 'DELETE',
+                        credentials: 'include',
+                    });
+                    const result = await response.json();
+                    if (!response.ok || !result.success) {
+                        alert(result.message || 'Gagal menghapus kampanye.');
+                        return;
+                    }
+
                     openManageCampaigns();
                     updateCampaignsCount(user);
                     alert('Kampanye berhasil dihapus!');
+                } catch (_error) {
+                    alert('Gagal menghapus kampanye.');
                 }
             }
         }
@@ -837,8 +857,9 @@
         });
 
         // Initialize tickets fetch when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            if (auth.getUser()) {
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await auth.init();
+            if (user) {
                 fetchTickets();
             }
         });

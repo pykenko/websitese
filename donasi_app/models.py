@@ -131,6 +131,7 @@ class DonationModel:
 
     def create(self, payload: dict[str, Any]) -> dict[str, Any]:
         donation_id = (payload.get("id") or "").strip()
+        campaign_id = (payload.get("campaign_id") or "").strip() or None
         campaign = (payload.get("campaign") or "").strip()
         status = (payload.get("status") or "").strip() or "Berhasil"
         donor_input = (payload.get("donor") or "").strip()
@@ -171,6 +172,7 @@ class DonationModel:
                 INSERT INTO donations (
                     id,
                     user_id,
+                    campaign_id,
                     campaign,
                     amount,
                     donation_date,
@@ -178,12 +180,13 @@ class DonationModel:
                     donor,
                     email
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
-                RETURNING id, campaign, amount, donation_date, status, donor, email
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                RETURNING id, campaign_id, campaign, amount, donation_date, status, donor, email
                 """,
                 (
                     donation_id,
                     user["id"] if user else None,
+                    campaign_id,
                     campaign,
                     amount,
                     donation_date,
@@ -201,7 +204,7 @@ class DonationModel:
         with self.database.connect() as conn:
             rows = conn.execute(
                 """
-                SELECT id, campaign, amount, donation_date, status, donor, email
+                SELECT id, campaign_id, campaign, amount, donation_date, status, donor, email
                 FROM donations
                 WHERE user_id = %s OR lower(email) = lower(%s)
                 ORDER BY created_at DESC, id DESC
@@ -250,7 +253,7 @@ class DonationModel:
         with self.database.connect() as conn:
             row = conn.execute(
                 """
-                SELECT id, campaign, amount, donation_date, status, donor, email
+                SELECT id, campaign_id, campaign, amount, donation_date, status, donor, email
                 FROM donations
                 WHERE status = %s
                 ORDER BY created_at DESC, id DESC
@@ -265,12 +268,138 @@ class DonationModel:
     def _serialize(row: dict[str, Any]) -> dict[str, Any]:
         return {
             "id": row["id"],
+            "campaign_id": row.get("campaign_id"),
             "campaign": row["campaign"],
             "amount": row["amount"],
             "date": row["donation_date"].isoformat(),
             "status": row["status"],
             "donor": row["donor"],
             "email": row["email"],
+        }
+
+
+class CampaignModel:
+    def __init__(self, database: Database, user_model: UserModel):
+        self.database = database
+        self.user_model = user_model
+
+    def create(self, payload: dict[str, Any]) -> dict[str, Any]:
+        user = self.user_model.require_user()
+
+        campaign_id = (payload.get("id") or "").strip()
+        title = (payload.get("title") or "").strip()
+        description = (payload.get("description") or "").strip()
+        image_url = (payload.get("image_url") or "").strip() or None
+        target_raw = payload.get("target")
+        duration_raw = payload.get("duration")
+
+        try:
+            target = int(target_raw)
+        except (TypeError, ValueError):
+            raise AppError("Target donasi tidak valid", 400)
+
+        try:
+            duration = int(duration_raw)
+        except (TypeError, ValueError):
+            raise AppError("Durasi kampanye tidak valid", 400)
+
+        if not campaign_id or not title or not description or target < 10000 or duration <= 0:
+            raise AppError("Data kampanye tidak lengkap", 400)
+
+        with self.database.connect() as conn:
+            existing = conn.execute(
+                "SELECT id FROM campaigns WHERE id = %s",
+                (campaign_id,),
+            ).fetchone()
+            if existing:
+                raise AppError("ID kampanye sudah ada", 409)
+
+            row = conn.execute(
+                """
+                INSERT INTO campaigns (
+                    id,
+                    title,
+                    description,
+                    target,
+                    duration,
+                    image_url,
+                    user_id
+                )
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                RETURNING id, title, description, target, duration, image_url, user_id, created_at
+                """,
+                (campaign_id, title, description, target, duration, image_url, user["id"]),
+            ).fetchone()
+
+        return self._serialize(row, user_name=user["name"], user_email=user["email"])
+
+    def list_all(self) -> list[dict[str, Any]]:
+        with self.database.connect() as conn:
+            rows = conn.execute(
+                """
+                SELECT c.id, c.title, c.description, c.target, c.duration, c.image_url, c.user_id, c.created_at,
+                       u.name AS user_name, u.email AS user_email
+                FROM campaigns c
+                LEFT JOIN users u ON c.user_id = u.id
+                ORDER BY c.created_at DESC, c.id DESC
+                """
+            ).fetchall()
+
+        return [
+            self._serialize(row, user_name=row.get("user_name"), user_email=row.get("user_email"))
+            for row in rows
+        ]
+
+    def list_for_current_user(self) -> list[dict[str, Any]]:
+        user = self.user_model.require_user()
+
+        with self.database.connect() as conn:
+            rows = conn.execute(
+                """
+                SELECT c.id, c.title, c.description, c.target, c.duration, c.image_url, c.user_id, c.created_at,
+                       u.name AS user_name, u.email AS user_email
+                FROM campaigns c
+                LEFT JOIN users u ON c.user_id = u.id
+                WHERE c.user_id = %s
+                ORDER BY c.created_at DESC, c.id DESC
+                """,
+                (user["id"],),
+            ).fetchall()
+
+        return [
+            self._serialize(row, user_name=row.get("user_name"), user_email=row.get("user_email"))
+            for row in rows
+        ]
+
+    def delete(self, campaign_id: str) -> None:
+        user = self.user_model.require_user()
+
+        with self.database.connect() as conn:
+            row = conn.execute(
+                """
+                DELETE FROM campaigns
+                WHERE id = %s AND user_id = %s
+                RETURNING id
+                """,
+                (campaign_id, user["id"]),
+            ).fetchone()
+
+        if not row:
+            raise AppError("Kampanye tidak ditemukan", 404)
+
+    @staticmethod
+    def _serialize(row: dict[str, Any], user_name: str | None = None, user_email: str | None = None) -> dict[str, Any]:
+        return {
+            "id": row["id"],
+            "title": row["title"],
+            "description": row["description"],
+            "target_amount": row["target"],
+            "duration": row.get("duration"),
+            "image_url": row["image_url"],
+            "user_id": row["user_id"],
+            "created_at": row["created_at"].isoformat() if row.get("created_at") else None,
+            "created_by": user_name or "Penggalang Dana",
+            "created_by_email": user_email,
         }
 
 
