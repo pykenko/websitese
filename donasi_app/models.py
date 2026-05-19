@@ -246,6 +246,21 @@ class DonationModel:
             "platform_donation_count": platform_summary["donation_count"],
         }
 
+    def latest_successful_donation(self) -> dict[str, Any] | None:
+        with self.database.connect() as conn:
+            row = conn.execute(
+                """
+                SELECT id, campaign, amount, donation_date, status, donor, email
+                FROM donations
+                WHERE status = %s
+                ORDER BY created_at DESC, id DESC
+                LIMIT 1
+                """,
+                ("Berhasil",),
+            ).fetchone()
+
+        return self._serialize(row) if row else None
+
     @staticmethod
     def _serialize(row: dict[str, Any]) -> dict[str, Any]:
         return {

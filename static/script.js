@@ -36,7 +36,10 @@ function updateSummary() {
 
     // Update Donor Name in Summary
     const nameInput = document.getElementById('donor-name');
-    if (nameInput && nameInput.value) {
+    const anonymousCheckbox = document.getElementById('anon');
+    if (anonymousCheckbox && anonymousCheckbox.checked) {
+        document.getElementById('summary-donor').textContent = 'Anonym';
+    } else if (nameInput && nameInput.value) {
         document.getElementById('summary-donor').textContent = nameInput.value;
     } else {
         document.getElementById('summary-donor').textContent = '-';
@@ -118,7 +121,11 @@ async function finishDonation() {
 
     // Get User info (if logged in)
     const user = auth.getUser();
-    const donorName = user ? user.name : (document.getElementById('donor-name').value || 'Hamba Allah');
+    const anonymousCheckbox = document.getElementById('anon');
+    const isAnonymous = Boolean(anonymousCheckbox && anonymousCheckbox.checked);
+    const donorName = isAnonymous
+        ? 'Anonym'
+        : (user ? user.name : (document.getElementById('donor-name').value || 'Anonym'));
     const userEmail = user ? user.email : (document.querySelector('input[type="email"]').value || '');
 
     // Campaign Name (Dynamic based on selected campaign)
@@ -229,6 +236,11 @@ async function loadDonationSummary() {
 // Init
 document.addEventListener('DOMContentLoaded', () => {
     updateSummary();
+
+    const anonymousCheckbox = document.getElementById('anon');
+    if (anonymousCheckbox) {
+        anonymousCheckbox.addEventListener('change', updateSummary);
+    }
 });
 
 // Load campaign total donations
@@ -267,4 +279,3 @@ async function updateCampaignProgress(campaignName, targetAmount) {
         el.textContent = percentage + '%';
     });
 }
-

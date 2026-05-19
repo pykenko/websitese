@@ -55,6 +55,19 @@
     <!-- Main Content -->
     <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
 
+        <div id="latest-donor-highlight" class="card" style="max-width: 520px; margin: 0 auto 2rem auto; padding: 1rem 1.25rem; border-radius: 16px;">
+            <div class="flex items-center justify-between gap-4">
+                <div>
+                    <div class="text-primary font-semibold mb-1" style="font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase;">Donatur Terbaru</div>
+                    <div id="latest-donor-name" class="font-bold text-dark" style="font-size: 1rem;">Memuat apresiasi...</div>
+                    <div id="latest-donor-meta" class="text-gray" style="font-size: 0.88rem;">Terima kasih atas kebaikan yang sudah diberikan.</div>
+                </div>
+                <div style="width: 44px; height: 44px; border-radius: 9999px; background: #FCE4EC; color: #FF4081; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                </div>
+            </div>
+        </div>
+
         <!-- Untuk Mereka Static Campaigns Section -->
         <div id="untuk-mereka-section" style="margin-bottom: 4rem;">
             <h2 class="font-bold text-dark mb-6" style="font-size: 1.5rem;">Untuk Mereka</h2>
@@ -750,8 +763,41 @@
     <script src="{{ url_for('static', filename='auth.js') }}"></script>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script>
+        async function loadLatestDonationHighlight() {
+            const nameEl = document.getElementById('latest-donor-name');
+            const metaEl = document.getElementById('latest-donor-meta');
+            if (!nameEl || !metaEl) return;
+
+            try {
+                const response = await fetch('/api/donations/latest', { credentials: 'include' });
+                const data = await response.json();
+                const donation = data.donation;
+
+                if (!response.ok || !donation) {
+                    nameEl.textContent = 'Belum ada donasi terbaru';
+                    metaEl.textContent = 'Jadilah orang pertama yang menyebarkan kebaikan hari ini.';
+                    return;
+                }
+
+                const donorName = donation.donor || 'Hamba Allah';
+                const amount = new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    maximumFractionDigits: 0,
+                }).format(parseInt(donation.amount, 10) || 0);
+
+                nameEl.textContent = donorName;
+                metaEl.textContent = `Baru saja berdonasi ${amount} untuk "${donation.campaign}".`;
+            } catch (_error) {
+                nameEl.textContent = 'Apresiasi donatur belum tersedia';
+                metaEl.textContent = 'Data donasi terbaru belum bisa dimuat saat ini.';
+            }
+        }
+
         // Navigasi langsung ke halaman donasi saat card diklik
         document.addEventListener('DOMContentLoaded', () => {
+            loadLatestDonationHighlight();
+
             // Load campaign totals on page load
             const campaigns = [
                 { name: 'Bantu Yuda Meraih Cita-Cita', target: 10000000 },
@@ -780,4 +826,3 @@
 </body>
 
 </html>
-
