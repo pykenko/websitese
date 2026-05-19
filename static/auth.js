@@ -5,9 +5,13 @@ const auth = {
     _initPromise: null,
 
     _setUser(user) {
+        const existingUser = this.getUser();
         this._user = user;
+        if (user && !user.photo && existingUser && existingUser.id === user.id && existingUser.photo) {
+            this._user = { ...user, photo: existingUser.photo };
+        }
         if (user) {
-            localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+            localStorage.setItem(SESSION_KEY, JSON.stringify(this._user));
         } else {
             localStorage.removeItem(SESSION_KEY);
         }
@@ -83,6 +87,34 @@ const auth = {
         const data = await response.json();
         this._setUser(data.user);
         return data.user;
+    },
+
+    async updateProfile(name, email, photo) {
+        const response = await fetch("/api/me", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ name, email }),
+        });
+
+        const data = await response.json();
+        if (!response.ok) {
+            return { success: false, message: data.message || "Gagal memperbarui profil" };
+        }
+
+        const updatedUser = { ...data.user };
+        if (photo) {
+            updatedUser.photo = photo;
+        } else {
+            const currentUser = this.getUser();
+            if (currentUser?.photo) {
+                updatedUser.photo = currentUser.photo;
+            }
+        }
+
+        this._setUser(updatedUser);
+        this._updateNavUi(updatedUser);
+        return { success: true, user: updatedUser };
     },
 
     async logout() {

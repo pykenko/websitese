@@ -81,6 +81,44 @@ class UserModel:
     def logout(self) -> None:
         session.clear()
 
+    def update_profile(self, payload: dict[str, Any]) -> dict[str, Any]:
+        user = self.require_user()
+
+        name = (payload.get("name") or "").strip()
+        email = (payload.get("email") or "").strip().lower()
+
+        if not name or not email:
+            raise AppError("Nama lengkap dan email wajib diisi", 400)
+
+        if email.endswith("@gmail.com") is False:
+            raise AppError("Email harus menggunakan @gmail.com", 400)
+
+        with self.database.connect() as conn:
+            existing = conn.execute(
+                """
+                SELECT id
+                FROM users
+                WHERE id <> %s
+                  AND (lower(name) = lower(%s) OR lower(email) = lower(%s))
+                """,
+                (user["id"], name, email),
+            ).fetchone()
+            if existing:
+                raise AppError("Nama akun atau email sudah digunakan", 409)
+
+            row = conn.execute(
+                """
+                UPDATE users
+                SET name = %s,
+                    email = %s
+                WHERE id = %s
+                RETURNING id, name, email
+                """,
+                (name, email, user["id"]),
+            ).fetchone()
+
+        return self._public_user(row)
+
     @staticmethod
     def _public_user(row: dict[str, Any]) -> dict[str, Any]:
         return {"id": row["id"], "name": row["name"], "email": row["email"]}

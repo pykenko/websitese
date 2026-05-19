@@ -594,18 +594,19 @@
             }
         });
 
-        document.getElementById('edit-profile-form').addEventListener('submit', function(e) {
+        document.getElementById('edit-profile-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             const newName = document.getElementById('edit-name').value;
             const newEmail = document.getElementById('edit-email').value;
             const preview = document.getElementById('edit-photo-preview');
             const newPhoto = preview.dataset.photoUrl || null;
-            
-            if (auth.updateProfile(newName, newEmail, newPhoto)) {
+
+            const result = await auth.updateProfile(newName, newEmail, newPhoto);
+            if (result.success) {
                 alert('Profil berhasil diperbarui!');
                 window.location.reload(); // Reload to show new names/pics everywhere 
             } else {
-                alert('Gagal memperbarui profil.');
+                alert(result.message || 'Gagal memperbarui profil.');
             }
         });
 

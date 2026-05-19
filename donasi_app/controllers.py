@@ -17,6 +17,7 @@ class ApiController:
     def register_routes(self, app: Flask) -> None:
         app.add_url_rule("/api/health", endpoint="health", view_func=self.health, methods=["GET"])
         app.add_url_rule("/api/me", endpoint="auth_me", view_func=self.me, methods=["GET"])
+        app.add_url_rule("/api/me", endpoint="auth_update_me", view_func=self.update_me, methods=["PUT"])
         app.add_url_rule("/api/register", endpoint="auth_register", view_func=self.register, methods=["POST"])
         app.add_url_rule("/api/login", endpoint="auth_login", view_func=self.login, methods=["POST"])
         app.add_url_rule("/api/logout", endpoint="auth_logout", view_func=self.logout, methods=["POST"])
@@ -78,6 +79,13 @@ class ApiController:
         except AppError as error:
             return self._error_response(error)
         return jsonify({"success": True, "message": message})
+
+    def update_me(self):
+        try:
+            user = self.user_model.update_profile(request.get_json(silent=True) or {})
+        except AppError as error:
+            return self._error_response(error)
+        return jsonify({"success": True, "user": user})
 
     def login(self):
         try:
