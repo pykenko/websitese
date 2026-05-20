@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Masuk - Bina Kasih</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body style="display: flex; align-items: center; justify-content: center; min-height: 100vh;">
@@ -25,7 +25,7 @@
         <div class="form-container sign-up-container">
             <form onsubmit="handleRegister(event)">
                 <div class="flex items-center justify-center gap-1 mb-2">
-                    <img src="{{ url_for('static', filename='logo_hand_heart.svg') }}">
+                    <img src="{{ url_for('static', filename='images/logo_hand_heart.svg') }}">
                     <span class="font-bold text-primary" style="font-size: 1.5rem;">Bina Kasih</span>
                 </div>
                 <h3 class="font-bold text-dark mb-4">Buat Akun</h3>
@@ -50,7 +50,7 @@
         <div class="form-container sign-in-container">
             <form onsubmit="handleLogin(event)">
                 <div class="flex items-center justify-center gap-1 mb-2">
-                    <img src="{{ url_for('static', filename='logo_hand_heart.svg') }}">
+                    <img src="{{ url_for('static', filename='images/logo_hand_heart.svg') }}">
                     <span class="font-bold text-primary" style="font-size: 1.5rem;">Bina Kasih</span>
                 </div>
                 <h3 class="font-bold text-dark mb-4">Masuk</h3>
@@ -95,7 +95,7 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='auth.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
     <script>
         const APP_ROUTES = {
             index: '{{ url_for("index") }}'

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Donatur - Bina Kasih</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
@@ -15,7 +15,7 @@
         <div class="container flex justify-between items-center">
             <div class="logo flex items-center gap-4">
                 <a href="{{ url_for('index') }}" class="flex items-center gap-2" style="text-decoration: none;">
-                    <img src="{{ url_for('static', filename='logo_hand_heart.svg') }}">
+                    <img src="{{ url_for('static', filename='images/logo_hand_heart.svg') }}">
                     <span class="font-bold text-dark" style="font-size: 1.5rem;">Bina Kasih</span>
                 </a>
             </div>
@@ -376,8 +376,8 @@
     </div>
 
     
-    <script src="{{ url_for('static', filename='auth.js') }}"></script>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script>
         let dashboardUserDonations = [];
 
@@ -763,14 +763,20 @@
         // Setup photo upload preview
         document.getElementById('edit-photo').addEventListener('change', function(e) {
             const file = e.target.files[0];
+            const preview = document.getElementById('edit-photo-preview');
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const preview = document.getElementById('edit-photo-preview');
                     preview.innerHTML = `<img src="${e.target.result}" style="width: 100%; height: 100%; object-fit: cover;">`;
-                    preview.dataset.photoUrl = e.target.result; // Store base64 data for saving
                 };
                 reader.readAsDataURL(file);
+            } else {
+                const user = auth.getUser();
+                if (user && user.photo) {
+                    preview.innerHTML = `<img src="${user.photo}" style="width: 100%; height: 100%; object-fit: cover;">`;
+                } else {
+                    preview.innerHTML = '📷';
+                }
             }
         });
 
@@ -778,8 +784,7 @@
             e.preventDefault();
             const newName = document.getElementById('edit-name').value;
             const newEmail = document.getElementById('edit-email').value;
-            const preview = document.getElementById('edit-photo-preview');
-            const newPhoto = preview.dataset.photoUrl || null;
+            const newPhoto = document.getElementById('edit-photo').files[0] || null;
 
             const result = await auth.updateProfile(newName, newEmail, newPhoto);
             if (result.success) {
@@ -826,12 +831,11 @@
                 const preview = document.getElementById('edit-photo-preview');
                 if (user.photo) {
                     preview.innerHTML = `<img src="${user.photo}" style="width: 100%; height: 100%; object-fit: cover;">`;
-                    preview.dataset.photoUrl = user.photo;
                 } else {
                     preview.innerHTML = '📷';
-                    delete preview.dataset.photoUrl;
                 }
-                
+
+                document.getElementById('edit-photo').value = '';
                 showModal('edit-profile-modal');
             }
         }

@@ -4,21 +4,6 @@ const auth = {
 
     _setUser(user) {
         this._user = user;
-        if (user) {
-            // Load saved photo from localStorage
-            const savedPhoto = localStorage.getItem('user_photo_' + user.id);
-            if (savedPhoto) {
-                this._user = { ...user, photo: savedPhoto };
-            }
-        }
-    },
-
-    _savePhoto(userId, photoDataUrl) {
-        if (photoDataUrl) {
-            localStorage.setItem('user_photo_' + userId, photoDataUrl);
-        } else {
-            localStorage.removeItem('user_photo_' + userId);
-        }
     },
 
     getUser() {
@@ -79,12 +64,18 @@ const auth = {
         return data.user;
     },
 
-    async updateProfile(name, email, photo) {
+    async updateProfile(name, email, photoFile) {
+        const formData = new FormData();
+        formData.append("name", name);
+        formData.append("email", email);
+        if (photoFile) {
+            formData.append("photo", photoFile);
+        }
+
         const response = await fetch("/api/me", {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
             credentials: "include",
-            body: JSON.stringify({ name, email }),
+            body: formData,
         });
 
         const data = await response.json();
@@ -92,21 +83,9 @@ const auth = {
             return { success: false, message: data.message || "Gagal memperbarui profil" };
         }
 
-        const updatedUser = { ...data.user };
-        if (photo) {
-            updatedUser.photo = photo;
-            this._savePhoto(updatedUser.id, photo);
-        } else {
-            // Keep existing photo from localStorage
-            const savedPhoto = localStorage.getItem('user_photo_' + updatedUser.id);
-            if (savedPhoto) {
-                updatedUser.photo = savedPhoto;
-            }
-        }
-
-        this._user = updatedUser;
-        this._updateNavUi(updatedUser);
-        return { success: true, user: updatedUser };
+        this._user = data.user;
+        this._updateNavUi(data.user);
+        return { success: true, user: data.user };
     },
 
     async logout() {

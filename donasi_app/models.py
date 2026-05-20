@@ -21,7 +21,7 @@ class UserModel:
 
         with self.database.connect() as conn:
             row = conn.execute(
-                "SELECT id, name, email FROM users WHERE id = %s",
+                "SELECT id, name, email, photo_url FROM users WHERE id = %s",
                 (user_id,),
             ).fetchone()
         return self._public_user(row) if row else None
@@ -67,7 +67,7 @@ class UserModel:
         with self.database.connect() as conn:
             row = conn.execute(
                 """
-                SELECT id, name, email, password_hash
+                SELECT id, name, email, password_hash, photo_url
                 FROM users
                 WHERE lower(name) = lower(%s) OR lower(email) = lower(%s)
                 """,
@@ -82,7 +82,7 @@ class UserModel:
     def logout(self) -> None:
         session.clear()
 
-    def update_profile(self, payload: dict[str, Any]) -> dict[str, Any]:
+    def update_profile(self, payload: dict[str, Any], photo_url: str | None = None) -> dict[str, Any]:
         user = self.require_user()
 
         name = (payload.get("name") or "").strip()
@@ -111,11 +111,12 @@ class UserModel:
                 """
                 UPDATE users
                 SET name = %s,
-                    email = %s
+                    email = %s,
+                    photo_url = COALESCE(%s, photo_url)
                 WHERE id = %s
-                RETURNING id, name, email
+                RETURNING id, name, email, photo_url
                 """,
-                (name, email, user["id"]),
+                (name, email, photo_url, user["id"]),
             ).fetchone()
             conn.commit()
 
@@ -123,7 +124,12 @@ class UserModel:
 
     @staticmethod
     def _public_user(row: dict[str, Any]) -> dict[str, Any]:
-        return {"id": row["id"], "name": row["name"], "email": row["email"]}
+        return {
+            "id": row["id"],
+            "name": row["name"],
+            "email": row["email"],
+            "photo": row.get("photo_url"),
+        }
 
 
 class DonationModel:

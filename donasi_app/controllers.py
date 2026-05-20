@@ -1,12 +1,17 @@
+import hashlib
+import secrets
+from pathlib import Path
+
 import psycopg
-from flask import Flask, jsonify, request, send_from_directory, render_template
+from flask import Flask, current_app, jsonify, render_template, request, send_from_directory
+from werkzeug.datastructures import FileStorage
+from werkzeug.utils import secure_filename
 
 from .config import AppConfig
 from .database import Database
 from .models import AppError, CampaignModel, DonationModel, UserModel, TicketModel
-import os
-import uuid
-from werkzeug.utils import secure_filename
+
+
 class ApiController:
     def __init__(self, database: Database, user_model: UserModel, donation_model: DonationModel, campaign_model: CampaignModel, ticket_model: TicketModel):
         self.database = database
@@ -125,7 +130,16 @@ class ApiController:
 
     def update_me(self):
         try:
-            user = self.user_model.update_profile(request.get_json(silent=True) or {})
+            payload = request.get_json(silent=True) or {}
+            photo_url = None
+
+            if request.mimetype == "multipart/form-data":
+                payload = dict(request.form)
+                photo = request.files.get("photo")
+                if photo and photo.filename:
+                    photo_url = self._save_uploaded_file(photo, subdir="profile")
+
+            user = self.user_model.update_profile(payload, photo_url=photo_url)
         except AppError as error:
             return self._error_response(error)
         return jsonify({"success": True, "user": user})
@@ -201,23 +215,35 @@ class ApiController:
             if "photo" in request.files:
                 photo = request.files["photo"]
                 if photo.filename:
-                    filename = secure_filename(photo.filename)
-                    ext = os.path.splitext(filename)[1]
-                    unique_filename = f"{uuid.uuid4().hex}{ext}"
-                    # We need the config's upload dir. Since we don't have config here, we use app config or absolute path.
-                    # It's better to get the uploads_dir from current_app.
-                    from flask import current_app
-                    # But actually we can just get it by relative path or pass config.
-                    # A quick way is to use os.path.abspath
-                    uploads_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "uploads")
-                    os.makedirs(uploads_dir, exist_ok=True)
-                    photo.save(os.path.join(uploads_dir, unique_filename))
-                    photo_url = f"/uploads/{unique_filename}"
+                    photo_url = self._save_uploaded_file(photo, subdir="tickets")
 
             ticket = self.ticket_model.create(payload, photo_url)
         except AppError as error:
             return self._error_response(error)
         return jsonify({"success": True, "ticket": ticket}), 201
+
+    @staticmethod
+    def _save_uploaded_file(file: FileStorage, subdir: str = "") -> str:
+        filename = secure_filename(file.filename or "")
+        if not filename:
+            raise AppError("Nama file tidak valid", 400)
+
+        extension = Path(filename).suffix.lower()
+        hashed_name = hashlib.sha256(
+            f"{filename}:{secrets.token_hex(16)}".encode("utf-8")
+        ).hexdigest()
+        stored_name = f"{hashed_name}{extension}"
+
+        uploads_dir = Path(current_app.config["UPLOADS_DIR"])
+        target_dir = uploads_dir / subdir if subdir else uploads_dir
+        target_dir.mkdir(parents=True, exist_ok=True)
+        file.save(target_dir / stored_name)
+
+        public_parts = ["uploads"]
+        if subdir:
+            public_parts.append(subdir)
+        public_parts.append(stored_name)
+        return "/" + "/".join(public_parts)
 
     def list_tickets(self):
         try:

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bina Kasih - Memberi Dengan Kasih</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
@@ -14,7 +14,7 @@
     <nav class="navbar">
         <div class="container flex justify-between items-center">
             <div class="logo flex items-center gap-4">
-                <img src="{{ url_for('static', filename='logo_hand_heart.svg') }}">
+                <img src="{{ url_for('static', filename='images/logo_hand_heart.svg') }}">
                 <span class="font-bold text-dark" style="font-size: 1.5rem;">Bina Kasih</span>
             </div>
             <div class="hidden md:flex items-center">
@@ -399,7 +399,7 @@
                 <!-- Brand Info -->
                 <div>
                     <div class="flex items-center gap-2 mb-4">
-                        <img src="/static/logo_hand_heart.svg" alt="Bina Kasih Logo"
+                        <img src="/static/images/logo_hand_heart.svg" alt="Bina Kasih Logo"
                             style="width: 32px; height: 32px; filter: brightness(0) invert(1);">
                         <span class="font-bold text-white" style="font-size: 1.5rem;">Bina Kasih</span>
                     </div>
@@ -716,8 +716,8 @@
 
         document.addEventListener('DOMContentLoaded', loadCampaigns);
     </script>
-    <script src="{{ url_for('static', filename='auth.js') }}"></script>
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script>
         async function loadLatestDonationHighlight() {
             const nameEl = document.getElementById('latest-donor-name');

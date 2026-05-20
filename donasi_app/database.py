@@ -42,8 +42,15 @@ class Database:
                     name TEXT NOT NULL,
                     email TEXT NOT NULL,
                     password_hash TEXT NOT NULL,
+                    photo_url TEXT,
                     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
                 )
+                """
+            )
+            conn.execute(
+                """
+                ALTER TABLE users
+                ADD COLUMN IF NOT EXISTS photo_url TEXT
                 """
             )
             conn.execute(
