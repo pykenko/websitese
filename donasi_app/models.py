@@ -450,7 +450,8 @@ class TicketModel:
         with self.database.connect() as conn:
             rows = conn.execute(
                 """
-                SELECT id, user_id, category, description, photo_url, status, created_at
+                SELECT id, user_id, category, description, photo_url, status, created_at,
+                       admin_reply, replied_at
                 FROM tickets
                 WHERE user_id = %s
                 ORDER BY created_at DESC
@@ -468,7 +469,8 @@ class TicketModel:
         with self.database.connect() as conn:
             rows = conn.execute(
                 """
-                SELECT t.id, t.user_id, t.category, t.description, t.photo_url, t.status, t.created_at, u.name as user_name
+                SELECT t.id, t.user_id, t.category, t.description, t.photo_url, t.status, t.created_at,
+                       t.admin_reply, t.replied_at, u.name as user_name
                 FROM tickets t
                 LEFT JOIN users u ON t.user_id = u.id
                 ORDER BY t.created_at DESC
@@ -482,6 +484,54 @@ class TicketModel:
             res.append(data)
         return res
 
+    def reply(self, ticket_id: int, payload: dict[str, Any]) -> dict[str, Any]:
+        user = self.user_model.require_user()
+        if user["name"].lower() != "admin":
+            raise AppError("Unauthorized", 401)
+
+        reply_text = (payload.get("reply") or "").strip()
+        new_status = (payload.get("status") or "").strip() or None
+
+        if not reply_text:
+            raise AppError("Balasan tidak boleh kosong", 400)
+
+        valid_statuses = {"open", "in_progress", "closed"}
+        if new_status and new_status not in valid_statuses:
+            raise AppError("Status tidak valid", 400)
+
+        with self.database.connect() as conn:
+            if new_status:
+                row = conn.execute(
+                    """
+                    UPDATE tickets
+                    SET admin_reply = %s,
+                        replied_at = CURRENT_TIMESTAMP,
+                        status = %s
+                    WHERE id = %s
+                    RETURNING id, user_id, category, description, photo_url, status, created_at,
+                              admin_reply, replied_at
+                    """,
+                    (reply_text, new_status, ticket_id),
+                ).fetchone()
+            else:
+                row = conn.execute(
+                    """
+                    UPDATE tickets
+                    SET admin_reply = %s,
+                        replied_at = CURRENT_TIMESTAMP
+                    WHERE id = %s
+                    RETURNING id, user_id, category, description, photo_url, status, created_at,
+                              admin_reply, replied_at
+                    """,
+                    (reply_text, ticket_id),
+                ).fetchone()
+            conn.commit()
+
+        if not row:
+            raise AppError("Tiket tidak ditemukan", 404)
+
+        return self._serialize(row)
+
     @staticmethod
     def _serialize(row: dict[str, Any]) -> dict[str, Any]:
         return {
@@ -489,7 +539,9 @@ class TicketModel:
             "user_id": row["user_id"],
             "category": row["category"],
             "description": row["description"],
-            "photo_url": row["photo_url"],
+            "photo_url": row.get("photo_url"),
             "status": row["status"],
             "created_at": row["created_at"].isoformat() if row.get("created_at") else None,
+            "admin_reply": row.get("admin_reply"),
+            "replied_at": row["replied_at"].isoformat() if row.get("replied_at") else None,
         }

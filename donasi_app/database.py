@@ -141,6 +141,20 @@ class Database:
                 """
             )
 
+            conn.execute(
+                """
+                ALTER TABLE tickets
+                ADD COLUMN IF NOT EXISTS admin_reply TEXT
+                """
+            )
+
+            conn.execute(
+                """
+                ALTER TABLE tickets
+                ADD COLUMN IF NOT EXISTS replied_at TIMESTAMPTZ
+                """ 
+            )
+
             self._seed_default_admin(conn)
             self._sync_user_id_sequence(conn)
             conn.commit()

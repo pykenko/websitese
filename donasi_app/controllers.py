@@ -59,6 +59,12 @@ class ApiController:
             methods=["GET"],
         )
         app.add_url_rule(
+            "/api/tickets/<int:ticket_id>/reply",
+            endpoint="ticket_reply",
+            view_func=self.reply_ticket,
+            methods=["POST"],
+        )
+        app.add_url_rule(
             "/api/campaigns",
             endpoint="campaign_create",
             view_func=self.create_campaign,
@@ -226,6 +232,13 @@ class ApiController:
         except Exception as e:
             return jsonify({"success": False, "message": str(e)}), 500
         return jsonify({"success": True, "tickets": tickets})
+
+    def reply_ticket(self, ticket_id: int):
+        try:
+            ticket = self.ticket_model.reply(ticket_id, request.get_json(silent=True) or {})
+        except AppError as error:
+            return self._error_response(error)
+        return jsonify({"success": True, "ticket": ticket})
 
     @staticmethod
     def _error_response(error: AppError):
