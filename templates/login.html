@@ -55,10 +55,10 @@
                 </div>
                 <h3 class="font-bold text-dark mb-4">Masuk</h3>
                 <div class="input-group">
-                    <input type="email" id="login-email" class="form-input" placeholder="Email" required>
+                    <input type="text" id="login-identifier" class="form-input" placeholder="Username atau Email" autocomplete="username" required>
                 </div>
                 <div class="input-group">
-                    <input type="password" id="login-pass" class="form-input" placeholder="Kata Sandi" required>
+                    <input type="password" id="login-pass" class="form-input" placeholder="Kata Sandi" autocomplete="current-password" required>
                 </div>
                 <a href="#">Lupa Kata Sandi?</a>
                 
@@ -141,7 +141,7 @@
 
         async function handleLogin(e) {
             e.preventDefault();
-            const email = document.getElementById('login-email').value;
+            const identifier = document.getElementById('login-identifier').value.trim();
             const pass = document.getElementById('login-pass').value;
             const captchaInput = parseInt(document.getElementById('login-captcha').value);
 
@@ -152,7 +152,7 @@
             }
 
             if (typeof auth !== 'undefined') {
-                const result = await auth.login(email, pass);
+                const result = await auth.login(identifier, pass);
                 if (result.success) {
                     document.body.classList.add('page-exit');
                     setTimeout(() => window.location.href = APP_ROUTES.index, 400);

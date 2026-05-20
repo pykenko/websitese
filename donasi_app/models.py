@@ -59,7 +59,12 @@ class UserModel:
         return "Pendaftaran berhasil"
 
     def login(self, payload: dict[str, Any]) -> dict[str, Any]:
-        identifier = (payload.get("identifier") or payload.get("email") or "").strip()
+        identifier = (
+            payload.get("identifier")
+            or payload.get("username")
+            or payload.get("email")
+            or ""
+        ).strip()
         password = payload.get("password") or ""
         if not identifier or not password:
             raise AppError("Akun dan kata sandi wajib diisi", 400)
