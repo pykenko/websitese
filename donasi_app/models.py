@@ -55,6 +55,7 @@ class UserModel:
                 "INSERT INTO users (name, email, password_hash) VALUES (%s, %s, %s)",
                 (name, email, generate_password_hash(password)),
             )
+            conn.commit()
         return "Pendaftaran berhasil"
 
     def login(self, payload: dict[str, Any]) -> dict[str, Any]:
@@ -116,6 +117,7 @@ class UserModel:
                 """,
                 (name, email, user["id"]),
             ).fetchone()
+            conn.commit()
 
         return self._public_user(row)
 
@@ -195,6 +197,7 @@ class DonationModel:
                     email,
                 ),
             ).fetchone()
+            conn.commit()
 
         return self._serialize(row)
 
@@ -330,6 +333,7 @@ class CampaignModel:
                 """,
                 (campaign_id, title, description, target, duration, image_url, user["id"]),
             ).fetchone()
+            conn.commit()
 
         return self._serialize(row, user_name=user["name"], user_email=user["email"])
 
@@ -383,6 +387,7 @@ class CampaignModel:
                 """,
                 (campaign_id, user["id"]),
             ).fetchone()
+            conn.commit()
 
         if not row:
             raise AppError("Kampanye tidak ditemukan", 404)
@@ -435,6 +440,7 @@ class TicketModel:
                     photo_url,
                 ),
             ).fetchone()
+            conn.commit()
 
         return self._serialize(row)
 
