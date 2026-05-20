@@ -93,7 +93,9 @@
                         <h3 class="font-bold mb-2 text-dark" style="font-size: 1.25rem;">Bantu Yuda Meraih Cita-Cita
                         </h3>
                         <div class="card-compact-content">
-                            <p class="text-gray mb-4 flex-1" style="font-size: 0.95rem; line-height: 1.5;">Dukungan biaya
+                            <p class="campaign-description text-gray mb-4 flex-1" data-full-description="Dukungan biaya
+                                pendidikan untuk Yuda, seorang siswa teladan yang sangat membutuhkan biaya sekolah sebesar
+                                Rp 10.000.000." style="font-size: 0.95rem; line-height: 1.5;">Dukungan biaya
                                 pendidikan untuk Yuda, seorang siswa teladan yang sangat membutuhkan biaya sekolah sebesar
                                 Rp 10.000.000.</p>
                         </div>
@@ -146,7 +148,9 @@
                             Pendidikan</span>
                         <h3 class="font-bold mb-2 text-dark" style="font-size: 1.25rem;">Beasiswa untuk Rafi</h3>
                         <div class="card-compact-content">
-                            <p class="text-gray mb-4 flex-1" style="font-size: 0.95rem; line-height: 1.5;">Bantu Rafi
+                            <p class="campaign-description text-gray mb-4 flex-1" data-full-description="Bantu Rafi
+                                melanjutkan pendidikannya dengan memenuhi kebutuhan biaya sebesar Rp 5.000.000 agar dirinya
+                                tetap bisa belajar." style="font-size: 0.95rem; line-height: 1.5;">Bantu Rafi
                                 melanjutkan pendidikannya dengan memenuhi kebutuhan biaya sebesar Rp 5.000.000 agar dirinya
                                 tetap bisa belajar.</p>
                         </div>
@@ -199,7 +203,9 @@
                             Pendidikan</span>
                         <h3 class="font-bold mb-2 text-dark" style="font-size: 1.25rem;">Masa Depan Cerah Karina</h3>
                         <div class="card-compact-content">
-                            <p class="text-gray mb-4 flex-1" style="font-size: 0.95rem; line-height: 1.5;">Dukung Karina,
+                            <p class="campaign-description text-gray mb-4 flex-1" data-full-description="Dukung Karina,
+                                siswi berprestasi, untuk meraih pendidikannya di jenjang selanjutnya dengan mendonasikan Rp
+                                15.000.000." style="font-size: 0.95rem; line-height: 1.5;">Dukung Karina,
                                 siswi berprestasi, untuk meraih pendidikannya di jenjang selanjutnya dengan mendonasikan Rp
                                 15.000.000.</p>
                         </div>
@@ -588,6 +594,27 @@
         // Load Campaigns
         async function loadCampaigns() {
             const formatIDR = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+            const truncateText = (text, maxLength = 120) => {
+                if (!text) return '';
+                const normalized = text.trim();
+                if (normalized.length <= maxLength) {
+                    return normalized;
+                }
+
+                return `${normalized.slice(0, maxLength).trimEnd()}...`;
+            };
+            const escapeHtmlAttr = (text) => (text || '')
+                .replace(/&/g, '&amp;')
+                .replace(/"/g, '&quot;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+            const applyDescriptionTruncation = () => {
+                document.querySelectorAll('.campaign-description').forEach((element) => {
+                    const fullText = element.dataset.fullDescription || element.textContent || '';
+                    element.dataset.fullDescription = fullText.trim();
+                    element.textContent = truncateText(fullText);
+                });
+            };
 
             const getCollected = async (campId, campTitle, baseAmount = 0) => {
                 try {
@@ -653,6 +680,7 @@
                 } else {
                     dynamicCount++;
                     section.classList.remove('hidden');
+                    const shortDescription = truncateText(camp.description);
 
                     const card = document.createElement('div');
                     card.className = 'card';
@@ -688,7 +716,7 @@
                             <span class="text-primary font-semibold mb-2 block" style="font-size: 0.875rem;">Galang Dana</span>
                             <h3 class="font-bold mb-2 text-dark" style="font-size: 1.25rem; line-height: 1.4;">${camp.title}</h3>
                             <p class="text-gray mb-4" style="font-size: 0.95rem; line-height: 1.5;">Oleh: ${camp.created_by || camp.createdBy || '-'}</p>
-                            ${camp.description ? `<p class="text-gray mb-4" style="font-size: 0.9rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${camp.description}</p>` : ''}
+                            ${shortDescription ? `<p class="campaign-description text-gray mb-4" data-full-description="${escapeHtmlAttr(camp.description)}" style="font-size: 0.9rem; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${shortDescription}</p>` : ''}
                             <div style="margin-top: auto;">
                                 <div class="flex justify-between mb-2">
                                     <span class="text-gray" style="font-size: 0.875rem;">Terkumpul <strong class="collected-amount text-dark">${collectedFormatted}</strong></span>
@@ -712,9 +740,22 @@
                     grid.appendChild(card);
                 }
             });
+
+            applyDescriptionTruncation();
         }
 
-        document.addEventListener('DOMContentLoaded', loadCampaigns);
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.campaign-description').forEach((element) => {
+                const fullText = element.dataset.fullDescription || element.textContent || '';
+                const normalized = fullText.trim();
+                element.dataset.fullDescription = normalized;
+                element.textContent = normalized.length > 120
+                    ? `${normalized.slice(0, 120).trimEnd()}...`
+                    : normalized;
+            });
+
+            loadCampaigns();
+        });
     </script>
     <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
