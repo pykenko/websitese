@@ -783,8 +783,35 @@
 
             const result = await auth.updateProfile(newName, newEmail, newPhoto);
             if (result.success) {
+                const user = result.user;
+
+                // Update navbar
+                const navName = document.getElementById('nav-user-name');
+                if (navName) navName.textContent = user.name;
+
+                // Update profile card
+                const profileName = document.getElementById('profile-name');
+                if (profileName) profileName.textContent = user.name;
+                const profileEmail = document.getElementById('profile-email');
+                if (profileEmail) profileEmail.textContent = user.email;
+
+                // Update all user initials / photos
+                const initialEls = document.querySelectorAll('.user-initial');
+                if (user.photo) {
+                    initialEls.forEach(el => {
+                        el.innerHTML = `<img src="${user.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                        el.style.backgroundColor = 'transparent';
+                    });
+                } else {
+                    const initial = user.name.charAt(0).toUpperCase();
+                    initialEls.forEach(el => {
+                        el.textContent = initial;
+                        el.style.backgroundColor = '#FF4081';
+                    });
+                }
+
+                closeEditProfile();
                 alert('Profil berhasil diperbarui!');
-                window.location.reload(); // Reload to show new names/pics everywhere 
             } else {
                 alert(result.message || 'Gagal memperbarui profil.');
             }

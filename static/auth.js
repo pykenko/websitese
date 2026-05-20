@@ -3,10 +3,21 @@ const auth = {
     _initPromise: null,
 
     _setUser(user) {
-        const existingUser = this._user;
         this._user = user;
-        if (user && !user.photo && existingUser && existingUser.id === user.id && existingUser.photo) {
-            this._user = { ...user, photo: existingUser.photo };
+        if (user) {
+            // Load saved photo from localStorage
+            const savedPhoto = localStorage.getItem('user_photo_' + user.id);
+            if (savedPhoto) {
+                this._user = { ...user, photo: savedPhoto };
+            }
+        }
+    },
+
+    _savePhoto(userId, photoDataUrl) {
+        if (photoDataUrl) {
+            localStorage.setItem('user_photo_' + userId, photoDataUrl);
+        } else {
+            localStorage.removeItem('user_photo_' + userId);
         }
     },
 
@@ -84,14 +95,16 @@ const auth = {
         const updatedUser = { ...data.user };
         if (photo) {
             updatedUser.photo = photo;
+            this._savePhoto(updatedUser.id, photo);
         } else {
-            const currentUser = this.getUser();
-            if (currentUser?.photo) {
-                updatedUser.photo = currentUser.photo;
+            // Keep existing photo from localStorage
+            const savedPhoto = localStorage.getItem('user_photo_' + updatedUser.id);
+            if (savedPhoto) {
+                updatedUser.photo = savedPhoto;
             }
         }
 
-        this._setUser(updatedUser);
+        this._user = updatedUser;
         this._updateNavUi(updatedUser);
         return { success: true, user: updatedUser };
     },
@@ -119,7 +132,13 @@ const auth = {
                 const userNameDisplay = document.getElementById("nav-user-name");
                 const userInitialDisplay = document.getElementById("nav-user-initial");
                 if (userNameDisplay) userNameDisplay.textContent = user.name;
-                if (userInitialDisplay) userInitialDisplay.textContent = user.name.charAt(0).toUpperCase();
+                if (userInitialDisplay) {
+                    if (user.photo) {
+                        userInitialDisplay.innerHTML = `<img src="${user.photo}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+                    } else {
+                        userInitialDisplay.textContent = user.name.charAt(0).toUpperCase();
+                    }
+                }
             } else {
                 navAuth.classList.remove("hidden");
                 navUser.classList.add("hidden");
