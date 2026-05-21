@@ -20,6 +20,8 @@ services:
     environment:
       - SECRET_KEY=BINAKASIH
       - DATABASE_URL=postgresql://donasi:donasi@db:5432/donasi
+    volumes:
+      - ./uploads:/app/uploads
     depends_on:
       db:
         condition: service_healthy

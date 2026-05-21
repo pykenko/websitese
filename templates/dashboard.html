@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Donatur - Bina Kasih</title>
+    <title>Dashboard Admin - Bina Kasih</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
@@ -52,11 +52,11 @@
         </a>
 
         <div class="mb-6">
-            <h2 class="font-bold text-dark" style="font-size: 1.5rem;">Dashboard Donatur</h2>
-            <p class="text-gray">Terima kasih telah menjadi bagian dari perubahan. Berikut ringkasan aktivitas kebaikan
-                Anda.</p>
+            <h2 id="dashboard-title" class="font-bold text-dark" style="font-size: 1.5rem;">Dashboard</h2>
+            <p id="dashboard-subtitle" class="text-gray">Terima kasih telah menjadi bagian dari perubahan. Berikut ringkasan aktivitas kebaikan Anda.</p>
         </div>
 
+        <div id="donor-dashboard-view">
         <!-- Top Stats Grid -->
         <div class="stats-grid mb-8">
             <!-- Stat 1 -->
@@ -224,6 +224,67 @@
                 </div>
             </div>
         </div>
+        </div> <!-- end donor-dashboard-view -->
+
+        <div id="admin-dashboard-view" class="hidden">
+            <!-- Admin Top Stats Grid -->
+            <div class="stats-grid mb-8">
+                <!-- Stat 1 -->
+                <div class="card bg-primary text-white" style="border: none;">
+                    <div class="mb-4">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                    </div>
+                    <div>
+                        <div id="admin-stat-total" class="font-bold" style="font-size: 1.5rem;">0</div>
+                        <div style="font-size: 0.9rem; opacity: 0.9;">Total Tiket</div>
+                    </div>
+                </div>
+                <!-- Stat 2 -->
+                <div class="card">
+                    <div class="mb-4 text-primary" style="background: #FFF3E0; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F57C00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                    <div>
+                        <div id="admin-stat-open" class="font-bold text-dark" style="font-size: 1.5rem;">0</div>
+                        <div class="text-gray" style="font-size: 0.9rem;">Tiket Open</div>
+                    </div>
+                </div>
+                <!-- Stat 3 -->
+                <div class="card">
+                    <div class="mb-4 text-primary" style="background: #E3F2FD; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    </div>
+                    <div>
+                        <div id="admin-stat-progress" class="font-bold text-dark" style="font-size: 1.5rem;">0</div>
+                        <div class="text-gray" style="font-size: 0.9rem;">In Progress</div>
+                    </div>
+                </div>
+                <!-- Stat 4 -->
+                <div class="card">
+                    <div class="mb-4 text-primary" style="background: #E8F5E9; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    </div>
+                    <div>
+                        <div id="admin-stat-closed" class="font-bold text-dark" style="font-size: 1.5rem;">0</div>
+                        <div class="text-gray" style="font-size: 0.9rem;">Tiket Closed</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Full Ticket List -->
+            <div class="card" style="min-height: 400px;">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="font-bold text-dark" style="font-size: 1.25rem;">Daftar Semua Tiket Masuk</h3>
+                    <button onclick="fetchAdminViewTickets()" class="btn btn-outline flex items-center gap-2" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3"/></svg>
+                        Refresh
+                    </button>
+                </div>
+                <div id="admin-view-ticket-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                    <div class="text-center text-gray py-4">Memuat tiket...</div>
+                </div>
+            </div>
+        </div>
 
     </div>
 
@@ -375,6 +436,15 @@
         </div>
     </div>
 
+    <!-- Image Preview Modal -->
+    <div id="image-preview-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 300; align-items: center; justify-content: center; display: none;">
+        <div style="position: relative; max-width: 90vw; max-height: 90vh;">
+            <button onclick="closeImageModal()" style="position: absolute; top: -40px; right: 0; background: none; border: none; color: white; cursor: pointer;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <img id="image-preview-content" src="" style="max-width: 100%; max-height: 90vh; border-radius: 8px; object-fit: contain;">
+        </div>
+    </div>
     
     <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
@@ -937,7 +1007,7 @@
                             ${statusBadge(t.status)}
                         </div>
                         <p style="color:#4B5563; font-size:0.88rem; margin:0.5rem 0; line-height:1.5;">${t.description}</p>
-                        ${t.photo_url ? `<a href="${t.photo_url}" target="_blank" style="font-size:0.8rem; color:#6366F1;">📎 Lihat Foto</a>` : ''}
+                        ${t.photo_url ? `<button data-url="${t.photo_url}" onclick="openImageModal(this.dataset.url)" style="background:none; border:none; padding:0; font-size:0.8rem; color:#6366F1; cursor:pointer; text-decoration:underline;">📎 Lihat Foto</button>` : ''}
                         ${adminReplyHtml}
                         <div style="margin-top:0.75rem; border-top:1px solid #F3F4F6; padding-top:0.75rem;">
                             <button onclick='openAdminReply(${JSON.stringify({id:t.id, category:t.category, description:t.description, user_name:t.user_name||"User #"+t.user_id, status:t.status, admin_reply:t.admin_reply||""})})' 
@@ -1005,6 +1075,9 @@
                 if (res.success) {
                     closeAdminReply();
                     await openAdminTickets(); // refresh list
+                    if (typeof fetchAdminViewTickets === 'function') {
+                        fetchAdminViewTickets(); // refresh main view list
+                    }
                     alert('Balasan berhasil dikirim!');
                 } else {
                     alert(res.message || 'Gagal mengirim balasan.');
@@ -1078,13 +1151,100 @@
             const user = await auth.init();
             if (user) {
                 fetchTickets();
-                // Show admin-only button
+                
+                // Admin View Toggling
                 if (user.name && user.name.toLowerCase() === 'admin') {
-                    const adminBtn = document.getElementById('admin-view-tickets-btn');
-                    if (adminBtn) adminBtn.classList.remove('hidden');
+                    document.getElementById('donor-dashboard-view').classList.add('hidden');
+                    document.getElementById('admin-dashboard-view').classList.remove('hidden');
+                    document.getElementById('dashboard-title').textContent = 'Dashboard Admin';
+                    document.getElementById('dashboard-subtitle').textContent = 'Pusat Manajemen Bantuan dan Laporan Tiket Pengguna.';
+                    document.title = 'Dashboard Admin - Bina Kasih';
+                    
+                    fetchAdminViewTickets();
+                } else {
+                    document.getElementById('donor-dashboard-view').classList.remove('hidden');
+                    document.getElementById('admin-dashboard-view').classList.add('hidden');
+                    document.getElementById('dashboard-title').textContent = 'Dashboard Donatur';
+                    document.getElementById('dashboard-subtitle').textContent = 'Terima kasih telah menjadi bagian dari perubahan. Berikut ringkasan aktivitas kebaikan Anda.';
+                    document.title = 'Dashboard Donatur - Bina Kasih';
                 }
             }
         });
+
+        async function fetchAdminViewTickets() {
+            const listContainer = document.getElementById('admin-view-ticket-list');
+            listContainer.innerHTML = '<div class="text-center text-gray py-4">Memuat tiket...</div>';
+            try {
+                const response = await fetch('/api/tickets', { credentials: 'include' });
+                const res = await response.json();
+                if (!res.success) {
+                    listContainer.innerHTML = '<div class="text-center text-gray py-4">Gagal memuat tiket.</div>';
+                    return;
+                }
+                const tickets = res.tickets;
+                
+                // Calculate Stats
+                document.getElementById('admin-stat-total').textContent = tickets.length;
+                document.getElementById('admin-stat-open').textContent = tickets.filter(t => t.status === 'open').length;
+                document.getElementById('admin-stat-progress').textContent = tickets.filter(t => t.status === 'in_progress').length;
+                document.getElementById('admin-stat-closed').textContent = tickets.filter(t => t.status === 'closed').length;
+
+                listContainer.innerHTML = '';
+                if (tickets.length === 0) {
+                    listContainer.innerHTML = '<div class="text-center text-gray py-4">Belum ada tiket yang masuk.</div>';
+                    return;
+                }
+                tickets.forEach(t => {
+                    const date = new Date(t.created_at).toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
+                    let adminReplyHtml = '';
+                    if (t.admin_reply) {
+                        const repliedDate = t.replied_at ? new Date(t.replied_at).toLocaleDateString('id-ID') : '';
+                        adminReplyHtml = `
+                            <div style="background:linear-gradient(135deg,#EEF2FF,#F5F3FF); border-left:3px solid #6366F1; border-radius:6px; padding:0.5rem 0.75rem; margin-top:0.75rem;">
+                                <div style="font-size:0.75rem; font-weight:700; color:#6366F1; margin-bottom:0.25rem;">💬 Balasan Admin ${repliedDate ? '• ' + repliedDate : ''}</div>
+                                <div style="font-size:0.85rem; color:#374151;">${t.admin_reply}</div>
+                            </div>`;
+                    }
+                    const item = document.createElement('div');
+                    item.style.cssText = 'border:1px solid #E5E7EB; border-radius:12px; padding:1rem; background:#fff;';
+                    item.innerHTML = `
+                        <div class="flex justify-between items-start gap-2 mb-2">
+                            <div>
+                                <div style="font-weight:700; color:#111827; font-size:0.95rem;">${t.category}</div>
+                                <div style="font-size:0.8rem; color:#6B7280;">Dari: <strong>${t.user_name || 'User #' + t.user_id}</strong> • ${date}</div>
+                            </div>
+                            ${statusBadge(t.status)}
+                        </div>
+                        <p style="color:#4B5563; font-size:0.88rem; margin:0.5rem 0; line-height:1.5;">${t.description}</p>
+                        ${t.photo_url ? `<button data-url="${t.photo_url}" onclick="openImageModal(this.dataset.url)" style="background:none; border:none; padding:0; font-size:0.8rem; color:#6366F1; cursor:pointer; text-decoration:underline;">📎 Lihat Foto</button>` : ''}
+                        ${adminReplyHtml}
+                        <div style="margin-top:0.75rem; border-top:1px solid #F3F4F6; padding-top:0.75rem;">
+                            <button onclick='openAdminReply(${JSON.stringify({id:t.id, category:t.category, description:t.description, user_name:t.user_name||"User #"+t.user_id, status:t.status, admin_reply:t.admin_reply||""})})' 
+                                style="background:linear-gradient(135deg,#6366F1,#8B5CF6); color:white; border:none; border-radius:8px; padding:0.45rem 1rem; font-size:0.85rem; cursor:pointer; font-weight:600;">
+                                💬 ${t.admin_reply ? 'Edit Balasan' : 'Balas Tiket'}
+                            </button>
+                        </div>
+                    `;
+                    listContainer.appendChild(item);
+                });
+            } catch (err) {
+                console.error(err);
+                listContainer.innerHTML = '<div class="text-center text-gray py-4">Terjadi kesalahan.</div>';
+            }
+        }
+        function openImageModal(url) {
+            const modal = document.getElementById('image-preview-modal');
+            document.getElementById('image-preview-content').src = url;
+            modal.style.display = 'flex';
+            modal.classList.remove('hidden');
+        }
+
+        function closeImageModal() {
+            const modal = document.getElementById('image-preview-modal');
+            modal.style.display = 'none';
+            modal.classList.add('hidden');
+            document.getElementById('image-preview-content').src = '';
+        }
     </script>
 </body>
 
