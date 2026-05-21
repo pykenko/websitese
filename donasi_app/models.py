@@ -484,7 +484,14 @@ class TicketModel:
                        t.admin_reply, t.replied_at, u.name as user_name
                 FROM tickets t
                 LEFT JOIN users u ON t.user_id = u.id
-                ORDER BY t.created_at DESC
+                ORDER BY
+                    CASE t.status
+                        WHEN 'open' THEN 0
+                        WHEN 'in_progress' THEN 1
+                        WHEN 'closed' THEN 2
+                        ELSE 3
+                    END,
+                    t.created_at DESC
                 """
             ).fetchall()
             
@@ -542,6 +549,25 @@ class TicketModel:
             raise AppError("Tiket tidak ditemukan", 404)
 
         return self._serialize(row)
+
+    def delete_closed(self, ticket_id: int) -> None:
+        user = self.user_model.require_user()
+        if user["name"].lower() != "admin":
+            raise AppError("Unauthorized", 401)
+
+        with self.database.connect() as conn:
+            ticket = conn.execute(
+                "SELECT id, status FROM tickets WHERE id = %s",
+                (ticket_id,),
+            ).fetchone()
+
+            if not ticket:
+                raise AppError("Tiket tidak ditemukan", 404)
+            if ticket["status"] != "closed":
+                raise AppError("Hanya tiket closed yang bisa dihapus", 400)
+
+            conn.execute("DELETE FROM tickets WHERE id = %s", (ticket_id,))
+            conn.commit()
 
     @staticmethod
     def _serialize(row: dict[str, Any]) -> dict[str, Any]:

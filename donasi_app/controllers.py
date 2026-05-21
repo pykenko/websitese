@@ -70,6 +70,12 @@ class ApiController:
             methods=["POST"],
         )
         app.add_url_rule(
+            "/api/tickets/<int:ticket_id>",
+            endpoint="ticket_delete",
+            view_func=self.delete_ticket,
+            methods=["DELETE"],
+        )
+        app.add_url_rule(
             "/api/campaigns",
             endpoint="campaign_create",
             view_func=self.create_campaign,
@@ -265,6 +271,13 @@ class ApiController:
         except AppError as error:
             return self._error_response(error)
         return jsonify({"success": True, "ticket": ticket})
+
+    def delete_ticket(self, ticket_id: int):
+        try:
+            self.ticket_model.delete_closed(ticket_id)
+        except AppError as error:
+            return self._error_response(error)
+        return jsonify({"success": True})
 
     @staticmethod
     def _error_response(error: AppError):

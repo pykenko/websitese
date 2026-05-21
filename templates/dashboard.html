@@ -52,11 +52,12 @@
         </a>
 
         <div class="mb-6">
-            <h2 class="font-bold text-dark" style="font-size: 1.5rem;">Dashboard Donatur</h2>
-            <p class="text-gray">Terima kasih telah menjadi bagian dari perubahan. Berikut ringkasan aktivitas kebaikan
+            <h2 id="dashboard-title" class="font-bold text-dark" style="font-size: 1.5rem;">Dashboard Donatur</h2>
+            <p id="dashboard-subtitle" class="text-gray">Terima kasih telah menjadi bagian dari perubahan. Berikut ringkasan aktivitas kebaikan
                 Anda.</p>
         </div>
 
+        <div id="user-dashboard-content">
         <!-- Top Stats Grid -->
         <div class="stats-grid mb-8">
             <!-- Stat 1 -->
@@ -212,7 +213,7 @@
                     <p class="text-gray mb-4" style="font-size: 0.9rem;">Ada masalah atau pertanyaan? Kirimkan tiket bantuan kepada kami.</p>
                     <!-- Admin-only button: shown via JS -->
                     <button id="admin-view-tickets-btn" class="btn btn-primary w-full mb-2 hidden" onclick="openAdminTickets()" style="background: linear-gradient(135deg, #6366F1, #8B5CF6); border: none;">
-                        📋 Kelola Semua Tiket
+                        📋 Buka Inbox Tiket Admin
                     </button>
                     <button class="btn btn-outline w-full" onclick="openSupportTicket()">Buat Tiket Baru</button>
                     <div class="mt-4 pt-4 border-t">
@@ -222,6 +223,43 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        </div>
+
+        <div id="admin-ticket-workspace" class="card hidden" style="margin-top: 2rem;">
+            <div class="flex justify-between items-start gap-4 mb-6" style="flex-wrap: wrap;">
+                <div>
+                    <h3 class="font-bold text-dark" style="font-size: 1.35rem;">Inbox Tiket Admin</h3>
+                    <p class="text-gray" style="font-size: 0.92rem;">Lihat tiket masuk, balas cepat, dan hapus tiket yang sudah selesai.</p>
+                </div>
+                <button class="btn btn-outline" onclick="refreshAdminTickets()">Refresh</button>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:1rem; margin-bottom:1.25rem;">
+                <div style="background:#FFF7ED; border:1px solid #FED7AA; border-radius:12px; padding:1rem;">
+                    <div id="admin-ticket-open-count" class="font-bold text-dark" style="font-size:1.4rem;">0</div>
+                    <div class="text-gray" style="font-size:0.85rem;">Open</div>
+                </div>
+                <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:12px; padding:1rem;">
+                    <div id="admin-ticket-progress-count" class="font-bold text-dark" style="font-size:1.4rem;">0</div>
+                    <div class="text-gray" style="font-size:0.85rem;">In Progress</div>
+                </div>
+                <div style="background:#ECFDF5; border:1px solid #A7F3D0; border-radius:12px; padding:1rem;">
+                    <div id="admin-ticket-closed-count" class="font-bold text-dark" style="font-size:1.4rem;">0</div>
+                    <div class="text-gray" style="font-size:0.85rem;">Closed</div>
+                </div>
+            </div>
+
+            <div class="flex gap-2 mb-4" style="flex-wrap:wrap;">
+                <button class="btn btn-outline admin-ticket-filter active" data-filter="all" onclick="setAdminTicketFilter('all', this)">Semua</button>
+                <button class="btn btn-outline admin-ticket-filter" data-filter="open" onclick="setAdminTicketFilter('open', this)">Open</button>
+                <button class="btn btn-outline admin-ticket-filter" data-filter="in_progress" onclick="setAdminTicketFilter('in_progress', this)">In Progress</button>
+                <button class="btn btn-outline admin-ticket-filter" data-filter="closed" onclick="setAdminTicketFilter('closed', this)">Closed</button>
+            </div>
+
+            <div id="admin-ticket-workspace-list" style="display:flex; flex-direction:column; gap:1rem;">
+                <div class="text-center text-gray py-4">Memuat tiket...</div>
             </div>
         </div>
 
@@ -330,21 +368,6 @@
         </div>
     </div>
 
-    <!-- Admin: Semua Tiket Modal -->
-    <div id="admin-tickets-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; overflow: auto;">
-        <div class="card" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(720px, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); display: flex; flex-direction: column; margin: 0; animation: none;">
-            <div class="flex justify-between items-center mb-4 border-b pb-4">
-                <h3 class="font-bold text-dark" style="font-size: 1.25rem;">📋 Semua Tiket Laporan</h3>
-                <button onclick="closeAdminTickets()" class="text-gray hover:text-dark" style="background: none; border: none; cursor: pointer;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-            </div>
-            <div id="admin-ticket-list" style="overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; gap: 1rem;">
-                <div class="text-center text-gray py-4">Memuat tiket...</div>
-            </div>
-        </div>
-    </div>
-
     <!-- Admin: Reply Tiket Modal -->
     <div id="admin-reply-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; overflow: auto;">
         <div class="card" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(520px, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); display: flex; flex-direction: column; margin: 0; animation: none;">
@@ -380,11 +403,16 @@
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script>
         let dashboardUserDonations = [];
+        let adminTicketsState = [];
+        let adminTicketFilter = 'all';
 
         document.addEventListener('DOMContentLoaded', async () => {
             // Check auth (already done in auth.init but we need data here)
             const user = await auth.init();
             if (user) {
+                const admin = isAdminUser(user);
+                applyDashboardRole(user);
+
                 // Update Navbar Name
                 const navName = document.getElementById('nav-user-name');
                 if (navName) navName.textContent = user.name;
@@ -410,6 +438,16 @@
                         el.textContent = initial;
                         el.style.backgroundColor = '#FF4081'; // Restore bg color
                     });
+                }
+
+                if (admin) {
+                    const defaultFilterButton = document.querySelector('.admin-ticket-filter[data-filter="all"]');
+                    if (defaultFilterButton) {
+                        defaultFilterButton.style.backgroundColor = '#FCE4EC';
+                        defaultFilterButton.style.color = '#FF4081';
+                    }
+                    refreshAdminTickets();
+                    return;
                 }
 
                 // Load Donations dari Flask API
@@ -497,6 +535,7 @@
                 document.getElementById('stat-supported').textContent = donationSummary.user_campaign_count || 0;
                 document.getElementById('stat-platform-total').textContent = 'Rp ' + ((donationSummary.platform_total_amount || 0).toLocaleString('id-ID'));
                 updateCampaignsCount(user);
+                fetchTickets();
             }
 
             // Handle Create Campaign Form
@@ -852,6 +891,54 @@
             return `<span style="background:${color}; color:white; padding:2px 8px; border-radius:4px; font-size:0.7rem; font-weight:600;">${labels[status] || status}</span>`;
         }
 
+        function isAdminUser(user) {
+            return Boolean(user && user.name && user.name.toLowerCase() === 'admin');
+        }
+
+        function applyDashboardRole(user) {
+            const admin = isAdminUser(user);
+            const titleEl = document.getElementById('dashboard-title');
+            const subtitleEl = document.getElementById('dashboard-subtitle');
+            const userContent = document.getElementById('user-dashboard-content');
+            const adminWorkspace = document.getElementById('admin-ticket-workspace');
+
+            if (titleEl) {
+                titleEl.textContent = admin ? 'Dashboard Admin' : 'Dashboard Donatur';
+            }
+            if (subtitleEl) {
+                subtitleEl.textContent = admin
+                    ? 'Kelola tiket masuk, tindak lanjuti laporan pengguna, dan arsipkan tiket yang sudah selesai.'
+                    : 'Terima kasih telah menjadi bagian dari perubahan. Berikut ringkasan aktivitas kebaikan Anda.';
+            }
+            if (userContent) {
+                userContent.classList.toggle('hidden', admin);
+            }
+            if (adminWorkspace) {
+                adminWorkspace.classList.toggle('hidden', !admin);
+            }
+
+            document.title = admin ? 'Dashboard Admin - Bina Kasih' : 'Dashboard Donatur - Bina Kasih';
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function formatTicketDate(dateValue) {
+            return new Date(dateValue).toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+            });
+        }
+
         async function fetchTickets() {
             try {
                 const response = await fetch('/api/tickets', {
@@ -898,10 +985,86 @@
         }
 
         // --- Admin Ticket Management ---
-        async function openAdminTickets() {
-            showModal('admin-tickets-modal');
-            const listContainer = document.getElementById('admin-ticket-list');
-            listContainer.innerHTML = '<div class="text-center text-gray py-4">Memuat tiket...</div>';
+        function updateAdminTicketSummary(tickets) {
+            const openCount = tickets.filter((ticket) => ticket.status === 'open').length;
+            const progressCount = tickets.filter((ticket) => ticket.status === 'in_progress').length;
+            const closedCount = tickets.filter((ticket) => ticket.status === 'closed').length;
+
+            document.getElementById('admin-ticket-open-count').textContent = openCount;
+            document.getElementById('admin-ticket-progress-count').textContent = progressCount;
+            document.getElementById('admin-ticket-closed-count').textContent = closedCount;
+        }
+
+        function renderAdminTickets() {
+            const listContainer = document.getElementById('admin-ticket-workspace-list');
+            if (!listContainer) {
+                return;
+            }
+
+            const filteredTickets = adminTicketFilter === 'all'
+                ? adminTicketsState
+                : adminTicketsState.filter((ticket) => ticket.status === adminTicketFilter);
+
+            listContainer.innerHTML = '';
+            if (filteredTickets.length === 0) {
+                listContainer.innerHTML = '<div class="text-center text-gray py-4">Tidak ada tiket pada filter ini.</div>';
+                return;
+            }
+
+            filteredTickets.forEach((t) => {
+                const replyPayload = encodeURIComponent(JSON.stringify({
+                    id: t.id,
+                    category: t.category,
+                    description: t.description,
+                    user_name: t.user_name || `User #${t.user_id}`,
+                    status: t.status,
+                    admin_reply: t.admin_reply || '',
+                }));
+                let adminReplyHtml = '';
+                if (t.admin_reply) {
+                    const repliedDate = t.replied_at ? formatTicketDate(t.replied_at) : '';
+                    adminReplyHtml = `
+                        <div style="background:linear-gradient(135deg,#EEF2FF,#F5F3FF); border-left:3px solid #6366F1; border-radius:8px; padding:0.75rem 0.9rem; margin-top:0.85rem;">
+                            <div style="font-size:0.75rem; font-weight:700; color:#6366F1; margin-bottom:0.25rem;">Balasan Admin ${repliedDate ? '• ' + repliedDate : ''}</div>
+                            <div style="font-size:0.85rem; color:#374151; line-height:1.5;">${escapeHtml(t.admin_reply)}</div>
+                        </div>`;
+                }
+
+                const item = document.createElement('div');
+                item.style.cssText = 'border:1px solid #E5E7EB; border-radius:14px; padding:1rem; background:#fff;';
+                item.innerHTML = `
+                    <div class="flex justify-between items-start gap-3 mb-3" style="flex-wrap:wrap;">
+                        <div>
+                            <div style="font-weight:700; color:#111827; font-size:1rem;">${escapeHtml(t.category)}</div>
+                            <div style="font-size:0.82rem; color:#6B7280; margin-top:0.2rem;">#${t.id} • Dari <strong>${escapeHtml(t.user_name || 'User #' + t.user_id)}</strong> • ${formatTicketDate(t.created_at)}</div>
+                        </div>
+                        ${statusBadge(t.status)}
+                    </div>
+                    <p style="color:#374151; font-size:0.9rem; line-height:1.6; margin:0 0 0.75rem 0;">${escapeHtml(t.description)}</p>
+                    ${t.photo_url ? `<a href="${t.photo_url}" target="_blank" style="font-size:0.82rem; color:#6366F1; font-weight:600;">Lihat lampiran</a>` : ''}
+                    ${adminReplyHtml}
+                    <div class="flex gap-2 mt-4" style="flex-wrap:wrap; border-top:1px solid #F3F4F6; padding-top:0.9rem;">
+                        <button onclick="openAdminReplyFromPayload('${replyPayload}')"
+                            style="background:linear-gradient(135deg,#6366F1,#8B5CF6); color:white; border:none; border-radius:8px; padding:0.5rem 1rem; font-size:0.85rem; cursor:pointer; font-weight:600;">
+                            ${t.admin_reply ? 'Edit Balasan' : 'Balas Tiket'}
+                        </button>
+                        ${t.status === 'closed' ? `
+                            <button onclick="deleteClosedTicket(${t.id})"
+                                style="background:#FEF2F2; color:#B91C1C; border:1px solid #FECACA; border-radius:8px; padding:0.5rem 1rem; font-size:0.85rem; cursor:pointer; font-weight:600;">
+                                Hapus Tiket
+                            </button>` : ''}
+                    </div>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        async function refreshAdminTickets() {
+            const listContainer = document.getElementById('admin-ticket-workspace-list');
+            if (listContainer) {
+                listContainer.innerHTML = '<div class="text-center text-gray py-4">Memuat tiket...</div>';
+            }
+
             try {
                 const response = await fetch('/api/tickets', { credentials: 'include' });
                 const res = await response.json();
@@ -909,65 +1072,77 @@
                     listContainer.innerHTML = '<div class="text-center text-gray py-4">Gagal memuat tiket.</div>';
                     return;
                 }
-                const tickets = res.tickets;
-                listContainer.innerHTML = '';
-                if (tickets.length === 0) {
-                    listContainer.innerHTML = '<div class="text-center text-gray py-4">Belum ada tiket yang masuk.</div>';
-                    return;
-                }
-                tickets.forEach(t => {
-                    const date = new Date(t.created_at).toLocaleDateString('id-ID', { day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' });
-                    let adminReplyHtml = '';
-                    if (t.admin_reply) {
-                        const repliedDate = t.replied_at ? new Date(t.replied_at).toLocaleDateString('id-ID') : '';
-                        adminReplyHtml = `
-                            <div style="background:linear-gradient(135deg,#EEF2FF,#F5F3FF); border-left:3px solid #6366F1; border-radius:6px; padding:0.5rem 0.75rem; margin-top:0.75rem;">
-                                <div style="font-size:0.75rem; font-weight:700; color:#6366F1; margin-bottom:0.25rem;">💬 Balasan Admin ${repliedDate ? '• ' + repliedDate : ''}</div>
-                                <div style="font-size:0.85rem; color:#374151;">${t.admin_reply}</div>
-                            </div>`;
-                    }
-                    const item = document.createElement('div');
-                    item.style.cssText = 'border:1px solid #E5E7EB; border-radius:12px; padding:1rem; background:#fff;';
-                    item.innerHTML = `
-                        <div class="flex justify-between items-start gap-2 mb-2">
-                            <div>
-                                <div style="font-weight:700; color:#111827; font-size:0.95rem;">${t.category}</div>
-                                <div style="font-size:0.8rem; color:#6B7280;">Dari: <strong>${t.user_name || 'User #' + t.user_id}</strong> • ${date}</div>
-                            </div>
-                            ${statusBadge(t.status)}
-                        </div>
-                        <p style="color:#4B5563; font-size:0.88rem; margin:0.5rem 0; line-height:1.5;">${t.description}</p>
-                        ${t.photo_url ? `<a href="${t.photo_url}" target="_blank" style="font-size:0.8rem; color:#6366F1;">📎 Lihat Foto</a>` : ''}
-                        ${adminReplyHtml}
-                        <div style="margin-top:0.75rem; border-top:1px solid #F3F4F6; padding-top:0.75rem;">
-                            <button onclick='openAdminReply(${JSON.stringify({id:t.id, category:t.category, description:t.description, user_name:t.user_name||"User #"+t.user_id, status:t.status, admin_reply:t.admin_reply||""})})' 
-                                style="background:linear-gradient(135deg,#6366F1,#8B5CF6); color:white; border:none; border-radius:8px; padding:0.45rem 1rem; font-size:0.85rem; cursor:pointer; font-weight:600;">
-                                💬 ${t.admin_reply ? 'Edit Balasan' : 'Balas Tiket'}
-                            </button>
-                        </div>
-                    `;
-                    listContainer.appendChild(item);
-                });
+                adminTicketsState = res.tickets || [];
+                updateAdminTicketSummary(adminTicketsState);
+                renderAdminTickets();
             } catch (err) {
                 console.error(err);
                 listContainer.innerHTML = '<div class="text-center text-gray py-4">Terjadi kesalahan.</div>';
             }
         }
 
-        function closeAdminTickets() {
-            hideModal('admin-tickets-modal');
+        function setAdminTicketFilter(filter, button) {
+            adminTicketFilter = filter;
+            document.querySelectorAll('.admin-ticket-filter').forEach((element) => {
+                element.classList.remove('active');
+                element.style.backgroundColor = 'transparent';
+                element.style.color = '';
+            });
+            if (button) {
+                button.classList.add('active');
+                button.style.backgroundColor = '#FCE4EC';
+                button.style.color = '#FF4081';
+            }
+            renderAdminTickets();
+        }
+
+        function openAdminTickets() {
+            const workspace = document.getElementById('admin-ticket-workspace');
+            if (workspace) {
+                workspace.classList.remove('hidden');
+                workspace.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            refreshAdminTickets();
+        }
+
+        async function deleteClosedTicket(ticketId) {
+            const confirmed = confirm('Hapus tiket closed ini secara permanen?');
+            if (!confirmed) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/tickets/${ticketId}`, {
+                    method: 'DELETE',
+                    credentials: 'include',
+                });
+                const res = await response.json();
+                if (!response.ok || !res.success) {
+                    alert(res.message || 'Gagal menghapus tiket.');
+                    return;
+                }
+                await refreshAdminTickets();
+                alert('Tiket closed berhasil dihapus.');
+            } catch (error) {
+                console.error(error);
+                alert('Terjadi kesalahan saat menghapus tiket.');
+            }
+        }
+
+        function openAdminReplyFromPayload(payload) {
+            openAdminReply(JSON.parse(decodeURIComponent(payload)));
         }
 
         function openAdminReply(ticket) {
             document.getElementById('admin-reply-ticket-id').value = ticket.id;
             document.getElementById('admin-reply-text').value = ticket.admin_reply || '';
-            document.getElementById('admin-reply-status').value = '';
+            document.getElementById('admin-reply-status').value = ticket.status || '';
             
             const infoEl = document.getElementById('admin-reply-ticket-info');
             infoEl.innerHTML = `
-                <div style="font-weight:700; color:#111827; margin-bottom:0.25rem;">${ticket.category}</div>
-                <div style="color:#6B7280; font-size:0.85rem; margin-bottom:0.25rem;">Dari: <strong>${ticket.user_name}</strong></div>
-                <div style="color:#374151; font-size:0.88rem; line-height:1.5;">${ticket.description}</div>
+                <div style="font-weight:700; color:#111827; margin-bottom:0.25rem;">${escapeHtml(ticket.category)}</div>
+                <div style="color:#6B7280; font-size:0.85rem; margin-bottom:0.25rem;">Dari: <strong>${escapeHtml(ticket.user_name)}</strong></div>
+                <div style="color:#374151; font-size:0.88rem; line-height:1.5;">${escapeHtml(ticket.description)}</div>
             `;
             showModal('admin-reply-modal');
         }
@@ -1004,7 +1179,7 @@
                 const res = await response.json();
                 if (res.success) {
                     closeAdminReply();
-                    await openAdminTickets(); // refresh list
+                    await refreshAdminTickets();
                     alert('Balasan berhasil dikirim!');
                 } else {
                     alert(res.message || 'Gagal mengirim balasan.');
@@ -1019,6 +1194,11 @@
         });
 
         function openSupportTicket() {
+            const user = auth.getUser();
+            if (isAdminUser(user)) {
+                alert('Admin tidak dapat membuat tiket bantuan.');
+                return;
+            }
             document.getElementById('support-ticket-form').reset();
             showModal('support-ticket-modal');
         }
@@ -1029,6 +1209,11 @@
 
         document.getElementById('support-ticket-form').addEventListener('submit', async function(e) {
             e.preventDefault();
+
+            if (isAdminUser(auth.getUser())) {
+                alert('Admin tidak dapat membuat tiket bantuan.');
+                return;
+            }
             
             const category = document.getElementById('ticket-category').value;
             const description = document.getElementById('ticket-description').value;
@@ -1073,18 +1258,6 @@
             }
         });
 
-        // Initialize tickets fetch when DOM is loaded
-        document.addEventListener('DOMContentLoaded', async () => {
-            const user = await auth.init();
-            if (user) {
-                fetchTickets();
-                // Show admin-only button
-                if (user.name && user.name.toLowerCase() === 'admin') {
-                    const adminBtn = document.getElementById('admin-view-tickets-btn');
-                    if (adminBtn) adminBtn.classList.remove('hidden');
-                }
-            }
-        });
     </script>
 </body>
 
