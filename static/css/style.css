@@ -491,8 +491,8 @@ a {
 /* ── Dashboard ──────────────────────────────────────────── */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
     margin-bottom: 2rem;
 }
 
@@ -512,6 +512,82 @@ a {
 }
 
 .donation-item:last-child { border-bottom: none; }
+
+/* ── Dashboard Tab Navigation ──────────────────────────── */
+.dash-tab-nav {
+    display: flex;
+    gap: 0.5rem;
+    background: var(--white);
+    padding: 0.5rem;
+    border-radius: 14px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+    flex-wrap: wrap;
+}
+
+.dash-tab-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.7rem 1.25rem;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-gray);
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    white-space: nowrap;
+}
+
+.dash-tab-btn:hover {
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.dash-tab-btn.active {
+    background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+    color: var(--white);
+    box-shadow: 0 4px 14px rgba(255, 64, 129, 0.35);
+    transform: translateY(-1px);
+}
+
+.dash-tab-btn.active svg {
+    stroke: var(--white);
+}
+
+.dash-tab-btn:not(.active) svg {
+    stroke: var(--text-gray);
+    transition: stroke 0.25s;
+}
+
+.dash-tab-btn:hover:not(.active) svg {
+    stroke: var(--primary);
+}
+
+/* Dashboard Tab Panels */
+.dash-tab-panel {
+    display: none;
+    animation: dashTabFadeIn 0.35s ease-out;
+}
+
+.dash-tab-panel.active {
+    display: block;
+}
+
+@keyframes dashTabFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
 
 /* ── Carousel ───────────────────────────────────────────── */
 .carousel-section {
@@ -865,4 +941,20 @@ body.page-exit { animation: fadeOutPage 0.4s ease-in forwards; }
     .auth-container.active .overlay-right { transform: translateY(20%); }
 
     .carousel-slide { padding: 0 1.5rem; }
+
+    /* Dashboard tab nav responsive */
+    .dash-tab-nav {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+
+    .dash-tab-btn {
+        justify-content: center;
+        width: 100%;
+    }
+
+    /* Ticket tab grid responsive */
+    #tab-tiket > div {
+        grid-template-columns: 1fr !important;
+    }
 }

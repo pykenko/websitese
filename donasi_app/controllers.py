@@ -318,6 +318,7 @@ class PageController:
         app.add_url_rule("/register", endpoint="register_page", view_func=self.register)
         app.add_url_rule("/donation", endpoint="donation_page", view_func=self.donation)
         app.add_url_rule("/dashboard", endpoint="dashboard", view_func=self.dashboard)
+        app.add_url_rule("/dashboard/manage-ticket", endpoint="manage_ticket", view_func=self.manage_ticket)
         app.add_url_rule("/invoice", endpoint="invoice_page", view_func=self.invoice)
         app.add_url_rule("/kebijakan-privasi", endpoint="privacy_policy", view_func=self.privacy_policy)
         app.add_url_rule("/syarat-ketentuan", endpoint="terms", view_func=self.terms)
@@ -353,3 +354,6 @@ class PageController:
     
     def dashboard(self):
         return render_template("dashboard.html")
+
+    def manage_ticket(self):
+        return render_template("manage_ticket.html")

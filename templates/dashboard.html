@@ -57,93 +57,172 @@
                 Anda.</p>
         </div>
 
+        <!-- ========== TAB NAVIGATION (User only) ========== -->
         <div id="user-dashboard-content">
-        <!-- Top Stats Grid -->
-        <div class="stats-grid mb-8">
-            <!-- Stat 1 -->
-            <div class="card bg-primary text-white" style="border: none;">
-                <div class="mb-4">
-                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path
-                            d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                        </path>
-                    </svg>
+            <div class="dash-tab-nav mb-6">
+                <button class="dash-tab-btn active" data-tab="tab-beranda" onclick="switchDashTab('tab-beranda', this)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    Beranda
+                </button>
+                <button class="dash-tab-btn" data-tab="tab-profil" onclick="switchDashTab('tab-profil', this)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    Edit Profil
+                </button>
+                <button class="dash-tab-btn" data-tab="tab-kampanye" onclick="switchDashTab('tab-kampanye', this)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                    Buat Kampanye
+                </button>
+                <button class="dash-tab-btn" data-tab="tab-tiket" onclick="switchDashTab('tab-tiket', this)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    Tiket Bantuan
+                </button>
+            </div>
+
+            <!-- ===================== TAB 1: BERANDA ===================== -->
+            <div id="tab-beranda" class="dash-tab-panel active">
+                <!-- Top Stats Grid -->
+                <div class="stats-grid mb-8">
+                    <!-- Stat 1 -->
+                    <div class="card bg-primary text-white" style="border: none;">
+                        <div class="mb-4">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                </path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div id="stat-total" class="font-bold" style="font-size: 1.25rem;">Rp 0</div>
+                            <div style="font-size: 0.9rem; opacity: 0.9;">Total Donasi Anda</div>
+                        </div>
+                    </div>
+
+                    <!-- Stat 2 -->
+                    <div class="card">
+                        <div class="mb-4 text-primary"
+                            style="background: #E3F2FD; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </div>
+                        <div>
+                            <div id="stat-supported" class="font-bold text-dark" style="font-size: 1.5rem;">0</div>
+                            <div class="text-gray" style="font-size: 0.9rem;">Kampanye Didukung</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="mb-4 text-primary"
+                            style="background: #E8F5E9; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 1v22"></path>
+                                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14.5a3.5 3.5 0 0 1 0 7H6"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div id="stat-platform-total" class="font-bold text-dark" style="font-size: 1.25rem;">Rp 0</div>
+                            <div class="text-gray" style="font-size: 0.9rem;">Total Donasi Platform</div>
+                        </div>
+                    </div>
+
+                    <!-- Stat 3: Delete Campaign -->
+                    <div class="card" style="cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#fafafa'" onmouseout="this.style.backgroundColor='white'" onclick="openManageCampaigns()">
+                        <div class="mb-4 text-primary"
+                            style="background: #FFEBEE; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F44336" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <div id="stat-campaigns-count" class="font-bold text-dark" style="font-size: 1.5rem;">0</div>
+                            <div class="text-gray" style="font-size: 0.9rem;">Hapus Kampanye Saya</div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <div id="stat-total" class="font-bold" style="font-size: 1.25rem;">Rp 0</div>
-                    <div style="font-size: 0.9rem; opacity: 0.9;">Total Donasi Anda</div>
+
+                <div class="dashboard-grid">
+                    <!-- Left Column: History -->
+                    <div class="flex flex-col gap-6">
+                        <!-- History Card -->
+                        <div class="card">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="font-bold text-dark">Riwayat Donasi Terbaru</h3>
+                            </div>
+
+                            <div id="donation-list" class="donation-list">
+                                <!-- Dynamic Content will be loaded here -->
+                                <div class="text-center text-gray py-4">Belum ada donasi.</div>
+                            </div>
+
+                            <div class="text-center mt-4 pt-4 border-t">
+                                <a href="#" onclick="openDonationHistoryModal(event)" class="text-primary font-bold text-sm hover:underline">Lihat Semua Riwayat →</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Notification -->
+                    <div class="flex flex-col gap-6">
+                        <!-- Notification Card -->
+                        <div class="card">
+                            <div class="flex justify-between items-center mb-4">
+                                <h4 class="font-bold text-dark">Notifikasi</h4>
+                                <span id="notif-badge" class="badge hidden"
+                                    style="background: #FF4081; color: white; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; padding: 0; font-size: 0.7rem;">0</span>
+                            </div>
+
+                            <div id="notification-list">
+                                <!-- Dynamic content will be injected here -->
+                            </div>
+
+                            <div class="text-center mt-2">
+                                <a href="#" onclick="openNotificationModal(event)" class="text-primary font-bold text-sm hover:underline">Lihat Semua</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Stat 2 -->
-            <div class="card">
-                <div class="mb-4 text-primary"
-                    style="background: #E3F2FD; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2196F3" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                    </svg>
-                </div>
-                <div>
-                    <div id="stat-supported" class="font-bold text-dark" style="font-size: 1.5rem;">0</div>
-                    <div class="text-gray" style="font-size: 0.9rem;">Kampanye Didukung</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="mb-4 text-primary"
-                    style="background: #E8F5E9; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2E7D32" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 1v22"></path>
-                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14.5a3.5 3.5 0 0 1 0 7H6"></path>
-                    </svg>
-                </div>
-                <div>
-                    <div id="stat-platform-total" class="font-bold text-dark" style="font-size: 1.25rem;">Rp 0</div>
-                    <div class="text-gray" style="font-size: 0.9rem;">Total Donasi Platform</div>
-                </div>
-            </div>
-
-            <!-- Stat 3: Delete Campaign -->
-            <div class="card" style="cursor: pointer; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#fafafa'" onmouseout="this.style.backgroundColor='white'" onclick="openManageCampaigns()">
-                <div class="mb-4 text-primary"
-                    style="background: #FFEBEE; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F44336" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                    </svg>
-                </div>
-                <div>
-                    <div id="stat-campaigns-count" class="font-bold text-dark" style="font-size: 1.5rem;">0</div>
-                    <div class="text-gray" style="font-size: 0.9rem;">Hapus Kampanye Saya</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="dashboard-grid">
-            <!-- Left Column: History & New Campaign -->
-            <div class="flex flex-col gap-6">
-                <!-- History Card -->
+            <!-- ===================== TAB 2: EDIT PROFIL ===================== -->
+            <div id="tab-profil" class="dash-tab-panel">
                 <div class="card">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="font-bold text-dark">Riwayat Donasi Terbaru</h3>
+                    <h3 class="font-bold text-dark mb-6" style="font-size: 1.25rem;">Edit Profil</h3>
+                    <div class="text-center mb-4">
+                        <div id="profile-picture-display" class="user-initial"
+                            style="width: 80px; height: 80px; background: #FF4081; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 2rem; margin: 0 auto; overflow: hidden;">
+                            U
+                        </div>
+                        <h4 id="profile-name" class="font-bold text-dark mt-2">User</h4>
+                        <p id="profile-email" class="text-gray" style="font-size: 0.9rem;">user@email.com</p>
                     </div>
-
-                    <div id="donation-list" class="donation-list">
-                        <!-- Dynamic Content will be loaded here -->
-                        <div class="text-center text-gray py-4">Belum ada donasi.</div>
-                    </div>
-
-                    <div class="text-center mt-4 pt-4 border-t">
-                        <a href="#" onclick="openDonationHistoryModal(event)" class="text-primary font-bold text-sm hover:underline">Lihat Semua Riwayat →</a>
-                    </div>
+                    <form id="edit-profile-form" class="flex flex-col gap-4">
+                        <div class="text-center mb-2">
+                            <div id="edit-photo-preview" style="width: 80px; height: 80px; background: #E5E7EB; border-radius: 50%; margin: 0 auto; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #9CA3AF;">
+                                📷
+                            </div>
+                            <label for="edit-photo" class="text-primary hover:underline text-sm font-medium mt-2 cursor-pointer inline-block" style="cursor: pointer;">Ubah Foto</label>
+                            <input type="file" id="edit-photo" accept="image/*" class="hidden">
+                        </div>
+                        <div>
+                            <label for="edit-name" style="display: block; margin-bottom: 0.5rem; color: var(--text-dark); font-weight: 500; font-size: 0.9rem;">Nama Lengkap</label>
+                            <input type="text" id="edit-name" required style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px; font-family: inherit;">
+                        </div>
+                        <div>
+                            <label for="edit-email" style="display: block; margin-bottom: 0.5rem; color: var(--text-dark); font-weight: 500; font-size: 0.9rem;">Email</label>
+                            <input type="email" id="edit-email" required style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px; font-family: inherit;">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-full mt-2">Simpan Perubahan</button>
+                    </form>
                 </div>
+            </div>
 
-                <!-- Create Campaign Card -->
+            <!-- ===================== TAB 3: BUAT KAMPANYE ===================== -->
+            <div id="tab-kampanye" class="dash-tab-panel">
                 <div class="card">
                     <h3 class="font-bold text-dark mb-4" style="font-size: 1.25rem;">Buat Kampanye Baru</h3>
                     <form id="create-campaign-form" class="flex flex-col gap-4">
@@ -177,122 +256,112 @@
                 </div>
             </div>
 
-            <!-- Right Column: Profile & Notification -->
-            <div class="flex flex-col gap-6">
-                <!-- Profile Card -->
-                <div class="card text-center">
-                    <div class="user-initial" id="profile-picture-display"
-                        style="width: 64px; height: 64px; background: #FF4081; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 1.5rem; margin: 0 auto 1rem; overflow: hidden;">
-                        U
+            <!-- ===================== TAB 4: TIKET BANTUAN ===================== -->
+            <div id="tab-tiket" class="dash-tab-panel">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+                    <!-- Left: Create Ticket -->
+                    <div class="card">
+                        <h4 class="font-bold text-dark mb-4" style="font-size: 1.15rem;">Buat Tiket Baru</h4>
+                        <p class="text-gray mb-4" style="font-size: 0.9rem;">Ada masalah atau pertanyaan? Kirimkan tiket bantuan kepada kami.</p>
+                        <form id="support-ticket-form-inline" class="flex flex-col gap-4">
+                            <div>
+                                <label for="ticket-category-inline" style="display: block; margin-bottom: 0.5rem; color: var(--text-dark); font-weight: 500; font-size: 0.9rem;">Kategori Masalah</label>
+                                <select id="ticket-category-inline" required style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px; font-family: inherit;">
+                                    <option value="" disabled selected>Pilih kategori...</option>
+                                    <option value="Akun">Masalah Akun / Login</option>
+                                    <option value="Donasi">Masalah Donasi / Transaksi</option>
+                                    <option value="Kampanye">Masalah Kampanye</option>
+                                    <option value="Teknis">Error Teknis (Bug)</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="ticket-description-inline" style="display: block; margin-bottom: 0.5rem; color: var(--text-dark); font-weight: 500; font-size: 0.9rem;">Deskripsi Lengkap</label>
+                                <textarea id="ticket-description-inline" placeholder="Jelaskan masalah Anda secara detail..." required style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px; font-family: inherit; min-height: 100px; resize: vertical;"></textarea>
+                            </div>
+                            <div>
+                                <label for="ticket-photo-inline" style="display: block; margin-bottom: 0.5rem; color: var(--text-dark); font-weight: 500; font-size: 0.9rem;">Lampirkan Foto/Screenshot (Opsional)</label>
+                                <input type="file" id="ticket-photo-inline" accept="image/*" style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px; background: white; font-family: inherit; font-size: 0.9rem; color: #6B7280;">
+                            </div>
+                            <button type="submit" class="btn btn-primary w-full mt-2">Kirim Tiket</button>
+                        </form>
                     </div>
-                    <h3 id="profile-name" class="font-bold text-dark">User</h3>
-                    <p id="profile-email" class="text-gray mb-4">user@email.com</p>
-                    <button class="btn btn-outline w-full" onclick="openEditProfile()">Edit Profil</button>
-                </div>
 
-                <!-- Notification Card -->
-                <div class="card">
-                    <div class="flex justify-between items-center mb-4">
-                        <h4 class="font-bold text-dark">Notifikasi</h4>
-                        <span id="notif-badge" class="badge hidden"
-                            style="background: #FF4081; color: white; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; padding: 0; font-size: 0.7rem;">0</span>
-                    </div>
-
-                    <div id="notification-list">
-                        <!-- Dynamic content will be injected here -->
-                    </div>
-
-                    <div class="text-center mt-2">
-                        <a href="#" onclick="openNotificationModal(event)" class="text-primary font-bold text-sm hover:underline">Lihat Semua</a>
-                    </div>
-                </div>
-
-                <!-- Support Ticket Card -->
-                <div class="card">
-                    <h4 class="font-bold text-dark mb-4">Pusat Bantuan</h4>
-                    <p class="text-gray mb-4" style="font-size: 0.9rem;">Ada masalah atau pertanyaan? Kirimkan tiket bantuan kepada kami.</p>
-                    <!-- Admin-only button: shown via JS -->
-                    <button id="admin-view-tickets-btn" class="btn btn-primary w-full mb-2 hidden" onclick="openAdminTickets()" style="background: linear-gradient(135deg, #6366F1, #8B5CF6); border: none;">
-                        📋 Buka Inbox Tiket Admin
-                    </button>
-                    <button class="btn btn-outline w-full" onclick="openSupportTicket()">Buat Tiket Baru</button>
-                    <div class="mt-4 pt-4 border-t">
-                        <h5 class="font-bold text-dark mb-2" style="font-size: 0.9rem;">Tiket Saya</h5>
-                        <div id="ticket-list-container" style="max-height: 200px; overflow-y: auto; font-size: 0.85rem;">
+                    <!-- Right: My Tickets -->
+                    <div class="card">
+                        <h4 class="font-bold text-dark mb-4" style="font-size: 1.15rem;">Tiket Saya</h4>
+                        <div id="ticket-list-container" style="max-height: 500px; overflow-y: auto; font-size: 0.85rem;">
                             <div class="text-center text-gray py-2">Memuat tiket...</div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        </div>
 
-        <div id="admin-ticket-workspace" class="card hidden" style="margin-top: 2rem;">
-            <div class="flex justify-between items-start gap-4 mb-6" style="flex-wrap: wrap;">
-                <div>
-                    <h3 class="font-bold text-dark" style="font-size: 1.35rem;">Inbox Tiket Admin</h3>
-                    <p class="text-gray" style="font-size: 0.92rem;">Lihat tiket masuk, balas cepat, dan hapus tiket yang sudah selesai.</p>
+        <!-- ========== ADMIN WORKSPACE ========== -->
+        <div id="admin-ticket-workspace" class="hidden">
+            <!-- Stats Row -->
+            <div class="stats-grid mb-6">
+                <div class="card" style="border: none; background: linear-gradient(135deg, #6366F1, #8B5CF6); color: white;">
+                    <div class="mb-4">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    </div>
+                    <div>
+                        <div id="admin-ticket-open-count" class="font-bold" style="font-size: 1.5rem;">0</div>
+                        <div style="font-size: 0.9rem; opacity: 0.9;">Tiket Open</div>
+                    </div>
                 </div>
-                <button class="btn btn-outline" onclick="refreshAdminTickets()">Refresh</button>
+                <div class="card">
+                    <div class="mb-4" style="background: #EFF6FF; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    </div>
+                    <div>
+                        <div id="admin-ticket-progress-count" class="font-bold text-dark" style="font-size: 1.5rem;">0</div>
+                        <div class="text-gray" style="font-size: 0.9rem;">In Progress</div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="mb-4" style="background: #ECFDF5; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    </div>
+                    <div>
+                        <div id="admin-ticket-closed-count" class="font-bold text-dark" style="font-size: 1.5rem;">0</div>
+                        <div class="text-gray" style="font-size: 0.9rem;">Closed</div>
+                    </div>
+                </div>
             </div>
 
-            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:1rem; margin-bottom:1.25rem;">
-                <div style="background:#FFF7ED; border:1px solid #FED7AA; border-radius:12px; padding:1rem;">
-                    <div id="admin-ticket-open-count" class="font-bold text-dark" style="font-size:1.4rem;">0</div>
-                    <div class="text-gray" style="font-size:0.85rem;">Open</div>
-                </div>
-                <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:12px; padding:1rem;">
-                    <div id="admin-ticket-progress-count" class="font-bold text-dark" style="font-size:1.4rem;">0</div>
-                    <div class="text-gray" style="font-size:0.85rem;">In Progress</div>
-                </div>
-                <div style="background:#ECFDF5; border:1px solid #A7F3D0; border-radius:12px; padding:1rem;">
-                    <div id="admin-ticket-closed-count" class="font-bold text-dark" style="font-size:1.4rem;">0</div>
-                    <div class="text-gray" style="font-size:0.85rem;">Closed</div>
-                </div>
+            <!-- Filter Tab Bar -->
+            <div class="dash-tab-nav mb-6">
+                <button class="dash-tab-btn active" style="--active-bg: linear-gradient(135deg, #6366F1, #8B5CF6);" data-filter="all" onclick="setAdminTicketFilter('all', this)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                    Semua Tiket
+                </button>
+                <button class="dash-tab-btn" data-filter="open" onclick="setAdminTicketFilter('open', this)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                    Open
+                </button>
+                <button class="dash-tab-btn" data-filter="in_progress" onclick="setAdminTicketFilter('in_progress', this)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    In Progress
+                </button>
+                <button class="dash-tab-btn" data-filter="closed" onclick="setAdminTicketFilter('closed', this)">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                    Closed
+                </button>
+                <div style="flex: 1;"></div>
+                <button class="dash-tab-btn" onclick="refreshAdminTickets()" style="background: #F3F4F6;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+                    Refresh
+                </button>
             </div>
 
-            <div class="flex gap-2 mb-4" style="flex-wrap:wrap;">
-                <button class="btn btn-outline admin-ticket-filter active" data-filter="all" onclick="setAdminTicketFilter('all', this)">Semua</button>
-                <button class="btn btn-outline admin-ticket-filter" data-filter="open" onclick="setAdminTicketFilter('open', this)">Open</button>
-                <button class="btn btn-outline admin-ticket-filter" data-filter="in_progress" onclick="setAdminTicketFilter('in_progress', this)">In Progress</button>
-                <button class="btn btn-outline admin-ticket-filter" data-filter="closed" onclick="setAdminTicketFilter('closed', this)">Closed</button>
-            </div>
-
+            <!-- Ticket List -->
             <div id="admin-ticket-workspace-list" style="display:flex; flex-direction:column; gap:1rem;">
                 <div class="text-center text-gray py-4">Memuat tiket...</div>
             </div>
         </div>
 
-    </div>
-
-    <!-- Edit Profile Modal -->
-    <div id="edit-profile-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; overflow: auto;">
-        <div class="card" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(400px, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); display: flex; flex-direction: column; margin: 0; animation: none;">
-            <div class="flex justify-between items-center mb-4 border-b pb-4">
-                <h3 class="font-bold text-dark" style="font-size: 1.25rem;">Edit Profil</h3>
-                <button onclick="closeEditProfile()" class="text-gray hover:text-dark" style="background: none; border: none; cursor: pointer;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-            </div>
-            <form id="edit-profile-form" class="flex flex-col gap-4" style="overflow-y: auto;">
-                <div class="text-center mb-2">
-                    <div id="edit-photo-preview" style="width: 80px; height: 80px; background: #E5E7EB; border-radius: 50%; margin: 0 auto; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #9CA3AF;">
-                        📷
-                    </div>
-                    <label for="edit-photo" class="text-primary hover:underline text-sm font-medium mt-2 cursor-pointer inline-block" style="cursor: pointer;">Ubah Foto</label>
-                    <input type="file" id="edit-photo" accept="image/*" class="hidden">
-                </div>
-                <div>
-                    <label for="edit-name" style="display: block; margin-bottom: 0.5rem; color: var(--text-dark); font-weight: 500; font-size: 0.9rem;">Nama Lengkap</label>
-                    <input type="text" id="edit-name" required style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px; font-family: inherit;">
-                </div>
-                <div>
-                    <label for="edit-email" style="display: block; margin-bottom: 0.5rem; color: var(--text-dark); font-weight: 500; font-size: 0.9rem;">Email</label>
-                    <input type="email" id="edit-email" required style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px; font-family: inherit;">
-                </div>
-                <button type="submit" class="btn btn-primary w-full mt-2">Simpan Perubahan</button>
-            </form>
-        </div>
     </div>
 
     <!-- Manage Campaigns Modal -->
@@ -334,40 +403,6 @@
         </div>
     </div>
 
-    <!-- Support Ticket Modal -->
-    <div id="support-ticket-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 100; overflow: auto;">
-        <div class="card" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(500px, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); display: flex; flex-direction: column; margin: 0; animation: none;">
-            <div class="flex justify-between items-center mb-4 border-b pb-4">
-                <h3 class="font-bold text-dark" style="font-size: 1.25rem;">Buat Tiket Bantuan</h3>
-                <button onclick="closeSupportTicket()" class="text-gray hover:text-dark" style="background: none; border: none; cursor: pointer;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-            </div>
-            <form id="support-ticket-form" class="flex flex-col gap-4" style="overflow-y: auto;">
-                <div>
-                    <label for="ticket-category" style="display: block; margin-bottom: 0.5rem; color: var(--text-dark); font-weight: 500; font-size: 0.9rem;">Kategori Masalah</label>
-                    <select id="ticket-category" required style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px; font-family: inherit;">
-                        <option value="" disabled selected>Pilih kategori...</option>
-                        <option value="Akun">Masalah Akun / Login</option>
-                        <option value="Donasi">Masalah Donasi / Transaksi</option>
-                        <option value="Kampanye">Masalah Kampanye</option>
-                        <option value="Teknis">Error Teknis (Bug)</option>
-                        <option value="Lainnya">Lainnya</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="ticket-description" style="display: block; margin-bottom: 0.5rem; color: var(--text-dark); font-weight: 500; font-size: 0.9rem;">Deskripsi Lengkap</label>
-                    <textarea id="ticket-description" placeholder="Jelaskan masalah Anda secara detail..." required style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px; font-family: inherit; min-height: 100px; resize: vertical;"></textarea>
-                </div>
-                <div>
-                    <label for="ticket-photo" style="display: block; margin-bottom: 0.5rem; color: var(--text-dark); font-weight: 500; font-size: 0.9rem;">Lampirkan Foto/Screenshot (Opsional)</label>
-                    <input type="file" id="ticket-photo" accept="image/*" style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px; background: white; font-family: inherit; font-size: 0.9rem; color: #6B7280;">
-                </div>
-                <button type="submit" class="btn btn-primary w-full mt-2">Kirim Tiket</button>
-            </form>
-        </div>
-    </div>
-
     <!-- Admin: Reply Tiket Modal -->
     <div id="admin-reply-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; overflow: auto;">
         <div class="card" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(520px, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); display: flex; flex-direction: column; margin: 0; animation: none;">
@@ -405,6 +440,44 @@
         let dashboardUserDonations = [];
         let adminTicketsState = [];
         let adminTicketFilter = 'all';
+
+        // ===== TAB SWITCHING =====
+        function switchDashTab(tabId, btn) {
+            // Hide all panels
+            document.querySelectorAll('.dash-tab-panel').forEach(p => p.classList.remove('active'));
+            // Deactivate all buttons
+            document.querySelectorAll('.dash-tab-btn').forEach(b => b.classList.remove('active'));
+
+            // Show selected panel
+            const panel = document.getElementById(tabId);
+            if (panel) panel.classList.add('active');
+            // Activate button
+            if (btn) btn.classList.add('active');
+
+            // If switching to profile tab, populate the form
+            if (tabId === 'tab-profil') {
+                populateProfileForm();
+            }
+            // If switching to ticket tab, refresh tickets
+            if (tabId === 'tab-tiket') {
+                fetchTickets();
+            }
+        }
+
+        function populateProfileForm() {
+            const user = auth.getUser();
+            if (!user) return;
+            document.getElementById('edit-name').value = user.name;
+            document.getElementById('edit-email').value = user.email;
+            
+            const preview = document.getElementById('edit-photo-preview');
+            if (user.photo) {
+                preview.innerHTML = `<img src="${user.photo}" style="width: 100%; height: 100%; object-fit: cover;">`;
+            } else {
+                preview.innerHTML = '📷';
+            }
+            document.getElementById('edit-photo').value = '';
+        }
 
         document.addEventListener('DOMContentLoaded', async () => {
             // Check auth (already done in auth.init but we need data here)
@@ -854,34 +927,11 @@
                     });
                 }
 
-                closeEditProfile();
                 alert('Profil berhasil diperbarui!');
             } else {
                 alert(result.message || 'Gagal memperbarui profil.');
             }
         });
-
-        function openEditProfile() {
-            const user = auth.getUser();
-            if (user) {
-                document.getElementById('edit-name').value = user.name;
-                document.getElementById('edit-email').value = user.email;
-                
-                const preview = document.getElementById('edit-photo-preview');
-                if (user.photo) {
-                    preview.innerHTML = `<img src="${user.photo}" style="width: 100%; height: 100%; object-fit: cover;">`;
-                } else {
-                    preview.innerHTML = '📷';
-                }
-
-                document.getElementById('edit-photo').value = '';
-                showModal('edit-profile-modal');
-            }
-        }
-
-        function closeEditProfile() {
-            hideModal('edit-profile-modal');
-        }
 
         // --- Support Ticket Functions ---
         function statusBadge(status) {
@@ -1193,21 +1243,8 @@
             }
         });
 
-        function openSupportTicket() {
-            const user = auth.getUser();
-            if (isAdminUser(user)) {
-                alert('Admin tidak dapat membuat tiket bantuan.');
-                return;
-            }
-            document.getElementById('support-ticket-form').reset();
-            showModal('support-ticket-modal');
-        }
-
-        function closeSupportTicket() {
-            hideModal('support-ticket-modal');
-        }
-
-        document.getElementById('support-ticket-form').addEventListener('submit', async function(e) {
+        // --- Inline Support Ticket Form (Tab version) ---
+        document.getElementById('support-ticket-form-inline').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             if (isAdminUser(auth.getUser())) {
@@ -1215,9 +1252,9 @@
                 return;
             }
             
-            const category = document.getElementById('ticket-category').value;
-            const description = document.getElementById('ticket-description').value;
-            const photoFile = document.getElementById('ticket-photo').files[0];
+            const category = document.getElementById('ticket-category-inline').value;
+            const description = document.getElementById('ticket-description-inline').value;
+            const photoFile = document.getElementById('ticket-photo-inline').files[0];
 
             if (!category || !description) {
                 alert('Kategori dan deskripsi wajib diisi!');
@@ -1244,7 +1281,7 @@
                 const res = await response.json();
                 if (res.success) {
                     alert('Tiket berhasil dikirim! Tim kami akan segera menindaklanjuti.');
-                    closeSupportTicket();
+                    e.target.reset();
                     fetchTickets();
                 } else {
                     alert(res.message || 'Gagal mengirim tiket.');

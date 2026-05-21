@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Tiket - Bina Kasih</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container flex justify-between items-center">
+            <div class="logo flex items-center gap-4">
+                <a href="{{ url_for('index') }}" class="flex items-center gap-2" style="text-decoration: none;">
+                    <img src="{{ url_for('static', filename='images/logo_hand_heart.svg') }}">
+                    <span class="font-bold text-dark" style="font-size: 1.5rem;">Bina Kasih</span>
+                </a>
+            </div>
+            <div class="flex gap-4 items-center">
+                <div class="flex items-center gap-2">
+                    <div class="user-initial"
+                        style="width: 32px; height: 32px; background: #6366F1; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem;">
+                        A</div>
+                    <span class="font-semibold text-dark">Admin</span>
+                </div>
+                <button onclick="auth.logout()" class="text-gray hover:text-primary"
+                    style="background:none; border:none; cursor:pointer;" title="Keluar">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+
+        <a href="{{ url_for('dashboard') }}" class="btn btn-outline mb-6 flex items-center gap-2"
+            style="text-decoration: none; font-size: 0.9rem; padding: 0.5rem 1rem; box-shadow: var(--shadow-sm); width: max-content; background: var(--white);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            Kembali ke Dashboard
+        </a>
+
+        <!-- Header -->
+        <div class="flex justify-between items-start mb-6" style="flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h2 class="font-bold text-dark" style="font-size: 1.5rem;">
+                    <span style="background: linear-gradient(135deg, #6366F1, #8B5CF6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Kelola Tiket</span>
+                </h2>
+                <p id="ticket-header-meta" class="text-gray" style="font-size: 0.9rem;">Memuat detail tiket...</p>
+            </div>
+            <div id="ticket-header-badge"></div>
+        </div>
+
+        <!-- Loading State -->
+        <div id="manage-ticket-loading" class="card text-center" style="padding: 3rem;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">⏳</div>
+            <p class="text-gray">Memuat detail tiket...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="manage-ticket-error" class="card text-center hidden" style="padding: 3rem;">
+            <div style="font-size: 2rem; margin-bottom: 1rem;">❌</div>
+            <p class="text-gray font-bold">Tiket tidak ditemukan</p>
+            <p class="text-gray mt-2" style="font-size: 0.9rem;">Tiket yang Anda cari mungkin sudah dihapus atau ID tidak valid.</p>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-primary mt-4" style="text-decoration: none;">Kembali ke Dashboard</a>
+        </div>
+
+        <!-- Main Content: Two Column Layout -->
+        <div id="manage-ticket-content" class="hidden" style="display: none; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start;">
+
+            <!-- LEFT: User Problem Details -->
+            <div class="card">
+                <div class="flex items-center gap-3 mb-4 pb-4 border-b">
+                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #6366F1, #8B5CF6); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-dark" style="font-size: 1.1rem;">Detail Masalah</h3>
+                        <p class="text-gray" style="font-size: 0.8rem;">Informasi dari pengguna</p>
+                    </div>
+                </div>
+
+                <!-- User Info -->
+                <div style="background: #F9FAFB; border-radius: 10px; padding: 1rem; margin-bottom: 1.25rem;">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div id="ticket-user-avatar" style="width: 36px; height: 36px; background: #E0E7FF; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #6366F1; font-size: 0.85rem;">U</div>
+                        <div>
+                            <div id="ticket-user-name" class="font-bold text-dark" style="font-size: 0.95rem;">User</div>
+                            <div id="ticket-date" class="text-gray" style="font-size: 0.78rem;">-</div>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 items-center" style="flex-wrap: wrap;">
+                        <span id="ticket-id-badge" style="background: #E0E7FF; color: #6366F1; padding: 2px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">#0</span>
+                        <span id="ticket-category-badge" style="background: #FEF3C7; color: #92400E; padding: 2px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600;">-</span>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="mb-4">
+                    <label class="font-bold text-dark" style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Deskripsi Masalah</label>
+                    <div id="ticket-description" style="background: white; border: 1px solid #E5E7EB; border-radius: 10px; padding: 1rem; color: #374151; font-size: 0.9rem; line-height: 1.7; min-height: 80px;">
+                        -
+                    </div>
+                </div>
+
+                <!-- Photo Attachment -->
+                <div id="ticket-photo-section" class="hidden">
+                    <label class="font-bold text-dark" style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">📎 Lampiran Foto</label>
+                    <div style="border: 1px solid #E5E7EB; border-radius: 12px; overflow: hidden; background: #F9FAFB;">
+                        <img id="ticket-photo-img" src="" alt="Lampiran tiket" style="width: 100%; max-height: 400px; object-fit: contain; display: block;">
+                    </div>
+                </div>
+
+                <!-- Previous Admin Reply (if any) -->
+                <div id="ticket-previous-reply" class="hidden mt-4">
+                    <label class="font-bold text-dark" style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">💬 Balasan Sebelumnya</label>
+                    <div style="background: linear-gradient(135deg, #EEF2FF, #F5F3FF); border-left: 3px solid #6366F1; border-radius: 8px; padding: 1rem;">
+                        <div id="ticket-prev-reply-date" style="font-size: 0.75rem; font-weight: 700; color: #6366F1; margin-bottom: 0.4rem;">-</div>
+                        <div id="ticket-prev-reply-text" style="font-size: 0.88rem; color: #374151; line-height: 1.6;">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Admin Reply & Status -->
+            <div class="card">
+                <div class="flex items-center gap-3 mb-4 pb-4 border-b">
+                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #FF4081, #F50057); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-dark" style="font-size: 1.1rem;">Tindakan Admin</h3>
+                        <p class="text-gray" style="font-size: 0.8rem;">Balas dan kelola tiket ini</p>
+                    </div>
+                </div>
+
+                <form id="manage-ticket-form" class="flex flex-col gap-4">
+                    <input type="hidden" id="manage-ticket-id">
+                    
+                    <!-- Status Changer -->
+                    <div>
+                        <label for="manage-ticket-status" style="display: block; margin-bottom: 0.5rem; color: var(--text-dark); font-weight: 600; font-size: 0.9rem;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; vertical-align: -2px; margin-right: 4px;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                            Ubah Status Tiket
+                        </label>
+                        <div class="status-selector" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+                            <button type="button" class="status-option" data-status="open" onclick="selectTicketStatus('open', this)"
+                                style="padding: 0.6rem; border: 2px solid #FED7AA; border-radius: 10px; background: #FFF7ED; cursor: pointer; font-family: inherit; font-size: 0.8rem; font-weight: 600; color: #92400E; transition: all 0.2s;">
+                                🟡 Open
+                            </button>
+                            <button type="button" class="status-option" data-status="in_progress" onclick="selectTicketStatus('in_progress', this)"
+                                style="padding: 0.6rem; border: 2px solid #BFDBFE; border-radius: 10px; background: #EFF6FF; cursor: pointer; font-family: inherit; font-size: 0.8rem; font-weight: 600; color: #1E40AF; transition: all 0.2s;">
+                                🔵 In Progress
+                            </button>
+                            <button type="button" class="status-option" data-status="closed" onclick="selectTicketStatus('closed', this)"
+                                style="padding: 0.6rem; border: 2px solid #A7F3D0; border-radius: 10px; background: #ECFDF5; cursor: pointer; font-family: inherit; font-size: 0.8rem; font-weight: 600; color: #065F46; transition: all 0.2s;">
+                                🟢 Closed
+                            </button>
+                        </div>
+                        <input type="hidden" id="manage-ticket-status" value="">
+                    </div>
+
+                    <!-- Reply Text -->
+                    <div>
+                        <label for="manage-ticket-reply" style="display: block; margin-bottom: 0.5rem; color: var(--text-dark); font-weight: 600; font-size: 0.9rem;">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; vertical-align: -2px; margin-right: 4px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                            Pesan Balasan <span style="color: #FF4081;">*</span>
+                        </label>
+                        <textarea id="manage-ticket-reply" placeholder="Tulis balasan untuk user..." required
+                            style="width: 100%; padding: 0.85rem; border: 1px solid #E5E7EB; border-radius: 10px; font-family: inherit; min-height: 150px; resize: vertical; font-size: 0.9rem; line-height: 1.6; transition: border-color 0.2s;"></textarea>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex gap-3" style="flex-wrap: wrap;">
+                        <button type="submit" id="manage-ticket-submit-btn" class="btn btn-primary flex-1" style="min-width: 160px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                            Kirim Balasan
+                        </button>
+                        <button type="button" class="btn btn-outline" onclick="deleteThisTicket()" id="manage-ticket-delete-btn" style="color: #B91C1C; border-color: #FECACA; display: none;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                            Hapus Tiket
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script>
+        let currentTicket = null;
+        let selectedStatus = '';
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function formatTicketDate(dateValue) {
+            return new Date(dateValue).toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: 'short',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+            });
+        }
+
+        function statusBadgeHtml(status) {
+            const colors = { open: '#F59E0B', in_progress: '#3B82F6', closed: '#10B981' };
+            const labels = { open: 'Open', in_progress: 'In Progress', closed: 'Closed' };
+            const color = colors[status] || '#9CA3AF';
+            return `<span style="background:${color}; color:white; padding:4px 12px; border-radius:6px; font-size:0.8rem; font-weight:600;">${labels[status] || status}</span>`;
+        }
+
+        function selectTicketStatus(status, btn) {
+            selectedStatus = status;
+            document.getElementById('manage-ticket-status').value = status;
+
+            // Reset all buttons
+            document.querySelectorAll('.status-option').forEach(b => {
+                b.style.transform = 'scale(1)';
+                b.style.boxShadow = 'none';
+            });
+
+            // Highlight selected
+            btn.style.transform = 'scale(1.05)';
+            btn.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+        }
+
+        async function loadTicket() {
+            const params = new URLSearchParams(window.location.search);
+            const ticketId = params.get('id');
+
+            if (!ticketId) {
+                showError();
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/tickets', { credentials: 'include' });
+                const res = await response.json();
+
+                if (!res.success) {
+                    showError();
+                    return;
+                }
+
+                const ticket = (res.tickets || []).find(t => String(t.id) === String(ticketId));
+                if (!ticket) {
+                    showError();
+                    return;
+                }
+
+                currentTicket = ticket;
+                renderTicket(ticket);
+            } catch (err) {
+                console.error(err);
+                showError();
+            }
+        }
+
+        function showError() {
+            document.getElementById('manage-ticket-loading').classList.add('hidden');
+            document.getElementById('manage-ticket-error').classList.remove('hidden');
+        }
+
+        function renderTicket(t) {
+            // Hide loading, show content
+            document.getElementById('manage-ticket-loading').classList.add('hidden');
+            const content = document.getElementById('manage-ticket-content');
+            content.classList.remove('hidden');
+            content.style.display = 'grid';
+
+            // Header
+            document.getElementById('ticket-header-meta').innerHTML = `Tiket <strong>#${t.id}</strong> • ${escapeHtml(t.category)} • Dari <strong>${escapeHtml(t.user_name || 'User #' + t.user_id)}</strong>`;
+            document.getElementById('ticket-header-badge').innerHTML = statusBadgeHtml(t.status);
+
+            // User info
+            const userName = t.user_name || `User #${t.user_id}`;
+            document.getElementById('ticket-user-name').textContent = userName;
+            document.getElementById('ticket-user-avatar').textContent = userName.charAt(0).toUpperCase();
+            document.getElementById('ticket-date').textContent = formatTicketDate(t.created_at);
+            document.getElementById('ticket-id-badge').textContent = `#${t.id}`;
+            document.getElementById('ticket-category-badge').textContent = t.category;
+
+            // Description
+            document.getElementById('ticket-description').textContent = t.description;
+
+            // Photo
+            if (t.photo_url) {
+                document.getElementById('ticket-photo-section').classList.remove('hidden');
+                document.getElementById('ticket-photo-img').src = t.photo_url;
+            }
+
+            // Previous reply
+            if (t.admin_reply) {
+                const prevSection = document.getElementById('ticket-previous-reply');
+                prevSection.classList.remove('hidden');
+                document.getElementById('ticket-prev-reply-text').textContent = t.admin_reply;
+                document.getElementById('ticket-prev-reply-date').textContent = t.replied_at ? `Admin • ${formatTicketDate(t.replied_at)}` : 'Admin';
+                
+                // Pre-fill the reply textarea with existing reply for editing
+                document.getElementById('manage-ticket-reply').value = t.admin_reply;
+            }
+
+            // Set ticket ID
+            document.getElementById('manage-ticket-id').value = t.id;
+
+            // Highlight current status
+            const currentStatusBtn = document.querySelector(`.status-option[data-status="${t.status}"]`);
+            if (currentStatusBtn) {
+                selectTicketStatus(t.status, currentStatusBtn);
+            }
+
+            // Show delete button only for closed tickets
+            if (t.status === 'closed') {
+                document.getElementById('manage-ticket-delete-btn').style.display = 'inline-flex';
+            }
+        }
+
+        async function deleteThisTicket() {
+            if (!currentTicket) return;
+            const confirmed = confirm('Hapus tiket closed ini secara permanen?');
+            if (!confirmed) return;
+
+            try {
+                const response = await fetch(`/api/tickets/${currentTicket.id}`, {
+                    method: 'DELETE',
+                    credentials: 'include',
+                });
+                const res = await response.json();
+                if (!response.ok || !res.success) {
+                    alert(res.message || 'Gagal menghapus tiket.');
+                    return;
+                }
+                alert('Tiket berhasil dihapus.');
+                window.location.href = '{{ url_for("dashboard") }}';
+            } catch (error) {
+                console.error(error);
+                alert('Terjadi kesalahan saat menghapus tiket.');
+            }
+        }
+
+        // Form submission
+        document.getElementById('manage-ticket-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const ticketId = document.getElementById('manage-ticket-id').value;
+            const replyText = document.getElementById('manage-ticket-reply').value.trim();
+            const newStatus = document.getElementById('manage-ticket-status').value;
+
+            if (!replyText) {
+                alert('Pesan balasan tidak boleh kosong!');
+                return;
+            }
+
+            const btn = document.getElementById('manage-ticket-submit-btn');
+            btn.innerHTML = '⏳ Mengirim...';
+            btn.disabled = true;
+
+            try {
+                const payload = { reply: replyText };
+                if (newStatus) payload.status = newStatus;
+
+                const response = await fetch(`/api/tickets/${ticketId}/reply`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(payload),
+                });
+                const res = await response.json();
+                if (res.success) {
+                    alert('Balasan berhasil dikirim!');
+                    // Reload the page to show updated data
+                    location.reload();
+                } else {
+                    alert(res.message || 'Gagal mengirim balasan.');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Terjadi kesalahan koneksi.');
+            } finally {
+                btn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px;"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg> Kirim Balasan`;
+                btn.disabled = false;
+            }
+        });
+
+        // Focus styling for textarea
+        const replyTextarea = document.getElementById('manage-ticket-reply');
+        replyTextarea.addEventListener('focus', () => { replyTextarea.style.borderColor = '#6366F1'; replyTextarea.style.boxShadow = '0 0 0 3px rgba(99, 102, 241, 0.1)'; });
+        replyTextarea.addEventListener('blur', () => { replyTextarea.style.borderColor = '#E5E7EB'; replyTextarea.style.boxShadow = 'none'; });
+
+        // Init
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await auth.init();
+            if (!user || user.name.toLowerCase() !== 'admin') {
+                window.location.href = '{{ url_for("dashboard") }}';
+                return;
+            }
+            loadTicket();
+        });
+    </script>
+</body>
+
+</html>
