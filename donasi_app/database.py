@@ -113,6 +113,52 @@ class Database:
                 ADD COLUMN IF NOT EXISTS duration INTEGER
                 """
             )
+            conn.execute(
+                """
+                ALTER TABLE campaigns
+                ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'Lainnya'
+                """
+            )
+
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS campaign_expenses (
+                    id BIGSERIAL PRIMARY KEY,
+                    campaign_id TEXT REFERENCES campaigns(id) ON DELETE CASCADE,
+                    date DATE NOT NULL,
+                    description TEXT NOT NULL,
+                    amount INTEGER NOT NULL CHECK (amount >= 0),
+                    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+                """
+            )
+            conn.execute(
+                """
+                CREATE INDEX IF NOT EXISTS campaign_expenses_campaign_id_idx
+                ON campaign_expenses (campaign_id)
+                """
+            )
+
+            conn.execute(
+                """
+                CREATE TABLE IF NOT EXISTS campaign_updates (
+                    id BIGSERIAL PRIMARY KEY,
+                    campaign_id TEXT REFERENCES campaigns(id) ON DELETE CASCADE,
+                    date DATE NOT NULL,
+                    title TEXT NOT NULL,
+                    content TEXT NOT NULL,
+                    image_url TEXT,
+                    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+                )
+                """
+            )
+            conn.execute(
+                """
+                CREATE INDEX IF NOT EXISTS campaign_updates_campaign_id_idx
+                ON campaign_updates (campaign_id)
+                """
+            )
+
 
             conn.execute(
                 """

@@ -304,6 +304,7 @@ class CampaignModel:
         title = (payload.get("title") or "").strip()
         description = (payload.get("description") or "").strip()
         image_url = (payload.get("image_url") or "").strip() or None
+        category = (payload.get("category") or "Lainnya").strip()
         target_raw = payload.get("target")
         duration_raw = payload.get("duration")
 
@@ -337,28 +338,40 @@ class CampaignModel:
                     target,
                     duration,
                     image_url,
-                    user_id
+                    user_id,
+                    category
                 )
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
-                RETURNING id, title, description, target, duration, image_url, user_id, created_at
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+                RETURNING id, title, description, target, duration, image_url, user_id, created_at, category
                 """,
-                (campaign_id, title, description, target, duration, image_url, user["id"]),
+                (campaign_id, title, description, target, duration, image_url, user["id"], category),
             ).fetchone()
             conn.commit()
 
         return self._serialize(row, user_name=user["name"], user_email=user["email"])
 
-    def list_all(self) -> list[dict[str, Any]]:
+    def list_all(self, search: str | None = None, category: str | None = None) -> list[dict[str, Any]]:
+        query = """
+            SELECT c.id, c.title, c.description, c.target, c.duration, c.image_url, c.user_id, c.created_at, c.category,
+                   u.name AS user_name, u.email AS user_email
+            FROM campaigns c
+            LEFT JOIN users u ON c.user_id = u.id
+            WHERE 1=1
+        """
+        params = []
+        
+        if search:
+            query += " AND (c.title ILIKE %s OR c.description ILIKE %s)"
+            params.extend([f"%{search}%", f"%{search}%"])
+            
+        if category and category != "Semua":
+            query += " AND c.category = %s"
+            params.append(category)
+            
+        query += " ORDER BY c.created_at DESC, c.id DESC"
+
         with self.database.connect() as conn:
-            rows = conn.execute(
-                """
-                SELECT c.id, c.title, c.description, c.target, c.duration, c.image_url, c.user_id, c.created_at,
-                       u.name AS user_name, u.email AS user_email
-                FROM campaigns c
-                LEFT JOIN users u ON c.user_id = u.id
-                ORDER BY c.created_at DESC, c.id DESC
-                """
-            ).fetchall()
+            rows = conn.execute(query, params).fetchall()
 
         return [
             self._serialize(row, user_name=row.get("user_name"), user_email=row.get("user_email"))
@@ -371,7 +384,7 @@ class CampaignModel:
         with self.database.connect() as conn:
             rows = conn.execute(
                 """
-                SELECT c.id, c.title, c.description, c.target, c.duration, c.image_url, c.user_id, c.created_at,
+                SELECT c.id, c.title, c.description, c.target, c.duration, c.image_url, c.user_id, c.created_at, c.category,
                        u.name AS user_name, u.email AS user_email
                 FROM campaigns c
                 LEFT JOIN users u ON c.user_id = u.id
@@ -409,6 +422,7 @@ class CampaignModel:
             "id": row["id"],
             "title": row["title"],
             "description": row["description"],
+            "category": row.get("category", "Lainnya"),
             "target_amount": row["target"],
             "duration": row.get("duration"),
             "image_url": row["image_url"],
@@ -582,3 +596,83 @@ class TicketModel:
             "admin_reply": row.get("admin_reply"),
             "replied_at": row["replied_at"].isoformat() if row.get("replied_at") else None,
         }
+
+class CampaignExpenseModel:
+    def __init__(self, database: Database):
+        self.database = database
+
+    def create(self, campaign_id: str, date_str: str, description: str, amount: int) -> dict[str, Any]:
+        with self.database.connect() as conn:
+            row = conn.execute(
+                """
+                INSERT INTO campaign_expenses (campaign_id, date, description, amount)
+                VALUES (%s, %s, %s, %s)
+                RETURNING id, date, description, amount
+                """,
+                (campaign_id, date_str, description, amount)
+            ).fetchone()
+            conn.commit()
+        return self._serialize(row)
+
+    def list_by_campaign(self, campaign_id: str) -> list[dict[str, Any]]:
+        with self.database.connect() as conn:
+            rows = conn.execute(
+                """
+                SELECT id, date, description, amount
+                FROM campaign_expenses
+                WHERE campaign_id = %s
+                ORDER BY date DESC, id DESC
+                """,
+                (campaign_id,),
+            ).fetchall()
+        return [self._serialize(row) for row in rows]
+
+    @staticmethod
+    def _serialize(row: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "id": row["id"],
+            "date": row["date"].isoformat() if row.get("date") else None,
+            "description": row["description"],
+            "amount": row["amount"],
+        }
+
+class CampaignUpdateModel:
+    def __init__(self, database: Database):
+        self.database = database
+
+    def create(self, campaign_id: str, date_str: str, title: str, content: str, image_url: str | None = None) -> dict[str, Any]:
+        with self.database.connect() as conn:
+            row = conn.execute(
+                """
+                INSERT INTO campaign_updates (campaign_id, date, title, content, image_url)
+                VALUES (%s, %s, %s, %s, %s)
+                RETURNING id, date, title, content, image_url
+                """,
+                (campaign_id, date_str, title, content, image_url)
+            ).fetchone()
+            conn.commit()
+        return self._serialize(row)
+
+    def list_by_campaign(self, campaign_id: str) -> list[dict[str, Any]]:
+        with self.database.connect() as conn:
+            rows = conn.execute(
+                """
+                SELECT id, date, title, content, image_url
+                FROM campaign_updates
+                WHERE campaign_id = %s
+                ORDER BY date DESC, id DESC
+                """,
+                (campaign_id,),
+            ).fetchall()
+        return [self._serialize(row) for row in rows]
+
+    @staticmethod
+    def _serialize(row: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "id": row["id"],
+            "date": row["date"].isoformat() if row.get("date") else None,
+            "title": row["title"],
+            "content": row["content"],
+            "image_url": row.get("image_url"),
+        }
+

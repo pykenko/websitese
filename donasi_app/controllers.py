@@ -13,12 +13,14 @@ from .models import AppError, CampaignModel, DonationModel, UserModel, TicketMod
 
 
 class ApiController:
-    def __init__(self, database: Database, user_model: UserModel, donation_model: DonationModel, campaign_model: CampaignModel, ticket_model: TicketModel):
+    def __init__(self, database: Database, user_model: UserModel, donation_model: DonationModel, campaign_model: CampaignModel, ticket_model: TicketModel, expense_model=None, update_model=None):
         self.database = database
         self.user_model = user_model
         self.donation_model = donation_model
         self.campaign_model = campaign_model
         self.ticket_model = ticket_model
+        self.expense_model = expense_model
+        self.update_model = update_model
 
     def register_routes(self, app: Flask) -> None:
         app.add_url_rule("/api/health", endpoint="health", view_func=self.health, methods=["GET"])
@@ -111,6 +113,24 @@ class ApiController:
             view_func=self.get_campaign_total_by_id,
             methods=["GET"],
         )
+        app.add_url_rule(
+            "/api/campaigns/<campaign_id>/details",
+            endpoint="campaign_details",
+            view_func=self.get_campaign_details,
+            methods=["GET"],
+        )
+        app.add_url_rule(
+            "/api/campaigns/<campaign_id>/expenses",
+            endpoint="campaign_add_expense",
+            view_func=self.create_campaign_expense,
+            methods=["POST"],
+        )
+        app.add_url_rule(
+            "/api/campaigns/<campaign_id>/updates",
+            endpoint="campaign_add_update",
+            view_func=self.create_campaign_update,
+            methods=["POST"],
+        )
 
     def health(self):
         try:
@@ -194,7 +214,9 @@ class ApiController:
         return jsonify({"success": True, "campaign": campaign}), 201
 
     def list_campaigns(self):
-        campaigns = self.campaign_model.list_all()
+        search = request.args.get("search")
+        category = request.args.get("category")
+        campaigns = self.campaign_model.list_all(search=search, category=category)
         return jsonify({"success": True, "campaigns": campaigns})
 
     def list_my_campaigns(self):
@@ -307,6 +329,70 @@ class ApiController:
         except Exception as error:
             return jsonify({"success": False, "message": str(error)}), 500
 
+    def get_campaign_details(self, campaign_id: str):
+        if not self.expense_model or not self.update_model:
+            return jsonify({"success": False, "message": "Models not configured"}), 500
+        
+        try:
+            expenses = self.expense_model.list_by_campaign(campaign_id)
+            updates = self.update_model.list_by_campaign(campaign_id)
+            return jsonify({
+                "success": True,
+                "expenses": expenses,
+                "updates": updates
+            })
+        except Exception as error:
+            return jsonify({"success": False, "message": str(error)}), 500
+
+    def create_campaign_expense(self, campaign_id: str):
+        try:
+            user = self.user_model.require_user()
+            if user["name"].lower() != "admin":
+                return jsonify({"success": False, "message": "Unauthorized"}), 403
+
+            payload = request.get_json(silent=True) or {}
+            date_str = payload.get("date")
+            description = payload.get("description")
+            amount = payload.get("amount")
+
+            if not date_str or not description or amount is None:
+                return jsonify({"success": False, "message": "Missing required fields"}), 400
+            
+            expense = self.expense_model.create(campaign_id, date_str, description, int(amount))
+            return jsonify({"success": True, "expense": expense}), 201
+        except Exception as error:
+            return jsonify({"success": False, "message": str(error)}), 500
+
+    def create_campaign_update(self, campaign_id: str):
+        try:
+            user = self.user_model.require_user()
+            if user["name"].lower() != "admin":
+                return jsonify({"success": False, "message": "Unauthorized"}), 403
+
+            payload = dict(request.form)
+            if not payload and request.is_json:
+                payload = request.get_json(silent=True) or {}
+
+            date_str = payload.get("date")
+            title = payload.get("title")
+            content = payload.get("content")
+
+            if not date_str or not title or not content:
+                return jsonify({"success": False, "message": "Missing required fields"}), 400
+
+            photo_url = None
+            if "photo" in request.files:
+                photo = request.files["photo"]
+                if photo.filename:
+                    photo_url = self._save_uploaded_file(photo, subdir="updates")
+            elif "image_url" in payload:
+                photo_url = payload.get("image_url")
+
+            update = self.update_model.create(campaign_id, date_str, title, content, photo_url)
+            return jsonify({"success": True, "update": update}), 201
+        except Exception as error:
+            return jsonify({"success": False, "message": str(error)}), 500
+
 
 class PageController:
     def __init__(self, config: AppConfig):
@@ -319,6 +405,7 @@ class PageController:
         app.add_url_rule("/donation", endpoint="donation_page", view_func=self.donation)
         app.add_url_rule("/dashboard", endpoint="dashboard", view_func=self.dashboard)
         app.add_url_rule("/dashboard/manage-ticket", endpoint="manage_ticket", view_func=self.manage_ticket)
+        app.add_url_rule("/manage-accounting", endpoint="manage_accounting", view_func=self.manage_accounting)
         app.add_url_rule("/invoice", endpoint="invoice_page", view_func=self.invoice)
         app.add_url_rule("/kebijakan-privasi", endpoint="privacy_policy", view_func=self.privacy_policy)
         app.add_url_rule("/syarat-ketentuan", endpoint="terms", view_func=self.terms)
@@ -357,3 +444,6 @@ class PageController:
 
     def manage_ticket(self):
         return render_template("manage_ticket.html")
+
+    def manage_accounting(self):
+        return render_template("manage_accounting.html")

@@ -3,7 +3,7 @@ from flask import Flask
 from .config import AppConfig
 from .controllers import ApiController, PageController
 from .database import Database
-from .models import CampaignModel, DonationModel, UserModel, TicketModel
+from .models import CampaignModel, DonationModel, UserModel, TicketModel, CampaignExpenseModel, CampaignUpdateModel
 
 def create_app() -> Flask:
     config = AppConfig()
@@ -26,7 +26,10 @@ def create_app() -> Flask:
     campaign_model = CampaignModel(database, user_model)
     ticket_model = TicketModel(database, user_model)
 
-    ApiController(database, user_model, donation_model, campaign_model, ticket_model).register_routes(app)
+    expense_model = CampaignExpenseModel(database)
+    update_model = CampaignUpdateModel(database)
+
+    ApiController(database, user_model, donation_model, campaign_model, ticket_model, expense_model, update_model).register_routes(app)
     PageController(config).register_routes(app)
     return app
 

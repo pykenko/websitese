@@ -217,22 +217,85 @@
         </div>
     </div>
 
-        <!-- Deskripsi Kampanye -->
+        <!-- Detail Kampanye (Tabs) -->
         <div id="campaign-description-section" class="container" style="padding-bottom: 3rem; display: none;">
-            <div class="card" style="max-width: 820px; margin: 0 auto;">
-                <div style="display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1rem;">
-                    <img id="desc-campaign-img" src="" alt="Campaign" style="width: 130px; height: 95px; object-fit: cover; border-radius: 10px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+            <div class="card" style="max-width: 820px; margin: 0 auto; padding: 0; overflow: hidden;">
+                <!-- Header -->
+                <div style="display: flex; align-items: flex-start; gap: 1rem; padding: 1.5rem; background: #fafafa;">
+                    <img id="desc-campaign-img" src="" alt="Campaign" style="width: 100px; height: 75px; object-fit: cover; border-radius: 8px; flex-shrink: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                     <div>
-                        <span style="font-size: 0.75rem; color: #FF4081; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; display: block; margin-bottom: 4px;">Tentang Kampanye</span>
+                        <span style="font-size: 0.75rem; color: #FF4081; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; display: block; margin-bottom: 4px;">Detail Kampanye</span>
                         <h3 id="desc-campaign-title" class="font-bold text-dark" style="font-size: 1.1rem; margin: 0 0 6px;"></h3>
-                        <span class="text-gray" style="font-size: 0.85rem;">Dibuat oleh: <strong id="desc-campaign-by" class="text-dark"></strong></span>
+                        <span class="text-gray" style="font-size: 0.85rem;">Penggalang Dana: <strong id="desc-campaign-by" class="text-dark"></strong></span>
                     </div>
                 </div>
-                <div style="border-top: 1px solid #F3F4F6; padding-top: 1rem;">
-                    <p id="desc-campaign-text" class="text-gray" style="font-size: 0.95rem; line-height: 1.8; white-space: pre-line; margin: 0;"></p>
+                
+                <!-- Tabs Navigation -->
+                <div style="display: flex; border-bottom: 1px solid #E5E7EB; background: white;">
+                    <button class="detail-tab-btn active" data-target="tab-tentang" onclick="switchDetailTab('tab-tentang', this)" style="flex: 1; padding: 1rem; border: none; background: none; font-weight: bold; font-size: 0.95rem; color: #FF4081; border-bottom: 2px solid #FF4081; cursor: pointer;">Tentang</button>
+                    <button class="detail-tab-btn" data-target="tab-pembukuan" onclick="switchDetailTab('tab-pembukuan', this)" style="flex: 1; padding: 1rem; border: none; background: none; font-weight: bold; font-size: 0.95rem; color: #6B7280; border-bottom: 2px solid transparent; cursor: pointer;">Pembukuan</button>
+                    <button class="detail-tab-btn" data-target="tab-kabar" onclick="switchDetailTab('tab-kabar', this)" style="flex: 1; padding: 1rem; border: none; background: none; font-weight: bold; font-size: 0.95rem; color: #6B7280; border-bottom: 2px solid transparent; cursor: pointer;">Kabar Terbaru</button>
+                </div>
+
+                <!-- Tabs Content -->
+                <div style="padding: 1.5rem; background: white;">
+                    <!-- Tab Tentang -->
+                    <div id="tab-tentang" class="detail-tab-content">
+                        <p id="desc-campaign-text" class="text-gray" style="font-size: 0.95rem; line-height: 1.8; white-space: pre-line; margin: 0;"></p>
+                    </div>
+
+                    <!-- Tab Pembukuan -->
+                    <div id="tab-pembukuan" class="detail-tab-content" style="display: none;">
+                        <p class="text-gray mb-4" style="font-size: 0.9rem;">Laporan penggunaan dana yang terkumpul untuk kampanye ini.</p>
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                                <thead>
+                                    <tr style="background: #F3F4F6; border-bottom: 2px solid #E5E7EB;">
+                                        <th style="padding: 0.75rem; text-align: left; color: #374151;">Tanggal</th>
+                                        <th style="padding: 0.75rem; text-align: left; color: #374151;">Deskripsi Pengeluaran</th>
+                                        <th style="padding: 0.75rem; text-align: right; color: #374151;">Nominal</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="expenses-table-body">
+                                    <tr><td colspan="3" class="text-center text-gray py-4">Belum ada laporan pengeluaran.</td></tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr style="border-top: 2px solid #E5E7EB; font-weight: bold;">
+                                        <td colspan="2" style="padding: 0.75rem; text-align: right; color: #374151;">Total Pengeluaran:</td>
+                                        <td id="expenses-total" style="padding: 0.75rem; text-align: right; color: #FF4081;">Rp 0</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab Kabar Terbaru -->
+                    <div id="tab-kabar" class="detail-tab-content" style="display: none;">
+                        <div id="updates-list" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                            <div class="text-center text-gray py-4">Belum ada pembaruan terkini.</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <script>
+            function switchDetailTab(tabId, btn) {
+                // Update buttons
+                document.querySelectorAll('.detail-tab-btn').forEach(b => {
+                    b.style.color = '#6B7280';
+                    b.style.borderBottomColor = 'transparent';
+                });
+                btn.style.color = '#FF4081';
+                btn.style.borderBottomColor = '#FF4081';
+
+                // Update contents
+                document.querySelectorAll('.detail-tab-content').forEach(c => {
+                    c.style.display = 'none';
+                });
+                document.getElementById(tabId).style.display = 'block';
+            }
+        </script>
 
     <!-- Script -->
 
@@ -273,21 +336,34 @@
                     target: 10000000,
                     by: 'Yayasan Bina Kasih',
                     image: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=800&auto=format&fit=crop',
-                    description: 'Yuda adalah seorang siswa teladan yang selalu mendapatkan peringkat pertama di kelasnya. Namun, kondisi ekonomi keluarganya yang sulit membuat Yuda terancam putus sekolah.\n\nAyahnya bekerja sebagai buruh tani lepas, sedangkan ibunya adalah ibu rumah tangga. Mari bersama-sama kita bantu Yuda agar ia dapat terus melanjutkan pendidikannya dan meraih cita-citanya menjadi seorang dokter.\n\nDonasi yang terkumpul akan digunakan untuk membayar biaya SPP, seragam sekolah, buku pelajaran, dan perlengkapan sekolah lainnya.'
+                    description: 'Yuda adalah seorang siswa teladan yang selalu mendapatkan peringkat pertama di kelasnya. Namun, kondisi ekonomi keluarganya yang sulit membuat Yuda terancam putus sekolah.\n\nAyahnya bekerja sebagai buruh tani lepas, sedangkan ibunya adalah ibu rumah tangga. Mari bersama-sama kita bantu Yuda agar ia dapat terus melanjutkan pendidikannya dan meraih cita-citanya menjadi seorang dokter.\n\nDonasi yang terkumpul akan digunakan untuk membayar biaya SPP, seragam sekolah, buku pelajaran, dan perlengkapan sekolah lainnya.',
+                    expenses: [
+                        { date: '2023-08-15', description: 'Pembayaran SPP Semester Ganjil', amount: 1500000 },
+                        { date: '2023-08-20', description: 'Pembelian Seragam dan Sepatu', amount: 500000 }
+                    ],
+                    updates: [
+                        { date: '2023-09-01', title: 'Yuda Sudah Mulai Bersekolah!', content: 'Terima kasih donatur! Yuda kini sudah bisa masuk sekolah lagi dengan senyum bahagia dan seragam baru.', image_url: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?q=80&w=800&auto=format&fit=crop' }
+                    ]
                 },
                 'rafi': {
                     title: 'Beasiswa untuk Rafi',
                     target: 5000000,
                     by: 'Yayasan Bina Kasih',
                     image: 'https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=800&auto=format&fit=crop',
-                    description: 'Rafi adalah seorang yatim piatu yang saat ini tinggal bersama neneknya. Nenek Rafi hanya bekerja sebagai penjual kue keliling yang penghasilannya tidak menentu.\n\nMeskipun hidup dalam keterbatasan, Rafi memiliki semangat belajar yang sangat tinggi dan bercita-cita menjadi seorang guru.\n\nBeasiswa ini akan sangat membantu Rafi untuk membayar biaya sekolahnya selama satu tahun ke depan. Mari kita dukung Rafi untuk menggapai cita-citanya.'
+                    description: 'Rafi adalah seorang yatim piatu yang saat ini tinggal bersama neneknya. Nenek Rafi hanya bekerja sebagai penjual kue keliling yang penghasilannya tidak menentu.\n\nMeskipun hidup dalam keterbatasan, Rafi memiliki semangat belajar yang sangat tinggi dan bercita-cita menjadi seorang guru.\n\nBeasiswa ini akan sangat membantu Rafi untuk membayar biaya sekolahnya selama satu tahun ke depan. Mari kita dukung Rafi untuk menggapai cita-citanya.',
+                    expenses: [
+                        { date: '2023-07-10', description: 'Pembelian Buku dan Alat Tulis', amount: 350000 }
+                    ],
+                    updates: []
                 },
                 'karina': {
                     title: 'Masa Depan Cerah Karina',
                     target: 15000000,
                     by: 'Yayasan Bina Kasih',
                     image: 'https://images.unsplash.com/photo-1453749024858-4bca89bd9edc?q=80&w=800&auto=format&fit=crop',
-                    description: 'Karina adalah seorang siswi yang sangat berbakat dalam bidang sains. Ia telah memenangkan berbagai kompetisi tingkat nasional. Namun, biaya pendidikan yang semakin tinggi menjadi kendala bagi Karina.\n\nBantuan Anda akan membuka jalan bagi Karina untuk meraih gelar sarjana dan memberikan kontribusi yang lebih besar bagi masyarakat di masa depan.'
+                    description: 'Karina adalah seorang siswi yang sangat berbakat dalam bidang sains. Ia telah memenangkan berbagai kompetisi tingkat nasional. Namun, biaya pendidikan yang semakin tinggi menjadi kendala bagi Karina.\n\nBantuan Anda akan membuka jalan bagi Karina untuk meraih gelar sarjana dan memberikan kontribusi yang lebih besar bagi masyarakat di masa depan.',
+                    expenses: [],
+                    updates: []
                 }
             };
 
@@ -342,6 +418,74 @@
                 document.getElementById('desc-campaign-title').textContent = campaignData.title;
                 document.getElementById('desc-campaign-by').textContent = campaignData.by || '-';
                 document.getElementById('desc-campaign-text').textContent = campaignData.description || 'Tidak ada deskripsi tersedia.';
+
+                // Fetch details if dynamic, or use static
+                let expenses = [];
+                let updates = [];
+
+                if (staticCampaigns[campId]) {
+                    expenses = staticCampaigns[campId].expenses || [];
+                    updates = staticCampaigns[campId].updates || [];
+                } else if (campId) {
+                    try {
+                        const detailsRes = await fetch(`/api/campaigns/${campId}/details`, { credentials: 'include' });
+                        const detailsData = await detailsRes.json();
+                        if (detailsData.success) {
+                            expenses = detailsData.expenses || [];
+                            updates = detailsData.updates || [];
+                        }
+                    } catch (e) {
+                        console.warn('Failed to fetch campaign details', e);
+                    }
+                }
+
+                // Render Expenses
+                const tbody = document.getElementById('expenses-table-body');
+                const totalEl = document.getElementById('expenses-total');
+                if (expenses.length > 0 && tbody && totalEl) {
+                    tbody.innerHTML = '';
+                    let total = 0;
+                    expenses.forEach(exp => {
+                        total += exp.amount;
+                        const formattedAmt = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(exp.amount);
+                        const tr = document.createElement('tr');
+                        tr.style.borderBottom = '1px solid #E5E7EB';
+                        tr.innerHTML = `
+                            <td style="padding: 0.75rem;">${exp.date}</td>
+                            <td style="padding: 0.75rem;">${exp.description}</td>
+                            <td style="padding: 0.75rem; text-align: right; font-weight: 500;">${formattedAmt}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                    totalEl.textContent = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(total);
+                }
+
+                // Render Updates
+                const updatesList = document.getElementById('updates-list');
+                if (updates.length > 0 && updatesList) {
+                    updatesList.innerHTML = '';
+                    updates.forEach(upd => {
+                        const div = document.createElement('div');
+                        div.className = 'update-card';
+                        div.style.border = '1px solid #E5E7EB';
+                        div.style.borderRadius = '8px';
+                        div.style.padding = '1.25rem';
+                        div.style.background = '#fafafa';
+                        
+                        let imgHtml = '';
+                        if (upd.image_url) {
+                            imgHtml = `<img src="${upd.image_url}" style="width: 100%; max-height: 300px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem;">`;
+                        }
+
+                        div.innerHTML = `
+                            <div class="text-primary font-bold mb-1" style="font-size: 0.8rem;">${upd.date}</div>
+                            <h4 class="font-bold text-dark mb-2" style="font-size: 1.1rem;">${upd.title}</h4>
+                            ${imgHtml}
+                            <p class="text-gray" style="font-size: 0.95rem; line-height: 1.6; white-space: pre-line; margin: 0;">${upd.content}</p>
+                        `;
+                        updatesList.appendChild(div);
+                    });
+                }
             }
 
             // Make the title globally available for script.js to use in transaction history

@@ -68,13 +68,30 @@
             </div>
         </div>
 
+        <!-- Search and Filter -->
+        <div class="mb-8 mt-2" id="main-search-section">
+            <h2 class="font-bold text-dark mb-4" style="font-size: 1.5rem;">Cari Kampanye</h2>
+            <div class="flex gap-2 mb-4">
+                <input type="text" id="campaign-search" placeholder="Cari kampanye (judul/deskripsi)..." class="form-control" style="flex: 1; padding: 0.75rem 1rem; border: 1px solid #ccc; border-radius: 8px; font-size: 1rem;" onkeypress="if(event.key === 'Enter') filterCampaigns()">
+                <button class="btn btn-primary" onclick="filterCampaigns()" style="padding: 0.75rem 1.5rem;">Cari</button>
+            </div>
+            <div class="flex flex-wrap gap-2" id="category-filters">
+                <button class="btn btn-outline active" style="padding: 0.5rem 1rem; border-radius: 20px; border-color: #FF4081; background-color: #FF4081; color: white;" onclick="setCategory(this, 'Semua')">Semua</button>
+                <button class="btn btn-outline" style="padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #ccc; color: #333;" onclick="setCategory(this, 'Pendidikan')">Pendidikan</button>
+                <button class="btn btn-outline" style="padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #ccc; color: #333;" onclick="setCategory(this, 'Bencana Alam')">Bencana Alam</button>
+                <button class="btn btn-outline" style="padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #ccc; color: #333;" onclick="setCategory(this, 'Bantuan Medis')">Bantuan Medis</button>
+                <button class="btn btn-outline" style="padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #ccc; color: #333;" onclick="setCategory(this, 'Panti Asuhan')">Panti Asuhan</button>
+                <button class="btn btn-outline" style="padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid #ccc; color: #333;" onclick="setCategory(this, 'Lainnya')">Lainnya</button>
+            </div>
+        </div>
+
         <!-- Untuk Mereka Static Campaigns Section -->
         <div id="untuk-mereka-section" style="margin-bottom: 4rem;">
             <h2 class="font-bold text-dark mb-6" style="font-size: 1.5rem;">Untuk Mereka</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
+            <div id="static-campaigns-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
 
                 <!-- Campaign 1: Yuda -->
-                <div class="card card-expandable" data-campaign-id="yuda" data-campaign="Bantu Yuda Meraih Cita-Cita" data-target="10000000" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
+                <div class="card card-expandable static-camp" data-campaign-id="yuda" data-campaign="Bantu Yuda Meraih Cita-Cita" data-target="10000000" data-category="Pendidikan" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
                     <div class="card-img-container" style="position: relative;">
                         <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=600&auto=format&fit=crop"
                             alt="Donasi Pendidikan Yuda" style="width: 100%; height: 200px; object-fit: cover;">
@@ -130,7 +147,7 @@
                 </div>
 
                 <!-- Campaign 2: Rafi -->
-                <div class="card card-expandable" data-campaign-id="rafi" data-campaign="Beasiswa untuk Rafi" data-target="5000000" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
+                <div class="card card-expandable static-camp" data-campaign-id="rafi" data-campaign="Beasiswa untuk Rafi" data-target="5000000" data-category="Pendidikan" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
                     <div class="card-img-container" style="position: relative;">
                         <img src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?q=80&w=600&auto=format&fit=crop"
                             alt="Donasi Pendidikan Rafi" style="width: 100%; height: 200px; object-fit: cover;">
@@ -185,7 +202,7 @@
                 </div>
 
                 <!-- Campaign 3: Karina -->
-                <div class="card card-expandable" data-campaign-id="karina" data-campaign="Masa Depan Cerah Karina" data-target="15000000" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
+                <div class="card card-expandable static-camp" data-campaign-id="karina" data-campaign="Masa Depan Cerah Karina" data-target="15000000" data-category="Pendidikan" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; cursor: pointer;">
                     <div class="card-img-container" style="position: relative;">
                         <img src="https://images.unsplash.com/photo-1453749024858-4bca89bd9edc?q=80&w=600&auto=format&fit=crop"
                             alt="Donasi Pendidikan Karina" style="width: 100%; height: 200px; object-fit: cover;">
@@ -244,10 +261,13 @@
 
         <!-- Dynamic Recent Campaigns Grid -->
         <div id="recent-campaigns-section" class="hidden" style="margin-bottom: 4rem;">
-            <h2 class="font-bold text-dark mb-6" style="font-size: 1.5rem;">Kampanye Terbaru</h2>
+            <h2 class="font-bold text-dark mb-4" style="font-size: 1.5rem;">Semua Kampanye</h2>
             <div id="dynamic-campaigns-grid"
                 style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem;">
                 <!-- Campaigns will be injected here via JS -->
+            </div>
+            <div id="no-campaigns-message" class="hidden text-center text-gray py-8" style="padding: 3rem 0;">
+                <p style="font-size: 1.1rem;">Tidak ada kampanye yang ditemukan.</p>
             </div>
         </div>
 
@@ -591,8 +611,34 @@
         // Start Carousel
         startAutoSlide();
 
+        // State for filters
+        let currentCategory = 'Semua';
+
+        function setCategory(btn, category) {
+            // Update UI
+            document.querySelectorAll('#category-filters button').forEach(b => {
+                b.classList.remove('active');
+                b.style.borderColor = '#ccc';
+                b.style.color = '#333';
+                b.style.backgroundColor = 'transparent';
+            });
+            btn.classList.add('active');
+            btn.style.borderColor = '#FF4081';
+            btn.style.color = 'white';
+            btn.style.backgroundColor = '#FF4081';
+
+            // Update state and reload
+            currentCategory = category;
+            filterCampaigns();
+        }
+
+        function filterCampaigns() {
+            const search = document.getElementById('campaign-search').value;
+            loadCampaigns(search, currentCategory);
+        }
+
         // Load Campaigns
-        async function loadCampaigns() {
+        async function loadCampaigns(search = '', category = 'Semua') {
             const formatIDR = (num) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
             const truncateText = (text, maxLength = 120) => {
                 if (!text) return '';
@@ -638,7 +684,11 @@
             let campaigns = [];
 
             try {
-                const res = await fetch('/api/campaigns', { credentials: 'include' });
+                const params = new URLSearchParams();
+                if (search) params.append('search', search);
+                if (category) params.append('category', category);
+
+                const res = await fetch(`/api/campaigns?${params.toString()}`, { credentials: 'include' });
                 const data = await res.json();
                 if (data.success && data.campaigns) { 
                     campaigns = data.campaigns; 
@@ -649,6 +699,11 @@
 
             const section = document.getElementById('recent-campaigns-section');
             const grid = document.getElementById('dynamic-campaigns-grid');
+            const noDataMsg = document.getElementById('no-campaigns-message');
+            
+            // Clear existing
+            grid.innerHTML = '';
+            
             let dynamicCount = 0;
 
             const campaignsWithTotals = await Promise.all(campaigns.map(async (camp) => ({
@@ -659,6 +714,56 @@
                     parseFloat(camp.collected_amount) || 0
                 ),
             })));
+
+            // Filter Static Campaigns locally
+            let visibleStaticCount = 0;
+            const staticCamps = document.querySelectorAll('.static-camp');
+            staticCamps.forEach(camp => {
+                const campCat = camp.getAttribute('data-category');
+                const campTitle = (camp.getAttribute('data-campaign') || '').toLowerCase();
+                const descEl = camp.querySelector('.campaign-description');
+                const campDesc = descEl ? (descEl.getAttribute('data-full-description') || descEl.textContent || '').toLowerCase() : '';
+                
+                let catMatch = true;
+                if (category && category !== 'Semua') {
+                    catMatch = (campCat === category);
+                }
+                
+                let searchMatch = true;
+                if (search) {
+                    const s = search.toLowerCase();
+                    searchMatch = campTitle.includes(s) || campDesc.includes(s);
+                }
+                
+                if (catMatch && searchMatch) {
+                    camp.style.display = 'flex';
+                    visibleStaticCount++;
+                } else {
+                    camp.style.display = 'none';
+                }
+            });
+
+            const untukMereka = document.getElementById('untuk-mereka-section');
+            if (untukMereka) {
+                if (visibleStaticCount === 0) {
+                    untukMereka.style.display = 'none';
+                } else {
+                    untukMereka.style.display = 'block';
+                }
+            }
+
+            if (campaignsWithTotals.length === 0 && visibleStaticCount === 0 && noDataMsg) {
+                noDataMsg.classList.remove('hidden');
+            } else if (noDataMsg) {
+                noDataMsg.classList.add('hidden');
+            }
+
+            // Always show the section if we loaded campaigns or have data
+            if (campaignsWithTotals.length > 0) {
+                section.classList.remove('hidden');
+            } else {
+                section.classList.add('hidden');
+            }
 
             campaignsWithTotals.forEach(camp => {
                 const target = parseFloat(camp.target_amount);

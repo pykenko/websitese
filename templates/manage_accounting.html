@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelola Pembukuan - Bina Kasih Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container flex justify-between items-center">
+            <div class="logo flex items-center gap-4">
+                <a href="{{ url_for('index') }}" class="flex items-center gap-2" style="text-decoration: none;">
+                    <img src="{{ url_for('static', filename='images/logo_hand_heart.svg') }}">
+                    <span class="font-bold text-dark" style="font-size: 1.5rem;">Bina Kasih Admin</span>
+                </a>
+            </div>
+            <div class="flex gap-4 items-center">
+                <div class="flex items-center gap-2">
+                    <div id="nav-user-initial" class="user-initial" style="width: 32px; height: 32px; background: #FF4081; border-radius: 50%; color: white; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem;">
+                        A
+                    </div>
+                    <span id="nav-user-name" class="font-semibold text-dark">Admin</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+        
+        <!-- Back Button -->
+        <a href="{{ url_for('dashboard') }}" class="btn btn-outline mb-6 flex items-center gap-2" style="text-decoration: none; font-size: 0.9rem; padding: 0.5rem 1rem; box-shadow: var(--shadow-sm); width: max-content; background: var(--white);">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            Kembali ke Dashboard
+        </a>
+
+        <div class="mb-6">
+            <h2 class="font-bold text-dark" style="font-size: 1.5rem;">Kelola Pembukuan & Kabar Kampanye</h2>
+            <p class="text-gray">Pilih kampanye untuk menambahkan laporan keuangan atau kabar terbaru ke publik.</p>
+        </div>
+
+        <div class="card mb-8">
+            <label for="campaign-select" style="display: block; margin-bottom: 0.5rem; color: var(--text-dark); font-weight: 500; font-size: 0.95rem;">Pilih Kampanye</label>
+            <select id="campaign-select" style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px; font-family: inherit; font-size: 1rem;" onchange="loadCampaignDetails()">
+                <option value="" disabled selected>Memuat daftar kampanye...</option>
+            </select>
+        </div>
+
+        <div id="campaign-details-workspace" class="hidden dashboard-grid" style="align-items: start;">
+            <!-- Kiri: Form Input -->
+            <div class="flex flex-col gap-6">
+                <!-- Tambah Pengeluaran -->
+                <div class="card">
+                    <h3 class="font-bold text-dark mb-4" style="font-size: 1.15rem; border-bottom: 1px solid #E5E7EB; padding-bottom: 0.5rem;">Tambah Laporan Pengeluaran</h3>
+                    <form id="form-expense" class="flex flex-col gap-4">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Tanggal</label>
+                            <input type="date" id="expense-date" required style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Deskripsi Pengeluaran</label>
+                            <input type="text" id="expense-desc" placeholder="Contoh: Pembelian buku tulis" required style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Nominal (Rp)</label>
+                            <input type="number" id="expense-amount" placeholder="500000" min="1" required style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px;">
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Simpan Pengeluaran</button>
+                    </form>
+                </div>
+
+                <!-- Tambah Kabar -->
+                <div class="card">
+                    <h3 class="font-bold text-dark mb-4" style="font-size: 1.15rem; border-bottom: 1px solid #E5E7EB; padding-bottom: 0.5rem;">Tambah Kabar Terbaru</h3>
+                    <form id="form-update" class="flex flex-col gap-4">
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Tanggal</label>
+                            <input type="date" id="update-date" required style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Judul Kabar</label>
+                            <input type="text" id="update-title" placeholder="Contoh: Bantuan Tahap 1 Telah Disalurkan" required style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px;">
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Isi Laporan (Deskripsi)</label>
+                            <textarea id="update-content" placeholder="Ceritakan progresnya..." required style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px; min-height: 100px; resize: vertical;"></textarea>
+                        </div>
+                        <div>
+                            <label style="display: block; margin-bottom: 0.5rem; font-size: 0.9rem;">Foto Lampiran (Opsional)</label>
+                            <input type="file" id="update-photo" accept="image/*" style="width: 100%; padding: 0.5rem; border: 1px solid #E5E7EB; border-radius: 8px;">
+                        </div>
+                        <button type="submit" class="btn btn-primary mt-2">Simpan Kabar</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Kanan: Preview List -->
+            <div class="flex flex-col gap-6">
+                <!-- Preview Pembukuan -->
+                <div class="card">
+                    <h4 class="font-bold text-dark mb-4" style="font-size: 1.15rem;">Riwayat Pembukuan</h4>
+                    <div style="max-height: 300px; overflow-y: auto; font-size: 0.85rem;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: #F3F4F6; border-bottom: 1px solid #E5E7EB;">
+                                    <th style="padding: 0.5rem; text-align: left;">Tanggal</th>
+                                    <th style="padding: 0.5rem; text-align: left;">Deskripsi</th>
+                                    <th style="padding: 0.5rem; text-align: right;">Nominal</th>
+                                </tr>
+                            </thead>
+                            <tbody id="preview-expenses">
+                                <tr><td colspan="3" class="text-center py-2 text-gray">Belum ada data</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Preview Kabar -->
+                <div class="card">
+                    <h4 class="font-bold text-dark mb-4" style="font-size: 1.15rem;">Riwayat Kabar Terbaru</h4>
+                    <div id="preview-updates" style="max-height: 400px; overflow-y: auto; display: flex; flex-direction: column; gap: 1rem; font-size: 0.85rem;">
+                        <div class="text-center py-2 text-gray">Belum ada data</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alert / Notification -->
+    <div id="toast" class="hidden" style="position: fixed; bottom: 20px; right: 20px; background: #333; color: white; padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; font-weight: 500;">
+        Message
+    </div>
+
+    <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+    <script>
+        let currentCampaignId = '';
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = isError ? '#F44336' : '#4CAF50';
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 3000);
+        }
+
+        async function init() {
+            const user = await auth.init();
+            if (!user || user.name.toLowerCase() !== 'admin') {
+                window.location.href = '/dashboard';
+                return;
+            }
+
+            // Populate today's date
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('expense-date').value = today;
+            document.getElementById('update-date').value = today;
+
+            // Load Campaigns
+            try {
+                const res = await fetch('/api/campaigns', { credentials: 'include' });
+                const data = await res.json();
+                
+                const select = document.getElementById('campaign-select');
+                if (data.success && data.campaigns && data.campaigns.length > 0) {
+                    select.innerHTML = '<option value="" disabled selected>Pilih Kampanye...</option>';
+                    data.campaigns.forEach(c => {
+                        const opt = document.createElement('option');
+                        opt.value = c.id;
+                        opt.textContent = `${c.title} (ID: ${c.id})`;
+                        select.appendChild(opt);
+                    });
+                } else {
+                    select.innerHTML = '<option value="" disabled>Belum ada kampanye di sistem.</option>';
+                }
+            } catch (e) {
+                console.error(e);
+                showToast('Gagal memuat kampanye', true);
+            }
+        }
+
+        async function loadCampaignDetails() {
+            const select = document.getElementById('campaign-select');
+            currentCampaignId = select.value;
+            if (!currentCampaignId) return;
+
+            document.getElementById('campaign-details-workspace').classList.remove('hidden');
+
+            try {
+                const res = await fetch(`/api/campaigns/${currentCampaignId}/details`, { credentials: 'include' });
+                const data = await res.json();
+                if (data.success) {
+                    renderExpenses(data.expenses || []);
+                    renderUpdates(data.updates || []);
+                }
+            } catch (e) {
+                console.error(e);
+                showToast('Gagal memuat detail', true);
+            }
+        }
+
+        function renderExpenses(expenses) {
+            const tbody = document.getElementById('preview-expenses');
+            if (expenses.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center py-2 text-gray">Belum ada data</td></tr>';
+                return;
+            }
+            tbody.innerHTML = '';
+            expenses.forEach(e => {
+                const tr = document.createElement('tr');
+                tr.style.borderBottom = '1px solid #E5E7EB';
+                tr.innerHTML = `
+                    <td style="padding: 0.5rem;">${e.date}</td>
+                    <td style="padding: 0.5rem;">${e.description}</td>
+                    <td style="padding: 0.5rem; text-align: right;">Rp ${e.amount.toLocaleString('id-ID')}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderUpdates(updates) {
+            const container = document.getElementById('preview-updates');
+            if (updates.length === 0) {
+                container.innerHTML = '<div class="text-center py-2 text-gray">Belum ada data</div>';
+                return;
+            }
+            container.innerHTML = '';
+            updates.forEach(u => {
+                const div = document.createElement('div');
+                div.style.border = '1px solid #E5E7EB';
+                div.style.padding = '0.75rem';
+                div.style.borderRadius = '8px';
+                
+                let imgHtml = '';
+                if (u.image_url) {
+                    imgHtml = `<img src="${u.image_url}" style="width:100%; max-height:120px; object-fit:cover; border-radius:4px; margin-top:0.5rem;">`;
+                }
+                
+                div.innerHTML = `
+                    <div style="color: #FF4081; font-weight: bold; font-size: 0.75rem;">${u.date}</div>
+                    <div style="font-weight: bold; margin-bottom: 0.25rem;">${u.title}</div>
+                    <div style="color: #6B7280; font-size: 0.8rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${u.content}</div>
+                    ${imgHtml}
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Form Submit: Expense
+        document.getElementById('form-expense').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentCampaignId) return;
+
+            const date = document.getElementById('expense-date').value;
+            const desc = document.getElementById('expense-desc').value;
+            const amount = document.getElementById('expense-amount').value;
+
+            try {
+                const res = await fetch(`/api/campaigns/${currentCampaignId}/expenses`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ date, description: desc, amount })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Pengeluaran berhasil disimpan!');
+                    document.getElementById('expense-desc').value = '';
+                    document.getElementById('expense-amount').value = '';
+                    loadCampaignDetails(); // reload
+                } else {
+                    showToast(data.message || 'Gagal menyimpan', true);
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Terjadi kesalahan', true);
+            }
+        });
+
+        // Form Submit: Update
+        document.getElementById('form-update').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!currentCampaignId) return;
+
+            const date = document.getElementById('update-date').value;
+            const title = document.getElementById('update-title').value;
+            const content = document.getElementById('update-content').value;
+            const photoInput = document.getElementById('update-photo');
+
+            const formData = new FormData();
+            formData.append('date', date);
+            formData.append('title', title);
+            formData.append('content', content);
+            if (photoInput.files[0]) {
+                formData.append('photo', photoInput.files[0]);
+            }
+
+            try {
+                const res = await fetch(`/api/campaigns/${currentCampaignId}/updates`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('Kabar terbaru berhasil disimpan!');
+                    document.getElementById('update-title').value = '';
+                    document.getElementById('update-content').value = '';
+                    photoInput.value = '';
+                    loadCampaignDetails(); // reload
+                } else {
+                    showToast(data.message || 'Gagal menyimpan', true);
+                }
+            } catch (err) {
+                console.error(err);
+                showToast('Terjadi kesalahan', true);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
