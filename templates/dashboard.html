@@ -333,19 +333,19 @@
 
             <!-- Filter Tab Bar -->
             <div class="dash-tab-nav mb-6">
-                <button class="dash-tab-btn active" style="--active-bg: linear-gradient(135deg, #6366F1, #8B5CF6);" data-filter="all" onclick="setAdminTicketFilter('all', this)">
+                <button class="dash-tab-btn admin-ticket-filter active" style="background: linear-gradient(135deg, #6366F1, #8B5CF6); color: white; box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);" data-filter="all" onclick="setAdminTicketFilter('all', this)">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                     Semua Tiket
                 </button>
-                <button class="dash-tab-btn" data-filter="open" onclick="setAdminTicketFilter('open', this)">
+                <button class="dash-tab-btn admin-ticket-filter" data-filter="open" onclick="setAdminTicketFilter('open', this)">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
                     Open
                 </button>
-                <button class="dash-tab-btn" data-filter="in_progress" onclick="setAdminTicketFilter('in_progress', this)">
+                <button class="dash-tab-btn admin-ticket-filter" data-filter="in_progress" onclick="setAdminTicketFilter('in_progress', this)">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                     In Progress
                 </button>
-                <button class="dash-tab-btn" data-filter="closed" onclick="setAdminTicketFilter('closed', this)">
+                <button class="dash-tab-btn admin-ticket-filter" data-filter="closed" onclick="setAdminTicketFilter('closed', this)">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                     Closed
                 </button>
@@ -403,35 +403,7 @@
         </div>
     </div>
 
-    <!-- Admin: Reply Tiket Modal -->
-    <div id="admin-reply-modal" class="hidden" style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 200; overflow: auto;">
-        <div class="card" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: min(520px, calc(100vw - 2rem)); max-height: calc(100vh - 2rem); display: flex; flex-direction: column; margin: 0; animation: none;">
-            <div class="flex justify-between items-center mb-4 border-b pb-4">
-                <h3 class="font-bold text-dark" style="font-size: 1.25rem;">💬 Balas Tiket</h3>
-                <button onclick="closeAdminReply()" class="text-gray hover:text-dark" style="background: none; border: none; cursor: pointer;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-                </button>
-            </div>
-            <div id="admin-reply-ticket-info" style="background: #F3F4F6; border-radius: 10px; padding: 1rem; margin-bottom: 1.25rem; font-size: 0.9rem;"></div>
-            <form id="admin-reply-form" class="flex flex-col gap-4" style="overflow-y: auto;">
-                <input type="hidden" id="admin-reply-ticket-id">
-                <div>
-                    <label for="admin-reply-status" style="display: block; margin-bottom: 0.5rem; color: var(--text-dark); font-weight: 500; font-size: 0.9rem;">Ubah Status Tiket</label>
-                    <select id="admin-reply-status" style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px; font-family: inherit;">
-                        <option value="">-- Biarkan Status Saat Ini --</option>
-                        <option value="open">Buka (Open)</option>
-                        <option value="in_progress">Sedang Ditangani (In Progress)</option>
-                        <option value="closed">Selesai (Closed)</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="admin-reply-text" style="display: block; margin-bottom: 0.5rem; color: var(--text-dark); font-weight: 500; font-size: 0.9rem;">Pesan Balasan <span style="color:#FF4081">*</span></label>
-                    <textarea id="admin-reply-text" placeholder="Tulis balasan untuk user..." required style="width: 100%; padding: 0.75rem; border: 1px solid #E5E7EB; border-radius: 8px; font-family: inherit; min-height: 110px; resize: vertical;"></textarea>
-                </div>
-                <button type="submit" id="admin-reply-btn" class="btn btn-primary w-full mt-2">Kirim Balasan</button>
-            </form>
-        </div>
-    </div>
+
 
     
     <script src="{{ url_for('static', filename='js/auth.js') }}"></script>
@@ -516,8 +488,9 @@
                 if (admin) {
                     const defaultFilterButton = document.querySelector('.admin-ticket-filter[data-filter="all"]');
                     if (defaultFilterButton) {
-                        defaultFilterButton.style.backgroundColor = '#FCE4EC';
-                        defaultFilterButton.style.color = '#FF4081';
+                        defaultFilterButton.style.background = 'linear-gradient(135deg, #6366F1, #8B5CF6)';
+                        defaultFilterButton.style.color = 'white';
+                        defaultFilterButton.style.boxShadow = '0 4px 14px rgba(99, 102, 241, 0.35)';
                     }
                     refreshAdminTickets();
                     return;
@@ -1062,14 +1035,6 @@
             }
 
             filteredTickets.forEach((t) => {
-                const replyPayload = encodeURIComponent(JSON.stringify({
-                    id: t.id,
-                    category: t.category,
-                    description: t.description,
-                    user_name: t.user_name || `User #${t.user_id}`,
-                    status: t.status,
-                    admin_reply: t.admin_reply || '',
-                }));
                 let adminReplyHtml = '';
                 if (t.admin_reply) {
                     const repliedDate = t.replied_at ? formatTicketDate(t.replied_at) : '';
@@ -1094,10 +1059,10 @@
                     ${t.photo_url ? `<a href="${t.photo_url}" target="_blank" style="font-size:0.82rem; color:#6366F1; font-weight:600;">Lihat lampiran</a>` : ''}
                     ${adminReplyHtml}
                     <div class="flex gap-2 mt-4" style="flex-wrap:wrap; border-top:1px solid #F3F4F6; padding-top:0.9rem;">
-                        <button onclick="openAdminReplyFromPayload('${replyPayload}')"
-                            style="background:linear-gradient(135deg,#6366F1,#8B5CF6); color:white; border:none; border-radius:8px; padding:0.5rem 1rem; font-size:0.85rem; cursor:pointer; font-weight:600;">
+                        <a href="/dashboard/manage-ticket?id=${t.id}"
+                            style="background:linear-gradient(135deg,#6366F1,#8B5CF6); color:white; border:none; border-radius:8px; padding:0.5rem 1rem; font-size:0.85rem; cursor:pointer; font-weight:600; text-decoration:none; display:inline-flex; align-items:center;">
                             ${t.admin_reply ? 'Edit Balasan' : 'Balas Tiket'}
-                        </button>
+                        </a>
                         ${t.status === 'closed' ? `
                             <button onclick="deleteClosedTicket(${t.id})"
                                 style="background:#FEF2F2; color:#B91C1C; border:1px solid #FECACA; border-radius:8px; padding:0.5rem 1rem; font-size:0.85rem; cursor:pointer; font-weight:600;">
@@ -1135,24 +1100,17 @@
             adminTicketFilter = filter;
             document.querySelectorAll('.admin-ticket-filter').forEach((element) => {
                 element.classList.remove('active');
-                element.style.backgroundColor = 'transparent';
+                element.style.background = '';
                 element.style.color = '';
+                element.style.boxShadow = '';
             });
             if (button) {
                 button.classList.add('active');
-                button.style.backgroundColor = '#FCE4EC';
-                button.style.color = '#FF4081';
+                button.style.background = 'linear-gradient(135deg, #6366F1, #8B5CF6)';
+                button.style.color = 'white';
+                button.style.boxShadow = '0 4px 14px rgba(99, 102, 241, 0.35)';
             }
             renderAdminTickets();
-        }
-
-        function openAdminTickets() {
-            const workspace = document.getElementById('admin-ticket-workspace');
-            if (workspace) {
-                workspace.classList.remove('hidden');
-                workspace.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-            refreshAdminTickets();
         }
 
         async function deleteClosedTicket(ticketId) {
@@ -1178,70 +1136,6 @@
                 alert('Terjadi kesalahan saat menghapus tiket.');
             }
         }
-
-        function openAdminReplyFromPayload(payload) {
-            openAdminReply(JSON.parse(decodeURIComponent(payload)));
-        }
-
-        function openAdminReply(ticket) {
-            document.getElementById('admin-reply-ticket-id').value = ticket.id;
-            document.getElementById('admin-reply-text').value = ticket.admin_reply || '';
-            document.getElementById('admin-reply-status').value = ticket.status || '';
-            
-            const infoEl = document.getElementById('admin-reply-ticket-info');
-            infoEl.innerHTML = `
-                <div style="font-weight:700; color:#111827; margin-bottom:0.25rem;">${escapeHtml(ticket.category)}</div>
-                <div style="color:#6B7280; font-size:0.85rem; margin-bottom:0.25rem;">Dari: <strong>${escapeHtml(ticket.user_name)}</strong></div>
-                <div style="color:#374151; font-size:0.88rem; line-height:1.5;">${escapeHtml(ticket.description)}</div>
-            `;
-            showModal('admin-reply-modal');
-        }
-
-        function closeAdminReply() {
-            hideModal('admin-reply-modal');
-        }
-
-        document.getElementById('admin-reply-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const ticketId = document.getElementById('admin-reply-ticket-id').value;
-            const replyText = document.getElementById('admin-reply-text').value.trim();
-            const newStatus = document.getElementById('admin-reply-status').value;
-
-            if (!replyText) {
-                alert('Pesan balasan tidak boleh kosong!');
-                return;
-            }
-
-            const btn = document.getElementById('admin-reply-btn');
-            btn.textContent = 'Mengirim...';
-            btn.disabled = true;
-
-            try {
-                const payload = { reply: replyText };
-                if (newStatus) payload.status = newStatus;
-
-                const response = await fetch(`/api/tickets/${ticketId}/reply`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    credentials: 'include',
-                    body: JSON.stringify(payload),
-                });
-                const res = await response.json();
-                if (res.success) {
-                    closeAdminReply();
-                    await refreshAdminTickets();
-                    alert('Balasan berhasil dikirim!');
-                } else {
-                    alert(res.message || 'Gagal mengirim balasan.');
-                }
-            } catch (err) {
-                console.error(err);
-                alert('Terjadi kesalahan koneksi.');
-            } finally {
-                btn.textContent = 'Kirim Balasan';
-                btn.disabled = false;
-            }
-        });
 
         // --- Inline Support Ticket Form (Tab version) ---
         document.getElementById('support-ticket-form-inline').addEventListener('submit', async function(e) {
